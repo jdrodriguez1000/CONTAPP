@@ -167,6 +167,22 @@ describe("applyInput: the cursor and what was already written (P-7)", () => {
     expect(applyInput("aaa", "aa", 1)).toEqual(accepted("aa", 1));
   });
 
+  // Redo or a drop can leave the cursor somewhere other than the end of what changed.
+  test.each([0, 2])("TC-044: a foreign letter away from the cursor (%i) does not get in", (cursor) => {
+    expect(applyInput("casa", "casaç", cursor).text).toBe("casa");
+    expect(applyInput("casa", "çcasa", cursor).text).toBe("casa");
+  });
+
+  test("TC-044: a change away from the cursor cannot go over the limit", () => {
+    const full = "a".repeat(100);
+
+    expect(applyInput(full, `${full}bbb`, 0).text).toBe(full);
+  });
+
+  test("TC-044: deleting away from the cursor is still accepted", () => {
+    expect(applyInput("casa", "cas", 0)).toEqual(accepted("cas", 0));
+  });
+
   test("P-7: typing a letter next to the same letter keeps both", () => {
     expect(insert("aa", "a", 1)).toEqual(accepted("aaa", 2));
   });
