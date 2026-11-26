@@ -178,3 +178,95 @@ Ninguno.
 Ninguna nueva.
 
 STATUS: DONE
+
+# Lote 4 — trabajo A — VS-001
+**Fecha:** 2026-11-26
+
+## Resumen
+Escribí `foreign-letters.spec.ts` (32 E2E, P-7) y `max-length.spec.ts` (20 E2E, P-8), y puse en las capturas el estado 4 completo y el tope de 5 líneas. Rojo: **26 de 32** y **17 de 20** fallan porque hoy todo entra, o porque la letra en dos piezas queda en dos piezas. Los **9 controles** pasan, y las **12 capturas** también. **`npm run check` no se corrió** (L-012). No hice commits.
+
+## Archivos (los 4 van en el commit en rojo)
+- Nuevo: `tests/e2e/foreign-letters.spec.ts`
+- Nuevo: `tests/e2e/max-length.spec.ts`
+- Nuevo: `tests/e2e/field-helpers.ts`: ayudantes que comparten los dos archivos anteriores; no tiene pruebas propias
+- Modificado: `tests/e2e/captures.spec.ts`
+- No toqué la configuración ni las unitarias. No hay archivo `*-later`.
+
+## Qué comprueba un rechazo (D-005, D-007)
+`expectRejected` exige, leyendo una sola vez y sin reintentos:
+- El mismo texto, el mismo cursor y los mismos 4 conteos.
+- Los mismos colores, bordes, contorno, sombra, opacidad, animación y transformación del campo y de las fichas (sin marca de límite).
+- Ningún aviso: el texto visible es solo título, etiqueta, nombres y números; no hay roles de aviso ni `aria-live`; el campo es el único control; no se abre ningún diálogo.
+
+Las pruebas en las que algo entra, entero o en parte, exigen el texto exacto, los conteos, la ausencia de aviso y, casi todas, la posición del cursor.
+
+## Cobertura
+"Rojo n/n" = fallan n de las n pruebas del caso. Los conteos van como vocal/consonante/número/otro.
+
+| Caso | Prueba (archivo) | Tipo | Restricción | Resultado (y razón del rojo en el trabajo A) |
+|---|---|---|---|---|
+| TC-016 | `foreign-letters`: "ç" y "Ç" en campo vacío; después "a" sí entra | E2E | C-011, D-005 | **Rojo 1/1:** el campo recibió "ç" |
+| TC-017 | `foreign-letters`: à â ö ß α ж; bordes: mayúsculas, Ω, Ж, 中, A de ancho completo; cursor al inicio y en medio | E2E, borde | C-011, D-005 | **Rojo 3/3:** "casaà", "casaÀ", "çcasa" |
+| TC-018 | `foreign-letters`: pegar "ç" y varias letras ajenas; borde: pegar sobre una selección | E2E, borde | C-011, D-005 | **Rojo 2/2:** "casaç"; sobre la selección quedó "cça" |
+| TC-019 | `foreign-letters`: "ñÑáÉíÓúüÜ" (7/2/0/0); alfabeto completo en minúscula y mayúscula | E2E | C-001, C-002, C-011 | **Control, pasan 2/2** |
+| TC-029 | `foreign-letters`: "façade" en vacío y en medio de "casa" (cursor 7); texto mezclado con signos, dígitos, emoji, tabulación y salto | E2E, borde | C-011, C-016 | **Rojo 3/3:** la "ç" y las demás letras ajenas entraron |
+| TC-033 | `foreign-letters`: "canción" en dos piezas; á é í ó ú ü ñ en dos piezas, en minúscula y mayúscula | E2E, borde | C-014 | **Rojo 2/2:** el texto quedó en dos piezas (no NFC) |
+| TC-035 | `foreign-letters`: escribir "^"; pegar ´ ¨ \` ^ ² ½ ª º 1️⃣ (9 otros) | E2E, borde | C-007, C-011, C-015 | **Control, pasan 2/2** |
+| TC-036 | `foreign-letters`: "٣"; "a٣b" → "ab"; borde: dígito devanagari y de ancho completo | E2E, borde | C-006, C-011, C-015 | **Rojo 3/3:** los dígitos entraron |
+| TC-038 | `foreign-letters`: "ca" + U+200B + "sa"; U+200B, U+200D, U+2060, U+FEFF, U+00AD y U+FE0F solos y en medio | E2E, borde | C-015 | **Rojo 7/7:** el invisible entró |
+| TC-038 | `foreign-letters`: familia, bandera, tono de piel y corazón completos; tabulación, salto y espacio que no se parte | E2E, borde | C-007, C-008, C-015 | **Control, pasan 2/2** |
+| TC-040 | `foreign-letters`: "niño" en dos piezas | E2E | C-002, C-014 | **Rojo 1/1:** quedó en dos piezas |
+| TC-041 | `foreign-letters`: "à" en dos piezas; "càsa" → "csa"; "ç", "ê" y "á" + grave; signo suelto (R-7) | E2E, borde | C-011, C-014, C-016 | **Rojo 4/4:** entraron enteros |
+| TC-020 | `max-length`: 99 "a" + escribir "b" | E2E | A-001 | **Control, pasa** |
+| TC-021 | `max-length`: el 101 escrito; espacio, Enter, dígito, emoji, tabulación y palabra; en las posiciones 0, 50 y 99; borrar uno y volver a llenar | E2E, borde | A-001, D-007 | **Rojo 4/4:** el carácter de más entró |
+| TC-021 | `max-length`: con 100, reemplazar un carácter seleccionado | E2E, borde | A-001 | **Control, pasa** |
+| TC-022 | `max-length`: pegar 150; pegar 101 distinguibles (entra el comienzo); lo rechazado no ocupa lugar | E2E, borde | A-001, D-007, C-016 | **Rojo 3/3:** entró todo |
+| TC-022 | `max-length`: pegar exactamente 100 | E2E, borde | A-001 | **Control, pasa** |
+| TC-023 | `max-length`: 99 + familia, y "b" no entra; 100 familias y no la 101; 99 + dos banderas | E2E, borde | A-001, C-007, D-007 | **Rojo 3/3:** entraron la "b", la familia 101 y la 2.ª bandera |
+| TC-028 | `max-length`: "a " hasta 99 + espacio, y "b" no entra; lo mismo con salto de línea y tabulación | E2E, borde | A-001, D-007 | **Rojo 3/3:** la "b" entró |
+| TC-030 | `max-length`: 98 + "xyz" en medio (cursor 51); 100 + "xyz" sobre 2 seleccionados | E2E, borde | A-001, D-007 | **Rojo 2/2:** entró también la "z" |
+| TC-042 | `max-length`: 99 + "ñ" en dos piezas, y "b" no entra; 101 "á" en dos piezas → 100 | E2E, borde | A-001, C-014, D-007 | **Rojo 2/2:** el texto quedó en dos piezas (ver nota) |
+| Capturas, estado 4 | `estado-4-limite-100-390x844-{claro,oscuro}.png`: frase de 100, sin foco, 35/40/3/3, nada oculto en el campo | Capturas | A-001, D-007 | **Control, pasan 2/2** |
+| Capturas, tope (hallazgo 3 del designer, lote 2) | `estado-4-tope-5-lineas-390x844-{claro,oscuro}.png`: 8 líneas (7 saltos), 16/18/0/0, mismo alto que con 5 líneas y desplazamiento por dentro | Capturas | — | **Control, pasan 2/2** |
+
+**Nota sobre TC-042.** El plan espera el rojo en la "b" final. Hoy falla antes, en la forma NFC, porque tampoco existe P-7. Con P-7 hecho y sin P-8, la prueba principal debe fallar en la "b" (esperado, no verificado).
+
+**Límite del rojo.** Cada prueba se detiene en su primer fallo. Lo que viene después no se ha ejercitado contra el filtro. La lectura del aspecto antes del intento sí corre, y la comprobación de "ningún aviso" corre en los controles.
+
+**Cambio en las capturas.** La captura `estado-4-crecimiento` pasó a ser `estado-4-limite-100`: la misma frase, ahora con conteos, foco y "nada oculto" exigidos. En la captura del tope en claro, que revisé, se ven 5 líneas desde la primera y el borde de la sexta. No abrí las otras.
+
+## Resultados de la ejecución
+- Pruebas del coder: no corrí las unitarias (no las cambié)
+- Pruebas del tester:
+  - `npx playwright test tests/e2e/foreign-letters.spec.ts --project=iphone`: **6 en verde / 26 en rojo**
+  - `npx playwright test tests/e2e/max-length.spec.ts --project=iphone`: **3 en verde / 17 en rojo**
+  - `npx playwright test --project=captures` (sin `--output`): **12 en verde / 0 en rojo**
+- La salida de las corridas completas se cortaba, así que repetí por grupos con `--grep` para leer las razones. Todas son aserciones sobre el texto del campo; en lo que leí no hubo errores de configuración, de selectores ni tiempos agotados. No repetí `max-length` en los grupos TC-020 y TC-028, ni en las primeras pruebas de TC-021: esas razones salen de la corrida completa.
+- `npm run check`: **sin verificar** (mi guarda no lo permite)
+- No corrí `screen.spec.ts` ni `typing.spec.ts` (no los cambié)
+- Búsqueda de marcas e invisibles reales en `tests/e2e/` (`\p{Mn}`, `\p{Cf}`, `\p{Me}`): una sola coincidencia, el 1️⃣ del nombre de una prueba de TC-035
+- Regresión: la CI (llega en el lote 5)
+- Evidencia: ninguna en `evidence/`. Para el designer, después del coder: `npx playwright test --project=captures --output=_project/slices/VS-001/evidence/capturas/lote-4`
+
+## Fallos
+Ningún defecto: los 43 rojos son los esperados antes de P-7 y P-8.
+
+## Notas para el Manager y el coder
+- **Pendiente del Manager (L-012):** correr `npm run check` antes del commit en rojo.
+- **No cubierto por E2E:**
+  - La composición del teclado (`isComposing` / `compositionend`, R-3): `insertText` y `pressSequentially` no la reproducen. Queda para la lista manual de P-10 y como idea de ataque para los breakers.
+  - La vibración, y un aviso que apareciera con demora.
+  - Un destello que durara menos que la comprobación.
+- **TC-032 y TC-039 (largo):** el plan §6 los asigna al coder como unitarias, y el paquete no me los pidió. En el lote 2 anoté que el largo quedaba para el lote 4: no agregué unitarias mías. Las E2E de TC-042 cubren el largo de letras en dos piezas, pero solo con "ñ" y "á".
+
+## Preguntas para el usuario o el Manager
+No bloquean el lote.
+- **Pegar algo rechazado sobre una parte seleccionada.** El plan §5.1 dice que `selectionStart` y `selectionEnd` quedan como antes del intento. En §5.2, `applyInput` devuelve un solo `cursor` ("donde empezaba lo nuevo"), así que la selección no se podría conservar. En el texto y los conteos coinciden: nada cambia. La prueba de TC-018 con selección comprueba solo texto, conteos y que no haya aviso, **no la selección**. Recomendación: aceptar el cursor sin selección donde empezaba lo nuevo (§5.2) y precisar §5.1. Si el usuario prefiere conservar la selección, hay que cambiar la interfaz y agregar esa comprobación.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- La salida de una corrida con muchos rojos se corta en la terminal del agente. Correr por grupos con `--grep` (sin `|`, que la guarda bloquea) permite leer la razón de cada fallo — así no se da por buena una razón que no se vio.
+
+STATUS: DONE

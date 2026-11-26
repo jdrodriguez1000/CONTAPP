@@ -1,4 +1,4 @@
-import { test, expect, type Page, type TestInfo } from "@playwright/test";
+import { test, expect, type Locator, type Page, type TestInfo } from "@playwright/test";
 
 // Screenshots for the designer's visual review (design: _project/design/F-001/mockup.html).
 // Run only with the `captures` project (plan VS-001 §8.2). Files go to the test
@@ -17,6 +17,13 @@ const LONG_PHRASE =
 
 // Phrase of state 3 in the mockup.
 const MIXED_PHRASE = "¡Hola, 2026! \u{1F600}";
+
+// 7 line breaks: 16 vowels and 18 consonants.
+const EIGHT_LINES = ["uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho"];
+
+async function hiddenPixels(field: Locator) {
+  return field.evaluate((el) => el.scrollHeight - el.clientHeight);
+}
 
 // So a screenshot is never taken of a screen that shows other numbers.
 async function expectCounts(page: Page, counts: number[]) {
@@ -74,15 +81,42 @@ for (const { scheme, name } of SCHEMES) {
     await capture(page, testInfo, withTextFile);
   });
 
-  // Only to see the field grown to 5 lines; the full state 4 arrives in batch 4.
-  const growthFile = `estado-4-crecimiento-${IPHONE.width}x${IPHONE.height}-${name}.png`;
+  // State 4: the 100 character phrase, whole, without focus, notice or limit mark.
+  const limitFile = `estado-4-limite-100-${IPHONE.width}x${IPHONE.height}-${name}.png`;
 
-  test(`P-3 — captura ${growthFile}`, async ({ page }, testInfo) => {
+  test(`TC-021 — captura ${limitFile}`, async ({ page }, testInfo) => {
+    expect([...LONG_PHRASE]).toHaveLength(100);
     await open(page, IPHONE, scheme);
     const field = page.getByTestId("text-field");
     await field.fill(LONG_PHRASE);
     await field.blur();
     await expect(field).toHaveValue(LONG_PHRASE);
-    await capture(page, testInfo, growthFile);
+    await expect(field).not.toBeFocused();
+    await expectCounts(page, [35, 40, 3, 3]);
+    // The whole phrase is visible: nothing hidden inside the field.
+    expect(await hiddenPixels(field)).toBeLessThanOrEqual(1);
+    await capture(page, testInfo, limitFile);
+  });
+
+  // The cap of the field (design §5.3): 8 lines of text, 5 visible, inner scroll.
+  const capFile = `estado-4-tope-5-lineas-${IPHONE.width}x${IPHONE.height}-${name}.png`;
+
+  test(`P-3 — captura ${capFile}`, async ({ page }, testInfo) => {
+    await open(page, IPHONE, scheme);
+    const field = page.getByTestId("text-field");
+
+    // Height of 5 lines, measured with exactly 5 lines of text.
+    await field.fill(EIGHT_LINES.slice(0, 5).join("\n"));
+    const fiveLinesHeight = (await field.boundingBox())?.height ?? 0;
+    expect(await hiddenPixels(field)).toBeLessThanOrEqual(1);
+
+    const text = EIGHT_LINES.join("\n");
+    await field.fill(text);
+    await field.blur();
+    await expect(field).toHaveValue(text);
+    await expectCounts(page, [16, 18, 0, 0]);
+    expect((await field.boundingBox())?.height).toBeCloseTo(fiveLinesHeight, 0);
+    expect(await hiddenPixels(field)).toBeGreaterThan(0);
+    await capture(page, testInfo, capFile);
   });
 }
