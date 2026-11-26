@@ -3,7 +3,7 @@
 **Maqueta de origen:** `_project/design/propuestas/propuesta-c2.html` · **Primera pantalla:** `_project/design/F-001/mockup.html`
 
 > Reglas del archivo: aquí viven los **valores** (colores, letra, espacios, componentes). El **cómo** se usan está en `.claude/skills/design-system/SKILL.md`. Lo escribe el designer y lo aprueba el usuario. Se amplía solo cuando una slice lo necesita, y cada cambio queda en el Historial (sección 10).
-> El stack todavía no está decidido. Por eso no se nombra ninguna librería, y las columnas que dependen de ella dicen `COMPLETAR AL DECIDIR`.
+> Stack decidido en D-011: sin librería de componentes; cada componente es HTML más una clase CSS en `src/styles.css`, y los tokens se definen una sola vez en `:root` de ese archivo (el modo oscuro, con `@media (prefers-color-scheme: dark)`).
 
 ## 1. Principios
 1. **Ver el resultado al instante, sin tocar nada más:** se escribe y los 4 conteos cambian solos. No hay botón de "contar".
@@ -52,7 +52,7 @@ La app sigue el modo **claro u oscuro del celular**, sin botón para cambiarlo (
 ## 4. Espacios y formas
 | Token | Valor | Uso |
 |---|---|---|
-| `--space-1` | 4 px | Mínimo; separación número–nombre (2 px dentro de la ficha) |
+| `--space-1` | 4 px | Mínimo (reservado; la separación número–nombre es una medida fija de 2 px, ver abajo) |
 | `--space-2` | 8 px | Etiqueta → campo; relleno lateral de la ficha |
 | `--space-3` | 12 px | Margen superior de la pantalla; relleno del campo y de la ficha; espacio entre fichas |
 | `--space-4` | 16 px | Márgenes laterales de la pantalla; título → etiqueta |
@@ -67,13 +67,25 @@ La app sigue el modo **claro u oscuro del celular**, sin botón para cambiarlo (
 - **Anillo de foco:** contorno de 3 px en `--color-focus`, separado 2 px del campo.
 - **Ancho máximo del contenido:** 480 px, centrado. En celular ocupa todo el ancho; el diseño para computador y celular girado queda para VS-002.
 
+**Medidas fijas aprobadas** (sin token, porque hoy se usan en un solo lugar; se escriben tal cual en el CSS):
+
+| Medida | Valor | Dónde se usa |
+|---|---|---|
+| Alto mínimo de la ficha | 104 px | `CountCard` |
+| Anillo de foco | 3 px de grueso, separado 2 px del campo | `TextField` activo |
+| Separación número–nombre | 2 px | Dentro de `CountCard` |
+| Ancho máximo del contenido | 480 px | Columna de la pantalla |
+| Altos de línea | 1,1 (número del conteo) · 1,2 (título) · 1,3 (etiqueta, campo y nombre del grupo) | Ver la tabla de la sección 3 |
+
+- **Regla:** solo estas medidas pueden ir sin token. Una medida fija **se vuelve token cuando se usa en un segundo lugar** (p. ej. en VS-002), y entonces se agrega a la tabla de arriba y sale de esta lista. Cualquier otra medida nueva se pide como token.
+
 ## 5. Componentes
-| Componente (código) | Base en la librería | Variantes | Cuándo se usa |
+| Componente (código) | Base en el código (D-011: HTML + clase en `src/styles.css`) | Variantes | Cuándo se usa |
 |---|---|---|---|
-| `AppTitle` | COMPLETAR AL DECIDIR | — | Título "Contapp" arriba de la pantalla; es el encabezado principal (h1) |
-| `TextField` | COMPLETAR AL DECIDIR (campo de varias líneas) | reposo · activo (foco) | Escribir o pegar el `text`. Etiqueta visible arriba. Empieza en **2 líneas** y crece con el texto **hasta 5**; si hay más líneas (saltos de línea), se desplaza por dentro. Corrector, sugerencias, autocompletar y mayúscula automática **apagados** |
-| `CountGrid` | COMPLETAR AL DECIDIR (cuadrícula) | — | Agrupa las 4 fichas en **2 columnas × 2 filas**, en el orden fijo Vocales, Consonantes / Números, Otros. Es una lista de pares nombre–valor |
-| `CountCard` | COMPLETAR AL DECIDIR | — (en VS-002: una por `characterGroup`, con imagen y color) | Una ficha por grupo: número arriba (en `--color-primary`, 48 px) y nombre debajo (en `--color-text`, 20 px), centrados; fondo `--color-surface`, borde punteado de 2 px en `--color-border`, esquinas de 20 px, alto mínimo 104 px. No se toca |
+| `AppTitle` | `<h1 class="app-title">` en `index.html` · clase `.app-title` | — | Título "Contapp" arriba de la pantalla; es el encabezado principal (h1) |
+| `TextField` | `<label class="field-label" for="text-field">` + `<textarea class="field" rows="2">` con `autocomplete`, `autocorrect`, `autocapitalize` en `off` y `spellcheck="false"` · clases `.field-label`, `.field`, `.field:focus-visible` · el crecimiento de 2 a 5 líneas está en `src/main.ts` (`fitHeightToText`) | reposo · activo (`:focus-visible`) | Escribir o pegar el `text`. Etiqueta visible arriba. Empieza en **2 líneas** y crece con el texto **hasta 5**; si hay más líneas (saltos de línea), se desplaza por dentro. Corrector, sugerencias, autocompletar y mayúscula automática **apagados** |
+| `CountGrid` | `<dl class="counts">` · clase `.counts` | — | Agrupa las 4 fichas en **2 columnas × 2 filas**, en el orden fijo Vocales, Consonantes / Números, Otros. Es una lista de pares nombre–valor |
+| `CountCard` | `<div class="count"><dt>Nombre</dt><dd>número</dd></div>` · clases `.count`, `.count dt`, `.count dd` | — (en VS-002: una por `characterGroup`, con imagen y color) | Una ficha por grupo: número arriba (en `--color-primary`, 48 px) y nombre debajo (en `--color-text`, 20 px), centrados; fondo `--color-surface`, borde punteado de 2 px en `--color-border`, esquinas de 20 px, alto mínimo 104 px. No se toca |
 
 - Un componente vive en un solo lugar del código y las pantallas lo reutilizan.
 - Componentes que llegan después, sin diseño todavía: imagen por grupo (VS-002), botón "borrar todo" (VS-005) y aviso para el niño (VS-004).
@@ -110,3 +122,4 @@ La app sigue el modo **claro u oscuro del celular**, sin botón para cambiarlo (
 | Fecha | Cambio | Motivo |
 |---|---|---|
 | 2026-11-26 | Creación a partir de la propuesta C2 "Pizarra con fichas": tokens claro/oscuro, letra, espacios, 4 componentes, textos y accesibilidad | Elección del usuario (D-010), entre las propuestas A, B, C y C2 |
+| 2026-11-26 | Nota del stack (D-011); columna "Base en el código" de los 4 componentes (§5); lista de medidas fijas aprobadas con su regla (§4); se corrige el "2 px" de la fila de `--space-1`. Maqueta F-001: relleno del campo de `14px` a `var(--space-3)` | D-011 y revisión visual del lote 2 de VS-001 (hallazgos 1 y 2, opción A aprobada por el usuario) |

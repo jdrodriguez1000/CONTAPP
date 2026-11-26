@@ -42,12 +42,12 @@ description: Operating manual for the project's main session (the Manager) — s
 
   | Tipo de riesgo (genérico) | Rutas en este proyecto |
   |---|---|
-  | Alto (1) datos | COMPLETAR AL DECIDIR: esquema, migraciones, código que escribe o borra datos |
-  | Alto (2) reglas críticas | COMPLETAR AL DECIDIR: cálculos, fechas, validación de entradas |
-  | Alto (3) acceso · (4) límite de confianza | COMPLETAR AL DECIDIR: inicio de sesión, permisos, APIs, código de servidor |
-  | Alto (5) despliegue · (6) dependencias · (7) cadena | COMPLETAR AL DECIDIR: configuración de la plataforma, manifiesto y lockfile de dependencias, scripts, CI, `.claude/hooks/`, `.claude/agents/` |
-  | Normal | COMPLETAR AL DECIDIR: pantallas con lógica, componentes, estado del cliente |
-  | Bajo | COMPLETAR AL DECIDIR: solo estilo, imágenes, documentos (`*.md` fuera de `.claude/agents/`) |
+  | Alto (1) datos | No aplica: la app no guarda datos (C-010) |
+  | Alto (2) reglas críticas | `src/counting.ts`, `src/inputFilter.ts` y las líneas de `src/main.ts` que llaman a `applyInput` |
+  | Alto (3) acceso · (4) límite de confianza | No hay servidor ni cuentas (C-010); la entrada externa (lo que se escribe o pega) está en (2) |
+  | Alto (5) despliegue · (6) dependencias · (7) cadena | `package.json`, `package-lock.json`, configuraciones (`vite`, `vitest`, `playwright`, `eslint`, `tsconfig`), `.github/workflows/**`, `.gitattributes`, `.gitignore`, `vercel.json` (si algún día existe), `.claude/hooks/**`, `.claude/agents/**` |
+  | Normal | `index.html`, `src/main.ts` (lo que no es validación), `tests/e2e/**` |
+  | Bajo | `src/styles.css`, imágenes, `*.md` fuera de `.claude/agents/` |
 
   | Función (genérica) | Agente |
   |---|---|
@@ -63,7 +63,7 @@ description: Operating manual for the project's main session (the Manager) — s
 - **Designer una slice adelante:** mientras se construye VS-N en su carpeta, el designer puede diseñar VS-N+1 en la carpeta principal, **solo si el usuario ya aprobó el alcance de VS-N+1**.
 - **Máximo 2 agentes a la vez**, contando al designer adelantado. Antes de lanzar dos en paralelo, revisa que no compartan puerto, servidor ni base de datos de pruebas.
 - **Tester por lote, antes del coder:** el tester escribe solo las pruebas del lote siguiente (lo que dependa de pasos posteriores, incluidas las direcciones que abre, va a un archivo aparte) y comprueba que fallan por la razón correcta. Tú haces el commit en rojo (`test(acceptance): VS-XXX — <resumen>`; el tester no hace commits) y lanzas al coder, que termina el lote con ellas en verde sin tocarlas. Lo escrito para pasos futuros lo guardas **fuera de la carpeta del código** (`../<proyecto>-VS-XXX-pending-tests`) y lo devuelves antes de su lote. **Un pane nuevo por agente y por lote.**
-- **Cierre de un lote:** el coder cierra con COMPLETAR AL DECIDIR: comando de revisión estática (tipos, lint) + unitarias completas + E2E del lote + los archivos E2E que tú indicas en el paquete porque tocan piezas compartidas. Tú lees la sección del lote en su reporte (pasos, commits, cifras) y **subes la rama**: la suite completa la corre la CI. **El lote siguiente no arranca con la CI de ese commit en rojo.** Si el reporte no cuadra (cifras que no crecen como dice el plan, pruebas saltadas, fallos sin explicar), lo devuelves al coder antes de subir.
+- **Cierre de un lote:** el coder cierra con `npm run check` (tipos y lint) + `npm run test:unit` (unitarias completas) + E2E del lote (`npx playwright test tests/e2e/<archivo>.spec.ts --project=iphone`) + los archivos E2E que tú indicas en el paquete porque tocan piezas compartidas. Tú lees la sección del lote en su reporte (pasos, commits, cifras) y **subes la rama**: la suite completa la corre la CI. **El lote siguiente no arranca con la CI de ese commit en rojo.** Si el reporte no cuadra (cifras que no crecen como dice el plan, pruebas saltadas, fallos sin explicar), lo devuelves al coder antes de subir.
 - **Revisión visual por lote:** si el lote construye o cambia una pantalla, el tester incluye en su trabajo A un archivo de capturas de **todos los estados** del diseño; el coder lo corre en su cierre (salida a `evidence/capturas/lote-N/`) y lanzas al designer (trabajo C) solo con ese lote, en paralelo con el tester A del lote siguiente. Un bloqueante se corrige como un paso pequeño dentro del lote siguiente (en el último lote, un mini-lote), sin ronda al final.
 - **Una ronda se trabaja como un lote pequeño:** tester A (pruebas de los hallazgos) → coder → CI; el tester corre solo esos archivos.
 - **Si una corrección cambia una interfaz pública del plan** (una acción, una ruta, una dependencia), actualiza `plan.md` en el mismo momento.
@@ -134,23 +134,23 @@ No confíes en los reportes: compruébalo tú en la carpeta de la slice.
 - [ ] **Alcance:** el mapa de archivos del reviewer cubre cada archivo de `git diff main...HEAD --stat`; ningún archivo sin paso agrega comportamiento y cada archivo del plan sin tocar tiene explicación.
 - [ ] **Pegas menores:** no generaron ronda ni `DT`; se las explicas al usuario.
 - [ ] Security sin Crítica ni Alta **del cambio**; reviewer y designer sin Bloqueantes **del cambio**. Lo preexistente quedó como `DT-propuesta` o decidido por el usuario.
-- [ ] **Sin secretos:** COMPLETAR AL DECIDIR: comando del detector de secretos sobre el historial y sobre la carpeta (p. ej. `gitleaks git --redact` y `gitleaks dir --redact .`), limpio.
+- [ ] **Sin secretos:** `gitleaks git --redact --no-banner` (historial) y `gitleaks dir --redact --no-banner .` (carpeta), limpios.
 - [ ] DoD de cada feature revisado punto por punto.
 - [ ] Puedes **explicarle al usuario** cada archivo nuevo en pocas frases. Si no, pide al coder que lo simplifique.
 
 ## 8. Ramas, carpetas y despliegue
 - **Carpeta principal = `main`:** definición, diseño, plan y memoria. Ahí trabajan el usuario y el Manager.
 - **Carpeta de la slice = rama `feature/VS-XXX-<slug>`**, creada al aprobarse el plan: `git worktree add ../<proyecto>-VS-XXX -b feature/VS-XXX-<slug> main`. Coder, tester, reviewer y security se lanzan con `--cwd` en esa carpeta; el designer adelantado sigue en la principal.
-- **Preparar la carpeta nueva** antes del coder (git no copia lo ignorado): COMPLETAR AL DECIDIR: instalar dependencias (p. ej. `npm install`) y copiar el archivo de variables locales desde la carpeta principal **sin mostrar su contenido** (`cp`, nunca `cat`).
-- **Preview:** al terminar la etapa 12, `git push -u origin feature/VS-XXX-<slug>`. COMPLETAR AL DECIDIR: cómo se publica la preview de la rama y con qué base de datos (**siempre** separada de la de producción). El usuario prueba ahí, en el dispositivo real.
-- **Pull request** (etapa 13): COMPLETAR AL DECIDIR: comando para abrir el PR (p. ej. `gh pr create --base main --head feature/VS-XXX-<slug> --title "VS-XXX \"<nombre>\" (vX.YYY.ZZZ)" --body-file <archivo>`). El cuerpo es el **mensaje de fusión** (abajo). Dale al usuario el enlace junto con la preview. Antes, sube `main` si tiene commits que la rama no tiene, para que el PR muestre solo la slice.
-- **Producción:** con la aceptación explícita de un commit `<hash>` y la CI en verde (si la plataforma no la exige, la miras tú): COMPLETAR AL DECIDIR: comando de fusión con commit propio que exija el commit aceptado (p. ej. `gh pr merge <n> --merge --match-head-commit <hash>`), **nunca** squash ni rebase: conserva los commits del TDD. Luego, en la carpeta principal **limpia**: `git pull --ff-only origin main`. COMPLETAR AL DECIDIR: cómo llega `main` a producción.
+- **Preparar la carpeta nueva** antes del coder (git no copia lo ignorado): `npm ci` y `npx playwright install webkit`. No hay archivo de variables locales que copiar (si algún día lo hay: `cp`, nunca `cat`).
+- **Preview:** al terminar la etapa 12, `git push -u origin feature/VS-XXX-<slug>`. Vercel publica sola cada push de la rama en su dirección estable `contapp-git-<rama>-…vercel.app` (D-013: sin protección, abre sin iniciar sesión); no hay base de datos (C-010). Antes de dársela al usuario: `curl -sI <dirección>` y `E2E_BASE_URL=<dirección> npm run test:published` (Git Bash). El usuario prueba ahí, en el dispositivo real.
+- **Pull request** (etapa 13): `gh pr create --base main --head feature/VS-XXX-<slug> --title "VS-XXX \"<nombre>\" (vX.YYY.ZZZ)" --body-file <archivo>`. El cuerpo es el **mensaje de fusión** (abajo). Dale al usuario el enlace junto con la preview. Antes, sube `main` si tiene commits que la rama no tiene, para que el PR muestre solo la slice.
+- **Producción:** con la aceptación explícita de un commit `<hash>` y la CI en verde (si la plataforma no la exige, la miras tú): `gh pr merge <n> --merge --match-head-commit <hash>` (commit de fusión propio, D-011), **nunca** squash ni rebase: conserva los commits del TDD. Luego, en la carpeta principal **limpia**: `git pull --ff-only origin main`. Al fusionar, Vercel publica `main` sola en producción (`https://contapp-tawny.vercel.app`, D-013); compruébala con `curl -sI` y `test:published`.
 - **Mensaje de fusión:** responde tres preguntas, además de la línea de aceptación con su commit. **¿Cómo se probó?** Pruebas, CI, rondas y breakers. **¿Qué riesgo tiene?** Qué datos o pantallas de producción toca, qué migraciones trae y qué quedó como borde o deuda. **¿Cómo se deshace?** `git revert -m 1 <merge>` y qué pasa con los datos. Muéstrale el borrador **junto con el pedido de aceptación**: aprueba las dos cosas de una vez.
 - **Migraciones:** el mecanismo lo fija el plan de la walking skeleton. Antes de dar la slice por publicada, verifica que quedaron aplicadas en producción y que la app abre bien.
-- **Limpieza:** `git worktree remove ../<proyecto>-VS-XXX`, `git branch -d feature/VS-XXX-<slug>` (nunca `-D`) y `git push origin --delete feature/VS-XXX-<slug>`. COMPLETAR AL DECIDIR: limpieza de la preview y de su base de datos.
+- **Limpieza:** `git worktree remove ../<proyecto>-VS-XXX`, `git branch -d feature/VS-XXX-<slug>` (nunca `-D`) y `git push origin --delete feature/VS-XXX-<slug>`. Las previews no necesitan limpieza (Vercel las conserva; se borran desde su panel si el usuario quiere) y no hay base de datos.
 - **Nunca** fusionas sin la aceptación del usuario, ni haces `push --force`, ni reescribes historia.
 - **Carpetas de los breakers (9b):** cada uno trabaja aparte, para no compartir base ni servidor:
-  1. Base de pruebas propia por breaker: COMPLETAR AL DECIDIR: comando para crearla (p. ej. una rama de la base de pruebas) y para comprobar que existe.
+  1. Base de pruebas propia por breaker: no aplica (la app no guarda datos, C-010); los pasos 3 y 5 que hablan de la base se saltan.
   2. Carpeta en el mismo commit, sin rama nueva: `git worktree add --detach ../<proyecto>-VS-XXX-break-uso feature/VS-XXX-<slug>`; instalar dependencias.
   3. Variables locales copiadas con `cp` desde la carpeta de la slice, cambiando **solo** la conexión a la base de pruebas, sin mostrar valores.
   4. Antes del breaker-user, comprueba que el puerto de la app está libre (un servidor ya corriendo apuntaría a otra base).
