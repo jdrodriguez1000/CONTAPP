@@ -2,10 +2,6 @@ export const MAX_TEXT_LENGTH = 100; // A-001
 
 export type InputResult = { text: string; cursor: number };
 
-export function textLength(text: string): number {
-  return text.length;
-}
-
 // An emoji comes in whole, with its invisible pieces: pictographs, flags and keycaps.
 const EMOJI = /\p{Extended_Pictographic}|\p{Regional_Indicator}|\u{20E3}/u;
 // Format characters, controls (but tab and line breaks) and variation selectors.
@@ -21,6 +17,11 @@ const segmenter = new Intl.Segmenter("es-CO", { granularity: "grapheme" });
 
 function splitGraphemes(text: string): string[] {
   return Array.from(segmenter.segment(text), ({ segment }) => segment);
+}
+
+// Spaces, tabs and line breaks do take a place; an emoji takes 1.
+export function textLength(text: string): number {
+  return splitGraphemes(text.normalize("NFC")).length;
 }
 
 function isAllowed(character: string): boolean {
@@ -50,16 +51,28 @@ function findNewStart(previousText: string, nextText: string, cursor: number): n
   return start;
 }
 
+// The beginning of the new characters that fits between `before` and `after` (D-007).
+function takeWhileItFits(characters: string[], before: string, after: string): string {
+  let taken = "";
+  for (const character of characters) {
+    if (textLength(before + taken + character + after) > MAX_TEXT_LENGTH) break;
+    taken += character;
+  }
+  return taken;
+}
+
 // Only what was just typed or pasted is filtered; the rest was already accepted.
 export function applyInput(previousText: string, nextText: string, cursor: number): InputResult {
   const start = findNewStart(previousText, nextText, cursor);
   const added = nextText.slice(start, cursor);
   if (added === "") return { text: nextText, cursor }; // Something was deleted.
 
+  const before = nextText.slice(0, start);
+  const after = nextText.slice(cursor);
   // NFC first: a two-piece letter is judged as the one letter it is (C-014).
-  const accepted = splitGraphemes(added.normalize("NFC")).map(filterGrapheme).join("");
+  const allowed = splitGraphemes(added.normalize("NFC")).map(filterGrapheme).filter(Boolean);
+  const accepted = takeWhileItFits(allowed, before, after);
   if (accepted === "") return { text: previousText, cursor: start }; // Silent rejection.
 
-  const upToCursor = nextText.slice(0, start) + accepted;
-  return { text: upToCursor + nextText.slice(cursor), cursor: upToCursor.length };
+  return { text: before + accepted + after, cursor: before.length + accepted.length };
 }
