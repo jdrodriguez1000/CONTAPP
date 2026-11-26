@@ -345,3 +345,122 @@ Ninguno.
 - Para el rojo de una prueba publicada, elegir la versión por **lo que muestra** (la pantalla completa sin el comportamiento) y no por el número de lote — si la pantalla no existe, la prueba falla antes de llegar a lo que quiere demostrar. → VEGU
 
 STATUS: DONE
+
+# Ronda 1 — trabajo A — VS-001
+**Fecha:** 2026-11-26
+
+## Resumen
+Escribí las pruebas de TC-043 a TC-049 contra el commit `01cdb43`. Rojo: **33 de 40 E2E** y **32 de 50 unitarias** fallan porque la app todavía no cumple la regla. Las otras 7 E2E y 18 unitarias son **controles** que ya pasan, y lo dicen en su nombre. **`npm run check` no se corrió** (mi guarda lo bloqueó, L-012). No hice commits.
+
+## Archivos (van en el commit en rojo)
+- Nuevo: `tests/e2e/round1.spec.ts` (40 pruebas; usa `field-helpers.ts`, que no cambió)
+- Nuevo: `tests/unit/round1.test.ts` (50 pruebas; usa `applyInput`, `textLength` y `countCharacters`, plan §5.2)
+- No cambié pruebas anteriores, ayudantes ni configuración. No hay archivo `*-later`.
+- No hay capturas: la ronda no cambia el diseño de la pantalla.
+
+## Cobertura
+Los conteos van como vocal/consonante/número/otro. "Rojo n/m" = fallan n de las m pruebas.
+
+| Caso | Prueba (archivo) | Tipo | Restricción | Resultado (y razón del rojo en el trabajo A) |
+|---|---|---|---|---|
+| TC-043 | `e2e/round1`: "casa 12", salir en la misma pestaña (abriendo otra dirección o desde la propia página) y "atrás": vacío, 0/0/0/0, sin aviso; después "sol" cuenta 1/2/0/0 | E2E | C-010, D-017 | **Rojo 2/2:** vuelve el texto "casa 12" |
+| TC-044 | `e2e/round1`: "casa" + "ç" rechazada, deshacer y rehacer (con teclado y con la orden de edición). Después de cada acción solo se admiten comienzos de "casa" con sus conteos; al final "casa" 2/2/0/0 | E2E | C-009, C-011 | **Rojo 2/2:** al rehacer queda `casacasacasaç`, 6/6/0/1 |
+| TC-044, borde | 3 veces deshacer y 5 rehacer: nunca "ç" ni texto repetido (no fija el texto final) | E2E | C-009, C-011 | **Rojo 2/2:** mismo estado |
+| TC-044, "façade" | Pegar "façade", deshacer y rehacer: solo vacío o "faade"; al final "faade" 3/2/0/0 | E2E | C-009, C-016 | **Rojo 2/2:** `faadefaadefaçade`, 9/6/0/1 |
+| TC-044, controles | Pegar "façade" y rehacer **sin deshacer** (2). Deshacer y rehacer funcionan en un campo sin la app, con las dos formas (1) | E2E | — | **Control, pasan 3/3** |
+| TC-045 | ç, α, ж, ٣ y "à" en dos piezas, con U+20E3 y con U+FE0F + U+20E3, en campo vacío y tras "casa" | E2E | C-011, C-015 | **Rojo 10/10:** entran enteros |
+| TC-045 | "c" + pegar U+0327 U+20E3; "1" + pegar U+20E3; "a" + ç⃣ + "b" → "ab" | E2E | C-011, C-015, C-016 | **Rojo 3/3:** `ç⃣`, `1⃣`, `aç⃣b` |
+| TC-045 | U+0D4E o U+0600 delante de 😀: entra solo el emoji | E2E | C-011, C-015 | **Rojo 2/2:** el carácter de adelante entra |
+| TC-045, control | 1️⃣ entra como 1 otro | E2E | CA-10 | **Control, pasa 1/1** |
+| TC-045 | `unit/round1`: los casos de arriba, también en "a" + U+20E3. U+20E3 sobre "?", un espacio, "1" con el signo dos veces y 1️⃣ + tilde: queda solo la base. U+0D4E y U+0600 delante de cara, familia y bandera | Unitaria | C-011, C-015, C-016 | **Rojo 19/19:** el texto aceptado trae lo que no debe |
+| TC-045, controles | Tecla con 0, 1 (con y sin U+FE0F), 9, # y *; cara, familia y bandera solas | Unitaria | CA-10 | **Control, pasan 7/7** |
+| TC-046 | Escribir "ſ" tras "casa"; pegar "caſa" → "caa" | E2E + unitaria | C-011, C-016 | **Rojo 2/2 E2E y 2/2 unitarias:** la "ſ" entra |
+| TC-046, controles | "ſ" con punto arriba, "İ" e "ı" no entran | Unitaria | C-011 | **Control, pasan 3/3** |
+| TC-047 | "as" ← "aç" → "caa"; "casa" ← "caç" → "ca"; "banana" ← "ban٣" → "ban"; 100 ← 10 "a" + "ç". La E2E exige también el cursor y que no haya aviso | E2E + unitaria | C-016 | **Rojo 4/4 E2E y 4/4 unitarias:** queda el texto viejo |
+| TC-047, control | "casa" entera ← "casaç": queda "casa", cursor en 4 y sin selección | E2E | C-016 | **Control, pasa 1/1** |
+| TC-048 | "casa" + (espacio + U+0300, espacio + U+0327, U+00A0 + U+0300, espacio + 3 tildes): entra solo el blanco, 2/2/0/0 | E2E + unitaria | C-015, D-018 | **Rojo 4/4 E2E y 4/4 unitarias:** la tilde entra |
+| TC-048, controles | Tabulación o salto de línea + U+0300 | E2E + unitaria | C-015 | **Control, pasan 2/2 E2E y 2/2 unitarias** |
+| TC-049 | "1" + U+0301 → "1"; "?" + 2.000 → "?" (largo 1); 100 × ("?" + 2.000) → 100 "?" | Unitaria | A-001, C-015, D-018 | **Rojo 3/3:** las tildes entran (con 100 signos, 200.100 unidades) |
+| TC-049, controles | "a" + U+0301 → "á" (el que pide F-001). Tildes pegadas después de un "1", "?" o espacio ya escritos (3). Letra con dos tildes: no entra nada (2) | Unitaria | C-014, D-018 | **Control, pasan 6/6** |
+
+## Resultados de la ejecución
+- Pruebas del coder: no las corrí (no las cambié)
+- Pruebas del tester:
+  - `npx playwright test tests/e2e/round1.spec.ts --project=iphone`: **7 en verde / 33 en rojo**
+  - `npx vitest run tests/unit/round1.test.ts`: **18 en verde / 32 en rojo**
+- **`npm run check`: sin verificar.** Lo intenté una vez y la guarda respondió `comando no permitido para este agente`. Los tipos y el lint de los dos archivos nuevos los tiene que revisar el Manager.
+- **Razones del rojo:** la salida completa se corta, así que repetí por grupos. En lo leído, los rojos son comparaciones de texto o de estados que la app produce; no vi errores de importación, de selectores ni tiempos agotados. No leí una por una las unitarias de TC-045 sobre letra + U+20E3 (leí las primeras), TC-048 ni TC-049: de esas vi parte de las diferencias en las corridas completas y la lista de pruebas en rojo.
+- Después de las corridas por grupos agregué "control" a algunos nombres. Las dos corridas completas finales: la E2E ya tiene los nombres nuevos, y la unitaria también.
+- Búsqueda de marcas, invisibles, U+00A0 y "ſ" reales en los archivos nuevos: una sola coincidencia, el 1️⃣ del nombre de una prueba (L-009).
+- Regresión: la CI (la verifica el Manager)
+- Evidencia: no guardé archivos en `evidence/`
+
+## Fallos
+Ningún defecto nuevo: los 65 rojos corresponden a los hallazgos ya clasificados en `clasificacion-9c.md`.
+
+## Notas para el Manager y el coder
+- **Pendiente del Manager (L-012):** correr `npm run check` antes del commit en rojo.
+- **Diferencia con BRK-U-2:** el reporte dice que pasa "al pegar façade y rehacer". Pegar y rehacer **sin deshacer** no falla en mis pruebas. Con deshacer y rehacer sí falla. Dejé las dos variantes.
+- **Interpretación en TC-044 con "façade":** F-001 describe el resultado final solo con "casa". Por analogía, exijo "faade" después de deshacer y rehacer. En el paso intermedio admito vacío (deshacer el pegado) o "faade".
+- **TC-044 no exige que deshacer haga algo.** Exige que nunca aparezca texto que nadie escribió. El control sin la app comprueba que el teclado y la orden sí deshacen en este navegador. Corrió solo en Windows; si falla en la CI (Linux), hay que clasificarlo como un asunto del entorno de mi prueba, no de la app.
+- **TC-043 usa una espera fija de 1 s** después de "atrás", porque el navegador repone el texto un momento después y sin ella la prueba podría pasar por error. El plan (P-6) decía que la de TC-027 era la única de la slice: ahora hay dos.
+- **Sin verificar:** "el navegador la restaura por otra vía" (CA-7), como el Safari real al devolver la página completa con texto **y** conteos, o al reabrir la pestaña. No sé si este navegador de pruebas llega a restaurar la página completa. Recomendación: agregar a la lista manual del iPhone "escribir, abrir otra dirección en la misma pestaña, tocar atrás: vacío y en 0".
+- Tampoco quedan cubiertos el gesto de deshacer del iPhone (agitar o tres dedos) ni arrastrar y soltar.
+
+## Preguntas para el usuario o el Manager
+No bloquean la ronda: no escribí pruebas para estos bordes.
+1. **Tildes pegadas sobre un emoji o un signo que cuenta como emoji.** §5.2 del plan dice que un grafema que empieza por emoji entra completo, así que "😀" + 2.000 U+0301 entraría con todas las tildes. CA-11 y D-018 dicen que sobre algo que no es letra las tildes no entran. Además, signos como "©" o "®" tienen la propiedad de emoji (`Extended_Pictographic`). **Criterio no verificable.** Recomendación: quitar las tildes combinables y U+20E3 también después de un emoji, conservando sus piezas propias (U+200D, U+FE0F, tono de piel), y precisarlo en §5.2 antes del coder.
+2. **Con "1" escrito, pegar U+FE0F + U+20E3** formaría la tecla 1️⃣ sobre un número ya escrito. TC-045 solo define U+20E3 solo. Recomendación: que siga "1", igual que con U+20E3 solo.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Al pasar la reproducción de un breaker a prueba de aceptación, hay que correr cada variante que el reporte describe solo en prosa — "pegar façade y rehacer" no falla sin deshacer antes, y sin correrla habría quedado como un rojo supuesto.
+- Un pase libre como "el emoji entra completo" necesita su ejemplo negativo con signos combinables (emoji + tilde) — la regla de D-018 y el pase completo se cruzan ahí (complemento de L-023).
+
+STATUS: DONE
+
+## Ronda 1 — ajuste (preguntas 1 y 2)
+**Fecha:** 2026-11-26 · Plan §5.2 del commit `040ac53`
+
+Las dos preguntas quedaron decididas: (1) las tildes o el U+20E3 de más pegados detrás de una tecla o un emoji se quitan, y la tecla o el emoji entran intactos; (2) lo pegado nunca convierte en tecla lo ya escrito. Estas cifras reemplazan las de la sección anterior.
+
+### Casos corregidos (2, en `tests/unit/round1.test.ts`)
+| Caso | Antes esperaba | Ahora espera |
+|---|---|---|
+| 1️⃣ + U+0301 | "1" (1 número) | 1️⃣ (1 otro) |
+| "1" + U+20E3 + U+20E3 | "1" (1 número) | "1" + U+20E3, la tecla sin U+FE0F (1 otro) |
+
+El paquete solo nombraba el primero. El segundo también quedó contrario a la decisión 1 ("U+20E3 de más se quitan y la tecla entra intacta"), así que lo corregí. Los dos salieron de "queda solo la base" y ahora están en la prueba de tecla seguida de signos. No cambié las demás pruebas anteriores.
+
+### Cobertura nueva o corregida
+| Caso | Prueba (archivo) | Tipo | Restricción | Resultado (y razón del rojo) |
+|---|---|---|---|---|
+| TC-045 | Tecla seguida de 1 tilde, 2.000 tildes, U+20E3 de más (con y sin U+FE0F) o cedilla + grave: entra intacta, largo 1, también tras "casa" (incluye los 2 corregidos) | Unitaria | C-015, D-018 | **Rojo 5/5:** entran los signos de más |
+| TC-045 | Con "1", "#" o "*" escrito, pegar U+FE0F + U+20E3: no cambia | Unitaria | C-015 | **Rojo 3/3:** lo escrito se vuelve tecla |
+| TC-045 | Con 1️⃣ ya escrito, pegar una tilde: no cambia | Unitaria | D-018 | **Control, pasa 1/1** |
+| TC-049 | 😀 + 1 tilde, + 2.000 tildes y + U+20E3; familia, bandera, pulgar con tono de piel y corazón con U+FE0F + 1 tilde: intactos, largo 1, también tras "casa" | Unitaria | A-001, D-018 | **Rojo 7/7:** entra la marca |
+| TC-049 | "a" + 😀 + tilde + "b" → "a😀b" | Unitaria | C-016, D-018 | **Rojo 1/1** |
+| TC-049 | Con 😀 ya escrito, pegar 1 o 2.000 tildes: no cambia | Unitaria | A-001, D-018 | **Control, pasa 1/1** |
+| TC-045 | Con "1" escrito, pegar U+FE0F + U+20E3: rechazo silencioso, sigue "1" | E2E | C-015, D-005 | **Rojo 1/1:** queda 1️⃣ |
+| TC-045 | Pegar 1️⃣ + tilde: queda 1️⃣ | E2E | D-018 | **Rojo 1/1:** queda con la tilde |
+| TC-049 | Tras "casa", pegar 😀 + 2.000 tildes: queda "casa😀", 2/2/0/1 | E2E | A-001, D-018 | **Rojo 1/1:** entran las tildes. El plan §6 pone TC-049 como unitaria; esta E2E es un refuerzo |
+
+### Cifras nuevas (corridas completas de mis dos archivos)
+| Comando | Total | En rojo | En verde (todos son control) |
+|---|---|---|---|
+| `npx vitest run tests/unit/round1.test.ts` | 66 | 46 | 20 |
+| `npx playwright test tests/e2e/round1.spec.ts --project=iphone` | 43 | 36 | 7 |
+
+- En las unitarias, `-t "control"` corre 20 pruebas y las 20 pasan. Coinciden con las 20 en verde de la corrida completa, así que ningún caso sin la marca "control" pasa.
+- Leí por separado la razón de las 3 E2E nuevas: son diferencias en el texto del campo. De las unitarias nuevas leí las diferencias de teclas y emojis; la salida se corta y no las vi todas completas.
+- Los dos casos nuevos que ya pasan (pegar tildes sobre una tecla o un emoji ya escritos) deben seguir en verde después del coder.
+- **`npm run check`: sin verificar** (L-012). El Manager lo corre antes del commit en rojo.
+- Búsqueda de marcas e invisibles reales en los dos archivos: solo el 1️⃣ en el nombre de dos pruebas E2E.
+- No hice commits ni guardé archivos en `evidence/`.
+
+### Preguntas y fallo sin explicar
+Ninguna pregunta pendiente. Fallo sin explicar: ninguno.
+
+STATUS: DONE
