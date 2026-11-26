@@ -1,6 +1,6 @@
 import "./styles.css";
 import { countCharacters } from "./counting";
-import { applyInput } from "./inputFilter";
+import { applyInput, type InputResult } from "./inputFilter";
 
 const textField = document.querySelector<HTMLTextAreaElement>("#text-field")!;
 
@@ -30,8 +30,34 @@ let acceptedText = textField.value;
 // replaying it repeats text.
 let isHistoryStale = false;
 
+// What was selected in the accepted text just before a change: that is what gets replaced.
+let selected = { start: 0, end: 0 };
+
+textField.addEventListener("beforeinput", () => {
+  // While a letter is being composed the field is ahead of the accepted text: keep what we had.
+  if (textField.value !== acceptedText) return;
+  selected = { start: textField.selectionStart, end: textField.selectionEnd };
+});
+
+// Pasting "aç" over "as" looks the same as typing "ç" over "s". Knowing what was selected,
+// the new text is compared with the accepted text without that part.
+function applyChange(nextText: string, cursor: number): InputResult {
+  const { start, end } = selected;
+  const head = acceptedText.slice(0, start);
+  const tail = acceptedText.slice(end);
+  const replacesSelection =
+    start < end && cursor > start && nextText.startsWith(head) && nextText.slice(cursor) === tail;
+  if (!replacesSelection) return applyInput(acceptedText, nextText, cursor);
+
+  const rest = head + tail;
+  const result = applyInput(rest, nextText, cursor);
+  // Nothing got in: the selected part stays (silent rejection).
+  return result.text === rest ? { text: acceptedText, cursor: start } : result;
+}
+
 function filterChange() {
-  const { text, cursor } = applyInput(acceptedText, textField.value, textField.selectionEnd);
+  const { text, cursor } = applyChange(textField.value, textField.selectionEnd);
+  selected = { start: 0, end: 0 };
   // The field is only rewritten when something did not get in, so the cursor is not moved.
   if (text !== textField.value) {
     textField.value = text;
