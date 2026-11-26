@@ -34,8 +34,8 @@ Usa **siempre** estos nombres en código, tablas, rutas y pruebas. Si necesitas 
 ## 3. Reglas técnicas (duras, en `_persistence/constraints.md` → Técnicas)
 - **Idioma del código:** inglés en el código (archivos, variables, funciones, pruebas); español de Colombia solo en el texto que se ve en pantalla (C-013).
 - **Publicación y dispositivo:** página web abierta en el navegador del celular (D-008); pruebas de punta a punta en iPhone con Safari (D-009).
-- **Stack:** COMPLETAR AL DECIDIR: lenguaje, framework, base de datos, autenticación, estilos, alojamiento y repositorio. Carpeta del código: COMPLETAR AL DECIDIR.
-- **Pruebas:** COMPLETAR AL DECIDIR: herramienta de unitarias e integración, de punta a punta (E2E) y de CI, y los comandos para correrlas (revisión estática, unitarias, E2E de un archivo). Al decidirlos, se copian también a las guardas del coder y del tester (`.claude/agents/`).
+- **Stack (D-011):** TypeScript + Vite, sin framework; sin base de datos ni autenticación (C-010); estilos en CSS con los tokens de `_project/design-system.md`; publicación en Vercel (preview por rama); repositorio en GitHub (D-004). Carpeta del código: `src/`.
+- **Pruebas (D-011):** Vitest (unitarias), Playwright con WebKit (E2E) y GitHub Actions (CI). COMPLETAR AL DECIDIR: los comandos para correrlas (revisión estática, unitarias, E2E de un archivo). Al decidirlos, se copian también a las guardas del coder y del tester (`.claude/agents/`).
 - **Reglas de conteo** C-001 a C-008, C-011, C-012 y C-014 a C-016, y de **alcance** C-009 (sin IA) y C-010 (sin base de datos ni login), en `constraints.md`.
 - Antes de usar una librería, verifica su **documentación vigente**, sin datos sensibles en la consulta.
 

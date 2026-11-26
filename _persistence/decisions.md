@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-25
-**Último ID usado:** D-010
+**Último ID usado:** D-011
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -19,6 +19,7 @@
 - D-007 — El carácter 101 se ignora en silencio, sin aviso; se retira F-005 del roadmap (ajusta D-002)
 - D-008 — La app se publica como dirección web que se abre en el navegador del celular (sin tienda de apps)
 - D-009 — Dispositivo de las pruebas de punta a punta: iPhone con Safari; en el campo se apagan corrector y sugerencias del teclado
+- D-011 — Stack: TypeScript + Vite (sin framework), Vitest, Playwright (WebKit), GitHub Actions, Vercel (preview por rama), ESLint, gitleaks; código en `src/`; rama por slice y PR con commit de fusión
 - D-010 — Estilo visual: propuesta C2 "Pizarra con fichas" (claro y oscuro, sigue el modo del celular); nombre "Contapp"; mayúscula automática apagada
 
 ## Registro completo (memoria fría — consultar por demanda)
@@ -92,3 +93,10 @@
 - **Alternativas descartadas:** A "Cuaderno limpio", B "Recreo", C "Pizarra" (lista con insignias).
 - **Estado:** Vigente
 - **Relacionada con:** D-009, VS-001, VS-002
+
+### D-011 — 2026-11-26 — Stack de la app
+- **Decisión:** página web estática, sin servidor ni base de datos (C-010): **TypeScript** + **Vite** sin framework; pruebas unitarias con **Vitest**; punta a punta con **Playwright** en **WebKit** (motor de Safari, D-009); CI con **GitHub Actions**; publicación en **Vercel** (plan gratis, uso no comercial) con preview por rama; **ESLint** y revisión de tipos; **gitleaks** para secretos. Código en `src/`. Ramas `feature/VS-XXX-<slug>`, un PR por slice en GitHub, fusión con commit de fusión (nunca squash ni rebase). Las versiones exactas las verifica el planner con documentación vigente y quedan en el plan.
+- **Razón:** lo mínimo para una sola pantalla sin datos (PI-2); todo gratis y bien documentado; la preview por rama permite la aceptación del usuario en el iPhone antes de fusionar.
+- **Alternativas descartadas:** React u otro framework (complejidad innecesaria); GitHub Pages (sin preview por rama).
+- **Estado:** Vigente
+- **Relacionada con:** D-004, D-008, D-009, C-010
