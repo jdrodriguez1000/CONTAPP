@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-26
-**Último ID usado:** D-018
+**Último ID usado:** D-020
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -28,6 +28,8 @@
 - D-016 — El repositorio `jdrodriguez1000/CONTAPP` es público (minutos de GitHub Actions gratis; la bolsa privada la usa BankApp)
 - D-017 — Al volver atrás a la app (o restaurarse la página), el campo queda vacío y los 4 conteos en 0, como al recargar
 - D-018 — Una tilde combinable pegada sola entra solo si forma con la letra anterior una letra del español; si no, no entra y lo demás sí (amplía C-015)
+- D-019 — Ubicación siempre visible (piloto → VEGU): mapa de 3 líneas en cada mensaje con avance y página `_project/status.html` (Fase 0 + slices, colores de la app, estados con ✓ ▸ ○)
+- D-020 — Herramientas del reviewer: jscpd 5.4.3, knip 6.45.1 y Stryker 10.1.1 (vitest-runner), dependencias de desarrollo exactas; mutación solo de `src/counting.ts` y `src/inputFilter.ts`
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -156,3 +158,17 @@
 - **Alternativas descartadas:** dejarlas entrar como "otro" (riesgo de tildes amontonadas).
 - **Estado:** Vigente
 - **Relacionada con:** C-011, C-015, A-001, `reports/clasificacion-9c.md` (ronda 1)
+
+### D-019 — 2026-11-26 — Ubicación siempre visible para el usuario
+- **Decisión:** cada mensaje del Manager con avance empieza con un mapa de 3 líneas (proyecto: Fase 0 o slice N de M · construcción y revisión · ahora → sigue). La página `_project/status.html`, publicada como artifact (`https://claude.ai/artifact/GkYgfLAmdVDan5trEmSDhE`), muestra el camino completo (Fase 0 de entendimiento y las slices), la slice en curso paso a paso y un glosario; usa solo los colores del sistema de diseño de la app y marca los estados con símbolos (✓ terminado · ▸ en curso · ○ pendiente). Se actualiza en cada cierre de sesión. Piloto en Contapp que se lleva a VEGU.
+- **Razón:** el usuario se perdía entre slices, lotes, pasos y rondas, y no sabía cuánto llevaba ni cuánto faltaba.
+- **Alternativas descartadas:** solo `progress.md` (no lo lee el usuario); colores propios para los estados (el usuario pidió los de la app).
+- **Estado:** Vigente
+- **Relacionada con:** L-027, `AGENTS.md` §1 → VEGU
+
+### D-020 — 2026-11-26 — Herramientas de calidad del reviewer
+- **Decisión:** duplicación con `npx jscpd src tests --min-lines 10` (jscpd 5.4.3), código sin uso con `npx knip` (knip 6.45.1, sin configuración; los archivos de `.claude/hooks/` y `jscpd` son falsos positivos conocidos) y mutación con `npx stryker run` (Stryker 10.1.1 + `@stryker-mutator/vitest-runner` 10.1.1, `stryker.config.json` limitado a `src/counting.ts` y `src/inputFilter.ts`, solo unitarias, sin umbral). Las cuatro como dependencias de desarrollo con versión exacta. Cumple lo que D-012 dejó para la etapa 10.
+- **Razón:** el reviewer no podía correr esas revisiones; versiones con más de 2 semanas publicadas, verificadas en npm y Context7.
+- **Alternativas descartadas:** correr jscpd y knip con `npx` sin instalar (descarga en cada revisión y no queda en el archivo de versiones).
+- **Estado:** Vigente
+- **Relacionada con:** D-012, DT-005, `.claude/skills/review-checklist/SKILL.md`

@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-26
-**Último ID usado:** L-027
+**Último ID usado:** L-034
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -15,14 +15,17 @@
 ## Índice por categoría (lecciones vigentes)
 
 ### Enseñanza y conteo
+- L-030 — Toda expresión regular anclada (`^…$`) que juzga un grafema necesita una prueba con un carácter Prepend delante, y el pase completo define el Prepend para cada forma (emoji y tecla)
 - L-023 — Un "pase libre" en un filtro (p. ej. "si trae emoji, entra completo") se define por lo que el carácter es en total, no por una parte
 - L-001 — Una regla dicha en negativo ("nada de X") se confirma: ¿X no se permite o solo no cuenta en su grupo?
 
 ### Producto y estructura
+- L-031 — Si la app reescribe un campo, el plan decide antes qué pasa con deshacer/rehacer y con la selección: una función sin la selección no distingue pegar sobre una selección de escribir
 - L-013 — En las maquetas toda medida va con token o con una medida fija aprobada (D-014), nunca un número suelto
 - L-020 — Para probar un tope de alto en una captura, medir el alto en el límite y pasado el límite, y comprobar que hay texto escondido → VEGU
 
 ### Herramienta
+- L-029 — En `.gitignore`, una carpeta de la raíz va con barra inicial (`/reports/`); sin ella se ignoran todas las carpetas con ese nombre
 - L-002 — Ediciones masivas con tildes, emojis y comillas: escribir un script en el scratchpad, no un heredoc en Bash
 - L-004 — Las maquetas HTML se verifican con capturas de Edge sin ventana (`msedge --headless --screenshot`), porque el designer no puede abrir un navegador
 - L-006 — Si la preview de Vercel "falla", mirar primero `curl -sI`: un 302 a `vercel.com/sso-api` es la protección encendida, no la app
@@ -39,6 +42,10 @@
 ### Datos y supuestos
 
 ### Proceso y memoria
+- L-028 — Antes de encargar un archivo nuevo a un agente, comprobar que está en su zona de escritura → VEGU
+- L-032 — Una dependencia nueva se registra como decisión antes de instalarla, y se corre `npm audit` antes y después → VEGU
+- L-033 — Ante un mutante "sería bloqueante", reproducir el comportamiento actual antes de abrir ronda: puede faltar una prueba sin que haya defecto → VEGU
+- L-034 — Al pasar la reproducción de un breaker a prueba de aceptación, correr cada variante que el reporte describe solo en prosa → VEGU
 - L-021 — El rojo de una prueba sobre la versión publicada se corre contra la versión que muestra la pantalla sin el comportamiento, no por número de lote → VEGU
 - L-022 — Antes de planear la CI, revisar los minutos de GitHub Actions de la cuenta (son compartidos entre repositorios privados) → VEGU
 - L-025 — En una pantalla que reescribe un campo, atacar también "volver atrás" y deshacer/rehacer: escribir y pegar no pasan por el historial del navegador → VEGU
@@ -322,3 +329,73 @@
 - **Cómo aplicarla:** el Manager pone el mapa en cada mensaje con avance y actualiza y republica `status.html` en cada cierre de sesión. La página usa **solo los colores definidos para la app** en su sistema de diseño (claro y oscuro) y marca los estados con símbolos (✓ terminado · ▸ en curso · ○ pendiente), sin colores propios (decisión del usuario, 2026-11-26). Piloto en Contapp; se lleva a VEGU al cerrar VS-001 con la opinión del usuario como evidencia.
 - **Estado:** Vigente
 - **Relacionada con:** D-019, `AGENTS.md` §1 (perfil del usuario), `_project/status.html` → VEGU
+
+### L-028 — 2026-11-26 — Zona de escritura antes del encargo
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el mini-lote de herramientas quedó bloqueado porque `stryker.config.json` no estaba en la zona de escritura del coder; lo creó el Manager.
+- **Lección:** antes de encargar un archivo nuevo, comprobar en la guarda del agente que puede escribirlo.
+- **Por qué importa:** un encargo imposible gasta una vuelta completa del agente.
+- **Cómo aplicarla:** el Manager revisa `guard-write-zone` al armar el paquete; si el archivo no entra, lo crea él o lo dice en el paquete.
+- **Estado:** Vigente
+- **Relacionada con:** D-020, playbook §1 → VEGU
+
+### L-029 — 2026-11-26 — Carpeta de la raíz en .gitignore
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** el Manager pidió ignorar `reports/`; eso habría sacado de git todos los reportes de los agentes (`_project/slices/*/reports/`). El coder lo cambió a `/reports/`.
+- **Lección:** una carpeta de la raíz se escribe con barra inicial.
+- **Por qué importa:** sin ella, git ignora sin aviso cualquier carpeta con ese nombre.
+- **Cómo aplicarla:** revisar cada línea nueva de `.gitignore` contra las carpetas del proyecto.
+- **Estado:** Vigente
+- **Relacionada con:** D-020
+
+### L-030 — 2026-11-26 — Expresiones ancladas y caracteres Prepend
+- **Categoría:** Enseñanza y conteo
+- **Etapa:** Construcción
+- **Qué pasó:** la mutación dejó vivos 6 mutantes que quitan el `^` de expresiones que juzgan un grafema; un grafema puede llevar piezas antes de la base (Prepend: `U+0600`, `U+0D4E`). El plan definía el Prepend delante de un emoji, pero no delante de una tecla de número.
+- **Lección:** toda expresión anclada que juzga un grafema lleva una prueba con un Prepend delante, y toda forma de pase completo define qué pasa con un Prepend.
+- **Por qué importa:** sin esa prueba, quitar el ancla pasa en verde y una letra ajena podría entrar (C-011).
+- **Cómo aplicarla:** el planner incluye el Prepend en los ejemplos negativos (complemento de L-023); el tester lo prueba. Pendiente en DT-010 y DT-011.
+- **Estado:** Vigente
+- **Relacionada con:** L-023, DT-010, DT-011
+
+### L-031 — 2026-11-26 — Reescribir un campo: deshacer y selección
+- **Categoría:** Producto y estructura
+- **Etapa:** Construcción
+- **Qué pasó:** tras un rechazo, deshacer y rehacer metían la letra ajena y repetían texto (BRK-U-2); y `applyInput` no podía distinguir pegar "aç" sobre "as" de escribir "ç" sobre "s" porque no recibe la selección.
+- **Lección:** si la app reescribe un campo, el plan decide qué pasa con deshacer/rehacer y con la selección antes de construir.
+- **Por qué importa:** son comportamientos del navegador que la app rompe sin darse cuenta.
+- **Cómo aplicarla:** el planner los pone en §5 de la interfaz; el tester comprueba que la firma de la función distingue los casos antes de fijar pruebas unitarias.
+- **Estado:** Vigente
+- **Relacionada con:** L-025, DT-003, plan VS-001 §5.1–§5.2
+
+### L-032 — 2026-11-26 — Dependencias: decisión y npm audit
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** las 4 herramientas de D-020 se instalaron antes de que D-020 estuviera en `decisions.md`, y los avisos de `npm audit` pasaron de 8 a 12 sin que nadie lo anotara en el lote.
+- **Lección:** toda dependencia nueva se registra como decisión antes de instalarse, y se corre `npm audit` antes y después.
+- **Por qué importa:** así se sabe qué avisos trae cada dependencia (DT-005).
+- **Cómo aplicarla:** el Manager registra la decisión al aprobarla (no solo en el cierre) y corre `npm audit` en el lote; el coder no puede correrlo.
+- **Estado:** Vigente
+- **Relacionada con:** D-020, DT-005 → VEGU
+
+### L-033 — 2026-11-26 — Mutante bloqueante: reproducir antes de abrir ronda
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el reviewer marcó 2 mutantes "sería bloqueante"; el Manager recomendó una ronda 2 y luego, al ejecutar el filtro con esos casos, comprobó que la app ya se portaba bien: faltaba la prueba, no había defecto. Se registró DT-011 y no se abrió ronda.
+- **Lección:** antes de recomendar una ronda por un mutante, ejecutar el comportamiento actual con el caso exacto.
+- **Por qué importa:** una ronda en nivel Alto relanza reviewer y security; no se gasta sin defecto real.
+- **Cómo aplicarla:** el Manager reproduce cada "sería bloqueante" y le dice al usuario si es defecto o prueba faltante, con su riesgo práctico.
+- **Estado:** Vigente
+- **Relacionada con:** DT-011 → VEGU
+
+### L-034 — 2026-11-26 — Reproducciones en prosa
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el reporte de BRK-U-2 decía que pasaba "al pegar façade y rehacer"; el tester lo corrió y sin deshacer antes no falla.
+- **Lección:** toda variante que un breaker describe solo en prosa se corre antes de fijarla como prueba.
+- **Por qué importa:** si no, queda un rojo supuesto.
+- **Cómo aplicarla:** el tester corre cada variante y anota cuáles no reproducen.
+- **Estado:** Vigente
+- **Relacionada con:** BRK-U-2, TC-044 → VEGU
