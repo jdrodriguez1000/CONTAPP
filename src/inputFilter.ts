@@ -80,12 +80,15 @@ function takeWhileItFits(characters: string[], before: string, after: string): s
 
 // Only what was just typed or pasted is filtered; the rest was already accepted.
 export function applyInput(previousText: string, nextText: string, cursor: number): InputResult {
-  const start = findNewStart(previousText, nextText, cursor);
-  const added = nextText.slice(start, cursor);
+  // The new part ends at the cursor. If what follows is not how the previous text ended
+  // (redo, a drop), the change is somewhere else: check everything up to the end.
+  const newEnd = previousText.endsWith(nextText.slice(cursor)) ? cursor : nextText.length;
+  const start = findNewStart(previousText, nextText, newEnd);
+  const added = nextText.slice(start, newEnd);
   if (added === "") return { text: nextText, cursor }; // Something was deleted.
 
   const before = nextText.slice(0, start);
-  const after = nextText.slice(cursor);
+  const after = nextText.slice(newEnd);
   // NFC first: a two-piece letter is judged as the one letter it is (C-014).
   const allowed = splitGraphemes(added.normalize("NFC")).map(filterGrapheme).filter(Boolean);
   const accepted = takeWhileItFits(allowed, before, after);
