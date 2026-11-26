@@ -1,6 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const localUrl = "http://localhost:4173";
+const publishedUrl = process.env.E2E_BASE_URL;
+const publishedSpec = /published\.spec\.ts/;
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -12,12 +14,21 @@ export default defineConfig({
   projects: [
     {
       name: "iphone",
+      testIgnore: publishedSpec,
       use: { ...devices["iPhone 13"], baseURL: localUrl },
     },
+    {
+      name: "published",
+      testMatch: publishedSpec,
+      use: { ...devices["iPhone 13"], baseURL: publishedUrl },
+    },
   ],
-  webServer: {
-    command: "npm run build && npm run preview -- --port 4173 --strictPort",
-    url: localUrl,
-    reuseExistingServer: !process.env.CI,
-  },
+  // With a published address there is nothing to serve locally.
+  webServer: publishedUrl
+    ? undefined
+    : {
+        command: "npm run build && npm run preview -- --port 4173 --strictPort",
+        url: localUrl,
+        reuseExistingServer: !process.env.CI,
+      },
 });
