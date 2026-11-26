@@ -302,3 +302,80 @@ Ninguno.
 - Ampliar L-009 al código de la app: la herramienta de escritura convirtió `⃣` en el carácter invisible dentro de `src/inputFilter.ts`. Usar la forma `\u{20E3}` (quedó escrita como código) y buscar `\p{Mn}`, `\p{Me}` y `\p{Cf}` después de escribir — un invisible en una expresión regular no se puede revisar a simple vista.
 
 STATUS: DONE
+
+# Lote 5 — VS-001
+**Fecha:** 2026-11-26 · **Rama:** feature/VS-001-contar-en-el-celular
+
+## Pasos construidos
+Solo P-9. P-10 no es del coder.
+
+| Paso | Commits (test → feat → refactor) | Casos de prueba cubiertos | Razón del rojo |
+|---|---|---|---|
+| P-9 | `5674a5a` (`ci(P-9)`), un solo commit | Ninguno propio | No hay rojo: no admite prueba automática previa. El respaldo es el criterio (a), (b) y (c) del plan, **que todavía no está verificado**: lo comprueba el Manager |
+
+## Explicación para el usuario
+### P-9 — Pruebas automáticas en cada cambio (CI)
+La CI es un computador prestado por GitHub que repite las revisiones cuando se sube un cambio, sin que nadie tenga que acordarse. Las instrucciones están en un solo archivo, `.github/workflows/ci.yml`. Tiene dos trabajos separados: `checks` (¿la app está bien?) y `secrets` (¿se coló alguna contraseña o clave?). Cada trabajo arranca en un computador Linux limpio.
+
+**Cuándo corre (`on`):** al subir cambios a cualquier rama (`push`) y en un pull request (la solicitud de fusión) hacia `main`. Con un pull request abierto, un mismo cambio puede mostrar dos corridas, una por cada motivo.
+
+**Trabajo `checks`**, en orden. Si un paso falla, los siguientes de la lista normal no corren:
+1. `actions/checkout@v6`: descarga el código del proyecto.
+2. `actions/setup-node@v6`: instala Node 24. `cache: npm` guarda los paquetes descargados para tardar menos la próxima vez.
+3. `npm ci`: instala exactamente las versiones anotadas en `package-lock.json`.
+4. `npm run check`: revisa los tipos y el estilo del código.
+5. `npm run test:unit`: corre las pruebas de las reglas, sin navegador.
+6. `npx playwright install --with-deps webkit`: instala el motor de Safari y lo que Linux necesita para usarlo.
+7. `npm run test:e2e`: usa la app en el iPhone simulado. Corre solo el proyecto `iphone`, así que `captures.spec.ts` y `published.spec.ts` no corren aquí.
+8. `actions/upload-artifact@v5`: solo si algo falló (`if: failure()`), guarda la carpeta `playwright-report/` para descargarla y ver qué pasó. Si el fallo ocurre antes de las E2E, no habrá reporte que guardar.
+
+**Trabajo `secrets`:**
+1. `actions/checkout@v6` con `fetch-depth: 0`: descarga **todo el historial**, porque una clave borrada hoy sigue visible en un commit viejo. Esto importa más ahora que el repositorio es público.
+2. `gitleaks/gitleaks-action@v2`: busca claves y contraseñas. `GITHUB_TOKEN` es un permiso temporal que GitHub crea solo para cada corrida; no hay que crearlo ni guardarlo. Según el plan y la decisión del usuario (repositorio público, 2026-11-26), no necesita licencia.
+
+## Verificación de versiones y entradas (Context7, 2026-11-26)
+| Qué | Resultado |
+|---|---|
+| `actions/checkout@v6` y `fetch-depth: 0` (todo el historial) | Confirmado en el README de la v6 |
+| `actions/setup-node@v6`, `node-version: 24`, `cache: npm` | Confirmado en el README de v6.5.0 |
+| `actions/upload-artifact@v5` | La v5 existe: el README de la v6 la menciona. No leí el README propio de la v5; las entradas `name` y `path` las vi en la documentación actual (v7) |
+| `GITHUB_TOKEN` como `${{ secrets.GITHUB_TOKEN }}` | Confirmado en la documentación de GitHub Actions |
+| `gitleaks/gitleaks-action@v2` | **No verificado.** Context7 no tiene ese repositorio y la búsqueda en código fuente está apagada. La documentación de Gitleaks solo muestra un ejemplo con la acción en **v3**, con `fetch-depth: 0` y `GITHUB_TOKEN` (y `GITLEAKS_LICENSE` para su caso con licencia). Tampoco pude confirmar en la documentación que una cuenta personal no necesite licencia |
+
+Usé las versiones del plan. La primera corrida dirá si `gitleaks-action@v2` funciona.
+
+## Estado de las pruebas
+Corrido en local antes del commit, con `ci.yml` ya escrito:
+| Suite | Comando | Resultado |
+|---|---|---|
+| Revisión estática (tipos y lint) | `npm run check` | ok |
+| Unitarias | `npm run test:unit` | **115/115** en 3 archivos |
+| E2E completa (proyecto `iphone`) | `npm run test:e2e` | **70/70**, el resumen no muestra saltadas |
+
+Las cifras coinciden con las del cierre del lote 4 (115 unitarias; 52 + 17 = 69 E2E de los cuatro archivos, más 1 de `skeleton.spec.ts` = 70).
+
+- Estas pruebas no ejecutan `ci.yml`: **no demuestran que la CI funcione**. No validé el archivo con ninguna herramienta de GitHub Actions.
+- No comprobé antes si el puerto 4173 estaba libre; en local, Playwright reutiliza un servidor ya abierto (R-6).
+
+## Lo que falta (Manager)
+- No subí la rama.
+- Criterio de P-9: (a) sin corridas antes de subir; (b) tras subir, los dos trabajos y todos sus pasos en verde (el paso de subir el reporte debe aparecer omitido, porque solo corre si hay fallo); (c) 115 unitarias y 70 E2E, ninguna saltada.
+- En (b), mirar también las advertencias de la corrida (ver los dos puntos siguientes).
+- **Posible advertencia por Node 20:** la documentación dice que `upload-artifact@v5` corre por defecto sobre Node 20 (la v6 pasa a Node 24). Es la versión de la propia acción, no la de la app. Por lo que sé de GitHub, sin haberlo verificado hoy, Node 20 está en retiro; `gitleaks-action@v2` podría estar en el mismo caso. No cambié versiones: si la corrida avisa o falla, subirlas requiere ajustar el plan.
+- **Permisos del token:** el plan no pide un bloque `permissions` y no lo agregué, así que rigen los permisos por defecto del repositorio. Conviene que la revisión de seguridad lo mire. No probé cómo se comporta Gitleaks con esos permisos en un pull request.
+
+## Variables de entorno nuevas
+- Ninguna. `CI` la define GitHub Actions y `GITHUB_TOKEN` lo crea GitHub en cada corrida.
+
+## Desviaciones del plan
+- Ninguna en `ci.yml`.
+- Commit: usé un segundo `-m` para una línea `Co-Authored-By: Claude Sonnet 5.5` **sin correo** (la guarda no admite `<` ni `>`). No sigue del todo la regla de mensaje de una línea, y difiere de los lotes anteriores, que no la llevan (L-008). No reescribí el commit.
+- Este reporte queda **sin commit** (el encargo pedía un solo commit).
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Para verificar versiones de GitHub Actions, Context7 no basta con todas: `gitleaks-action` no está indexado. Conviene decidir en el plan con qué otra fuente se confirma — evita dejar una versión sin verificar.
+
+STATUS: DONE
