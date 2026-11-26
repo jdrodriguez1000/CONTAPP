@@ -469,3 +469,33 @@ Ninguno.
 - Si la app reescribe un campo, hay que decidir en el plan qué pasa con deshacer y rehacer — el historial del navegador queda desfasado.
 
 STATUS: BLOCKED — decidir (Manager o usuario) entre la opción B (el tester ajusta las 4 unitarias de TC-047 y se precisa §5.2; recomendada) y la opción A (autorizar el cambio en `applyInput`, en mi prueba anterior y en §5.2), y aprobar las desviaciones.
+
+## Ronda 1 — cierre
+**Fecha:** 2026-11-26 · **Rama:** feature/VS-001-contar-en-el-celular (sin subir) · Cierre corrido sobre `fbf354e`.
+
+### Bloqueo resuelto (aprobado por el usuario el 2026-11-26, según el encargo del Manager)
+- **Opción B para TC-047:** el tester reescribió las 4 unitarias (`fbf354e`) para llamar `applyInput` como la pantalla. El plan §5.2 ya dice que, si hubo selección, `previousText` va sin esa parte (`8c81659`).
+- **Deshacer y rehacer** sin efecto tras la primera reescritura: aceptado como deuda técnica DT-003. La limitación está en el plan §5.1. No encontré el texto "DT-003" en esta carpeta; su registro le corresponde al Manager.
+- **Letras pegadas detrás de un emoji o una tecla:** se quitan; ya está en el plan §5.2.
+- **Commits sin `Co-Authored-By`:** limitación conocida de la guarda (L-008).
+
+Con esto, las desviaciones de la sección anterior quedan aprobadas.
+
+### Cambios
+- Ninguno en el código de la app ni en mis pruebas. Solo agrego esta sección.
+
+### Cifras finales
+| Comando | Resultado |
+|---|---|
+| `npm run check` | ok (tipos y lint) |
+| `npm run test:unit` | **207/207** (4 archivos) |
+| `npx playwright test` con `round1`, `typing`, `foreign-letters`, `max-length`, `screen` y `skeleton`, `--project=iphone` | **113/113**, incluidas las 43 de `round1` |
+
+- La corrida E2E tardó 3,4 min; la anterior, con los mismos archivos, 44 s. No hubo fallos y no investigué la diferencia.
+- No corrí la suite E2E completa ni las capturas.
+- Las "Notas sin verificar" de arriba siguen igual: falta la prueba en un iPhone real.
+
+### Fallo sin explicar
+Ninguno.
+
+STATUS: DONE
