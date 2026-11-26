@@ -1,4 +1,5 @@
 import "./styles.css";
+import { countCharacters } from "./counting";
 
 const textField = document.querySelector<HTMLTextAreaElement>("#text-field")!;
 
@@ -9,4 +10,15 @@ function fitHeightToText(field: HTMLTextAreaElement) {
   field.style.height = `${field.scrollHeight + borders}px`;
 }
 
-textField.addEventListener("input", () => fitHeightToText(textField));
+// Each card shows its number in the element named after its group.
+function showCounts(text: string) {
+  for (const [group, count] of Object.entries(countCharacters(text))) {
+    document.querySelector(`[data-testid="count-${group}"]`)!.textContent = String(count);
+  }
+}
+
+// "input" fires on every change: typing, pasting and deleting.
+textField.addEventListener("input", () => {
+  fitHeightToText(textField);
+  showCounts(textField.value);
+});
