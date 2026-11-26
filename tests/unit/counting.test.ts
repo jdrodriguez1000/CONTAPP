@@ -1,11 +1,5 @@
 // Acceptance unit tests for countCharacters (plan VS-001 §5.2), step P-4: letters only.
-// Vitest and src/counting.ts arrive in P-4. Until then `npm run check` must stay green
-// during P-3, so only the two import lines are excluded from type errors.
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore -- installed in P-4
 import { describe, expect, test } from "vitest";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore -- created in P-4
 import { countCharacters } from "../../src/counting";
 
 type Case = { name: string; text: string; vowel: number; consonant: number };

@@ -113,3 +113,68 @@ Ninguno.
 - Si el tester debe dejar `npm run check` en verde o comprobarlo, hay que agregar ese comando a su guarda; hoy no puede verificar el typecheck ni el lint de sus propias pruebas.
 
 STATUS: DONE
+
+# Lote 3 — trabajo A — VS-001
+**Fecha:** 2026-11-26
+
+## Resumen
+Escribí `tests/e2e/typing.spec.ts` (7 E2E para P-6), agregué los estados 2 y 3 a las capturas y quité los dos `@ts-ignore`. Rojo esperado: **4 fallan** (TC-002 y TC-003, porque los conteos siguen en 0) y **3 controles pasan** (TC-024, TC-025, TC-027). Unitarias en verde (45 de 45). **`npm run check` no se corrió:** mi guarda lo bloqueó (L-012). No hice commits.
+
+## Archivos
+- Nuevo: `tests/e2e/typing.spec.ts`
+- Modificado: `tests/e2e/captures.spec.ts` (estados 2 y 3, en claro y oscuro, a 390 × 844; actualicé el comentario del estado 4)
+- Modificado: `tests/unit/counting.test.ts` (sin los 2 `@ts-ignore`, sus `eslint-disable` ni el comentario que los explicaba; los casos no cambian)
+- No escribí las unitarias de P-5 (son del coder). No hay archivo `*-later`.
+
+## Cobertura
+| Caso | Prueba (archivo) | Tipo | Restricción | Resultado (y razón del rojo en el trabajo A) |
+|---|---|---|---|---|
+| TC-002 | `escribir "casa" letra por letra…` (`typing.spec.ts`) | E2E | C-001 | **Rojo:** tras "c" esperaba `0/1/0/0` y recibió `0/0/0/0` |
+| TC-002 (CA-2, pegar) | `pegar una frase, o reemplazarla…` (`typing.spec.ts`) | E2E, borde | C-006, C-007, C-008 | **Rojo:** esperaba `2/2/4/4` y recibió `0/0/0/0` |
+| TC-003 | `borrar una letra de "casa"…` (`typing.spec.ts`) | E2E | C-012 | **Rojo:** con "casa" esperaba `2/2/0/0` y recibió `0/0/0/0` |
+| TC-003 (borde) | `al borrar hasta dejar solo espacios y saltos de línea…` (`typing.spec.ts`) | E2E, borde | C-012, C-008 | **Rojo:** con `"  \na"` esperaba `1/0/0/0` y recibió `0/0/0/0` |
+| TC-024 | `escribir "casa" y recargar…` (`typing.spec.ts`) | E2E | C-010 | **Control, pasa** |
+| TC-025 | `no sale ninguna petición…` (`typing.spec.ts`) | Integración | C-010 | **Control, pasa** |
+| TC-027 | `escribir "cas" y esperar…` (`typing.spec.ts`) | E2E | C-009 | **Control, pasa** (única espera fija: 2 s) |
+| Capturas, estado 2 | `estado-2-escribiendo-390x844-{claro,oscuro}.png`: "pingüino" con foco, exige 4/4/0/0 | Capturas | — | **Rojo (2):** Vocales esperaba "4" y recibió "0" |
+| Capturas, estado 3 | `estado-3-con-texto-390x844-{claro,oscuro}.png`: "¡Hola, 2026! 😀" sin foco, exige 2/2/4/4 | Capturas | — | **Rojo (2):** Vocales esperaba "2" y recibió "0" |
+
+**Cómo se comprueba "al instante" (§5.1).** Los conteos se leen una sola vez, sin reintentos. Además, la primera prueba de TC-002 guarda los 4 números al terminar cada evento de cambio y exige `0/1/0/0 → 1/1/0/0 → 1/2/0/0 → 2/2/0/0`. Una actualización con demora fallaría. La prueba usa el evento `input` del campo, que se propaga hasta la ventana.
+
+**Controles: por qué pasan y qué no prueban.**
+- **TC-024:** hoy no hay nada que guardar y los conteos nunca salen de 0. Comprueba que tras recargar, y en otra pestaña, el campo queda vacío y en 0. También que, con "casa" escrita, `localStorage`, `sessionStorage`, las cookies, IndexedDB y las cachés están vacíos. **No prueba** que los conteos *vuelvan* a 0: como pide el plan, no exige conteos antes de recargar (que suben lo prueba TC-002). Tampoco prueba cerrar y reabrir Safari en el iPhone.
+- **TC-025:** la app aún no envía nada. El espía no está sordo: la prueba exige que haya visto las peticiones de la carga. Exige **cero peticiones** al escribir y quitar el foco (§5.1), la misma dirección de página, ningún WebSocket y que ninguna petición, incluida la recarga, lleve "casa" en la URL, el cuerpo o las cabeceras. **No prueba** un envío codificado, uno parcial ("cas") durante la recarga, ni uno programado para mucho después.
+- **TC-027:** la app aún no toca el texto. Comprueba que tras 2 s sigue "cas", sin palabra propuesta, aviso ni lista de sugerencias en la página. **No prueba** el corrector real del teclado del iPhone: eso es la lista manual de P-10.
+
+Los tres deben seguir en verde después de P-6.
+
+## Resultados de la ejecución
+- Pruebas del coder: 20 en verde / 0 en rojo (por diferencia: 45 unitarias menos mis 25)
+- Pruebas del tester:
+  - `npx playwright test tests/e2e/typing.spec.ts --project=iphone`: **3 en verde / 4 en rojo**
+  - `npm run test:unit`: **45 de 45 en verde** (2 archivos), ya sin los `@ts-ignore`
+  - `npx playwright test --project=captures --reporter=line`: **6 en verde / 4 en rojo**. Pasan los estados 1 y el crecimiento del campo. Fallan solo los estados 2 y 3, por los conteos en 0. La corrí sin `--output`, así que no creé nada en `evidence/`
+- **`npm run check`: sin verificar.** Se intentó una vez y la guarda respondió `comando no permitido para este agente`. Una búsqueda en `tests/` de `ts-ignore`, `eslint-disable` y marcas sueltas (`\p{Mn}`) no encontró nada; eso no reemplaza la revisión de tipos y lint.
+- No corrí `screen.spec.ts` (no lo cambié).
+- Regresión: la CI (llega en el lote 5)
+- Evidencia: ninguna en este trabajo. Las imágenes de `evidence/capturas/lote-3/` se generan después del coder con `npx playwright test --project=captures --output=_project/slices/VS-001/evidence/capturas/lote-3`
+
+## Fallos
+Ningún defecto. Hubo un **error de mi prueba**, ya corregido. En la primera corrida TC-027 falló (5 rojas y 2 verdes) porque su texto esperado ponía el número antes del nombre. La página entrega primero el nombre, como pide §5.1 (`dt` antes de `dd`). Corregí el texto esperado y repetí el archivo completo: 4 rojas y 3 verdes.
+
+## Notas para el Manager y el coder
+- **Pendiente del Manager (L-012):** correr `npm run check` antes del commit en rojo.
+- Agregué una prueba de pegar bajo TC-002 y otra de "solo espacios" bajo TC-003, por CA-2 ("escribe o pega") y CA-3. Las dos quedan en verde solo con P-5 y P-6 completos.
+- Las capturas del estado 4 siguen mostrando solo el crecimiento y no exigen conteos. El estado 4 completo es del lote 4.
+- El estado 2 de la maqueta dibuja el teclado abierto. La captura simulada solo muestra el foco, sin teclado.
+
+## Preguntas para el usuario o el Manager
+Ninguna.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+Ninguna nueva.
+
+STATUS: DONE
