@@ -118,3 +118,33 @@ Escribí el sistema de diseño a partir de C2 "Pizarra con fichas" (D-010), con 
 - **Para el coder, cuando se decida el stack:** los tokens se definen una sola vez y el modo se elige con la preferencia del sistema (en CSS, `prefers-color-scheme`). La maqueta los fuerza con clases solo para mostrarlos lado a lado.
 
 STATUS: DONE
+
+# Trabajo A — Ajustes del lote 2 — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Sistema de diseño (ajuste) · **Origen:** revisión visual del lote 2 (hallazgos 1 y 2), aprobada por el usuario el 2026-11-26
+
+## Resumen
+Hice los tres cambios que aprobó el usuario. Son solo de documentación; el código de la app no se tocó. `design-system.md` ya no tiene ningún `COMPLETAR AL DECIDIR`, y la maqueta de F-001 ya no tiene medidas escritas a mano en el campo.
+
+## Archivos creados o modificados
+- `_project/design-system.md`:
+  - **Línea 6:** la nota "El stack todavía no está decidido…" se cambió por: "Stack decidido en D-011: sin librería de componentes; cada componente es HTML más una clase CSS en `src/styles.css`, y los tokens se definen una sola vez en `:root` de ese archivo (el modo oscuro, con `@media (prefers-color-scheme: dark)`)."
+  - **§4, fila `--space-1`:** el uso pasó de "Mínimo; separación número–nombre (2 px dentro de la ficha)" a "Mínimo (reservado; la separación número–nombre es una medida fija de 2 px, ver abajo)". Así se corrige la contradicción, porque el token vale 4 px.
+  - **§4, nueva lista "Medidas fijas aprobadas"** (opción A): 104 px de alto mínimo de la ficha; anillo de foco de 3 px separado 2 px; 2 px entre el número y el nombre; 480 px de ancho máximo; altos de línea 1,1 / 1,2 / 1,3. Va con la regla: solo estas medidas pueden ir sin token, cada una **se vuelve token cuando se usa en un segundo lugar**, y cualquier otra medida nueva se pide como token.
+  - **§5:** la columna "Base en la librería" pasa a llamarse "Base en el código (D-011: HTML + clase en `src/styles.css`)". Llené las 4 filas con lo que propuse en la revisión del lote 2 (`.app-title`; `.field-label` + `.field` con `fitHeightToText`; `<dl class="counts">`; `.count` con `dt`/`dd`). Antes de escribirlas, confirmé los nombres de las clases en el `index.html` de la rama de VS-001. Las columnas "Variantes" y "Cuándo se usa" no cambian, salvo que la variante activa del campo ahora dice `:focus-visible`.
+  - **§10 Historial:** agregué una fila con fecha 2026-11-26 que lista estos cambios. El motivo que anoté es D-011 más los hallazgos 1 y 2 del lote 2 (opción A).
+- `_project/design/F-001/mockup.html` — **hallazgo 1:** en `.field`, `padding:var(--space-3) 14px` pasó a `padding:var(--space-3)`. Ya no queda ningún `14px` como relleno. El único `14px` que queda es el valor del token `--radius-input`, y ese es correcto.
+- `_project/slices/VS-001/reports/designer.md` — esta sección, agregada al final.
+
+## Cómo revisar
+- `design-system.md` §4: la tabla nueva "Medidas fijas aprobadas" y su regla, debajo de "Ancho máximo del contenido".
+- `design-system.md` §5: la columna "Base en el código".
+- `mockup.html`: el campo debe verse con 12 px de relleno en los cuatro lados, igual que en la app construida. A simple vista no cambia casi nada (son 2 px por lado).
+- No toqué `.claude/skills/design-system/SKILL.md` ni ningún archivo de `src/`.
+
+## Preguntas para el usuario
+- Ninguna.
+
+## Decisiones o lecciones propuestas
+- Siguen vigentes las dos lecciones que propuse en la revisión del lote 2: en las maquetas no van números sueltos, y la letra se verifica en el iPhone real. Las registra el Manager.
+
+STATUS: DONE
