@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-26
-**Último ID usado:** L-014
+**Último ID usado:** L-017
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -28,6 +28,7 @@
 - L-009 — Letras en dos piezas en pruebas: armarlas con `String.fromCharCode(0x0301)` y revisar con `\p{Mn}`
 - L-010 — Las capturas simuladas (Windows) no usan SF Pro: lo que cabe se confirma en el iPhone real
 - L-011 — La guarda de Bash del coder bloquea `;` en los mensajes de commit → VEGU
+- L-015 — El espacio con el teclado abierto en el iPhone se mide restando también las barras de Safari (dirección y "⌃ ⌄ Listo"), no solo el teclado
 
 ### Datos y supuestos
 
@@ -37,6 +38,8 @@
 - L-008 — La guarda de Bash de los agentes bloquea `<` y `>`: sus commits salen sin `Co-Authored-By` → VEGU
 - L-012 — El tester no puede correr `npm run check`: el Manager lo corre antes del commit en rojo → VEGU
 - L-014 — Leer la fila de un supuesto en `assumptions.md` antes de citarlo al usuario → VEGU
+- L-016 — Durante una slice, los reportes y documentos de la slice se editan solo en su rama: editarlos también en `main` choca al traer `main` → VEGU
+- L-017 — Al cerrar cada lote, juntar en una sola lista lo que solo el dispositivo real puede confirmar y pedírselo al usuario en una pasada → VEGU
 
 ## Registro completo
 
@@ -179,3 +182,33 @@
 - **Cómo aplicarla:** cada vez que un `A-XXX` aparezca en un mensaje al usuario. → VEGU
 - **Estado:** Vigente
 - **Relacionada con:** A-001
+
+### L-015 — 2026-11-26 — El teclado del iPhone no es lo único que tapa la pantalla
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** F-001 §5.5 calculó que con el teclado abierto (≈ 340 px) y el campo en 2 líneas se veían las 4 fichas. En el iPhone real con Safari, la barra de la dirección y la barra "⌃ ⌄ Listo" se comieron el margen y la segunda fila quedó cortada.
+- **Lección:** el espacio visible con el teclado abierto se calcula restando el teclado **y** las barras de Safari; el número final se confirma con una foto del iPhone real.
+- **Por qué importa:** un cálculo optimista promete en el diseño algo que el niño no ve.
+- **Cómo aplicarla:** el designer de VS-002 parte de la foto de evidencia del lote 3 y deja margen para las barras de Safari.
+- **Estado:** Vigente
+- **Relacionada con:** L-010, D-015, F-001 §5.5
+
+### L-016 — 2026-11-26 — Reportes de la slice solo en su rama
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el designer agregó una sección al reporte `designer.md` en `main` y otra en la rama; al traer `main` a la rama, git marcó un conflicto. Se resolvió a mano conservando las dos en orden. En el ajuste del teclado se lanzó al designer en la carpeta de la rama y no hubo conflicto.
+- **Lección:** mientras la slice está abierta, sus reportes y documentos (`_project/slices/VS-XXX/**`, sus features) se editan solo en la carpeta de la rama; llegan a `main` con la fusión. Excepción: `tech-debt.md`, que solo se edita en `main`.
+- **Por qué importa:** evita conflictos en archivos de solo agregar y que una sección quede en una sola rama.
+- **Cómo aplicarla:** al lanzar al designer (u otro agente) sobre documentos de la slice en curso, usar `--cwd` en la carpeta de la slice. → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** orchestrator-playbook §8
+
+### L-017 — 2026-11-26 — Una sola lista para lo que solo el iPhone confirma
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el designer dejó en lotes distintos cosas que solo el iPhone real puede mostrar (letra, foco, teclado). En el lote 3 el usuario respondió dos de ellas con una sola foto.
+- **Lección:** al cerrar cada lote, el Manager junta en una lista corta lo que solo el dispositivo real confirma y se lo pide al usuario en una pasada, con qué escribir y qué mirar.
+- **Por qué importa:** ningún pendiente de L-010 se pierde entre lotes y el usuario prueba una sola vez.
+- **Cómo aplicarla:** en el mensaje de "ya puede probar la preview", incluir la lista y pedir una foto. → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** L-010, propuesta del designer (trabajo C, lote 3)

@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-26
-**Último ID usado:** D-014
+**Último ID usado:** D-015
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -24,6 +24,7 @@
 - D-010 — Estilo visual: propuesta C2 "Pizarra con fichas" (claro y oscuro, sigue el modo del celular); nombre "Contapp"; mayúscula automática apagada
 - D-013 — Previews de Vercel sin protección (abren sin iniciar sesión); producción en `contapp-tawny.vercel.app`
 - D-014 — Medidas fijas aprobadas sin token en `design-system.md` §4; cada una se vuelve token al usarse en un segundo lugar
+- D-015 — En VS-001 no se cambia la pantalla porque el teclado tape la 2.ª fila de fichas (medido en el iPhone); se resuelve en VS-002 y F-001 §5.5 lleva la medida real
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -124,3 +125,10 @@
 - **Alternativas descartadas:** opción B (8 tokens nuevos ya).
 - **Estado:** Vigente
 - **Relacionada con:** D-010, D-011, `_project/design-system.md`, reporte del designer (trabajo C, lote 2)
+
+### D-015 — 2026-11-26 — El teclado tapa la segunda fila de fichas: se resuelve en VS-002
+- **Decisión:** en VS-001 no se cambia la pantalla. Con el teclado abierto en el iPhone con Safari, aun con el campo en 2 líneas, la segunda fila de fichas queda cortada (se ven los números, no los nombres "Números" y "Otros"); "Listo" cierra el teclado y muestra las 4. Se resuelve en VS-002, en el borde que espera "Teclado abierto tapando los conteos". F-001 §5.5 se corrigió con la medida real y la foto `_project/slices/VS-001/evidence/lote3-iphone-estado2-teclado.jpg`.
+- **Razón:** el borde ya estaba asignado a VS-002, donde se rediseña la pantalla para niños; arreglarlo ahora agranda la walking skeleton.
+- **Alternativas descartadas:** un paso pequeño de diseño y CSS dentro de VS-001.
+- **Estado:** Vigente
+- **Relacionada con:** F-001 §5.5, VS-002, L-010, L-015, hallazgo 1 del designer (trabajo C, lote 3)
