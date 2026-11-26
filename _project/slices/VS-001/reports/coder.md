@@ -499,3 +499,92 @@ Con esto, las desviaciones de la sección anterior quedan aprobadas.
 Ninguno.
 
 STATUS: DONE
+
+# Mini-lote herramientas de calidad — VS-001
+**Fecha:** 2026-11-26 · **Rama:** feature/VS-001-contar-en-el-celular (sin subir) · Base: `6a598df` · Nivel de riesgo: alto (dependencias)
+
+**El mini-lote no está terminado:** falta `stryker.config.json` (punto 2). La guarda de escritura no me deja crearlo.
+
+## Commits
+| Punto | Commit | Estado |
+|---|---|---|
+| 1. Dependencias | `350ae4e` | Hecho |
+| 2. `stryker.config.json` | — | **Bloqueado** |
+| 3. `.gitignore` | `9ae54c1` | Hecho, con un ajuste (ver "Desviaciones") |
+| 4. Configuración de knip | — | No corrí knip: no sé si le falta algo. No creé configuración |
+
+Es mantenimiento sin código de la app: no hubo ciclo TDD ni pruebas nuevas.
+
+## Explicación para el usuario
+Instalé tres herramientas que solo se usan para revisar el código y no hacen parte de la app. **jscpd** busca código repetido y **knip** busca código o paquetes sin uso. **Stryker** (dos paquetes) hace cambios pequeños a propósito en el código y mira si alguna prueba falla; si ninguna falla, ahí falta una prueba. "Versión exacta" significa que `package.json` pide ese número y no uno más nuevo. En `.gitignore` anoté las carpetas que Stryker puede crear, para que no se guarden en git.
+
+## Versiones instaladas (comprobadas en `package-lock.json`)
+| Paquete | Versión |
+|---|---|
+| `jscpd` | 5.4.3 |
+| `knip` | 6.45.1 |
+| `@stryker-mutator/core` | 10.1.1 |
+| `@stryker-mutator/vitest-runner` | 10.1.1 |
+
+- En `package.json` solo cambió `devDependencies` (4 líneas agregadas, sin `^`).
+- `npm install`: 188 paquetes agregados, 315 revisados.
+- Lockfile con `git diff --patience`: 3514 líneas agregadas y 2 borradas. Las 2 son de `tslib`, que deja de ser opcional. El diff normal muestra 981 borradas, pero es por la alineación. No vi cambios de versión en paquetes que ya estaban.
+
+## Bloqueo: `stryker.config.json`
+`guard-write-zone` rechazó la escritura: `stryker.config.json` no está en la zona del coder. No intenté crearlo por otro camino. La carpeta no tiene ese archivo.
+
+Contenido que intenté escribir (**no está en disco ni probado**):
+
+```json
+{
+  "testRunner": "vitest",
+  "vitest": {
+    "configFile": "vitest.config.ts"
+  },
+  "mutate": ["src/counting.ts", "src/inputFilter.ts"],
+  "reporters": ["clear-text", "progress"],
+  "tempDirName": ".stryker-tmp",
+  "thresholds": {
+    "high": 80,
+    "low": 60,
+    "break": null
+  }
+}
+```
+
+- Revisado con ctx7 (`/stryker-mutator/stryker-js/v10.1.1`): `vitest.configFile`, `tempDirName` y `thresholds`. La documentación pide dar los tres valores de `thresholds` juntos; `high` 80 y `low` 60 son los de por defecto.
+- **Salidas:** (a) el Manager crea el archivo con ese contenido, o (b) se agrega `stryker.config.json` a la zona de escritura del coder y me lo vuelven a encargar.
+- **No correr `npx stryker run` antes de que el archivo exista:** usaría los valores por defecto, no los acordados (alcance de la mutación y reportes).
+
+## Estado de las pruebas (sobre `9ae54c1`)
+| Comando | Resultado |
+|---|---|
+| `npm run check` | ok (tipos y lint) |
+| `npm run test:unit` | **207/207** (4 archivos) |
+
+- No corrí E2E ni capturas: el paquete no las pide.
+- No corrí jscpd, knip ni Stryker: los corre el Manager. Que funcionen **no está verificado**.
+- No corrí `npm ci` ni la CI (la rama no se subió). La instalación limpia en Linux **no está verificada**.
+
+## Variables de entorno nuevas
+- Ninguna.
+
+## Desviaciones del plan (necesitan aprobación)
+- **`/reports/` en vez de `reports/`:** sin la barra inicial, git ignora toda carpeta llamada `reports`, también `_project/slices/VS-XXX/reports/`. Los reportes nuevos de los agentes quedarían fuera de git sin aviso. Con la barra solo se ignora la de la raíz.
+- **Commits sin `Co-Authored-By`:** la guarda no admite `<` ni `>` (L-008).
+
+## Notas
+- `npm install` avisó **12 vulnerabilidades de severidad moderada**. No sé cuáles son, si llegan con estos paquetes ni si ya estaban: `npm audit` no está en mis comandos. No corrí `npm audit fix`. Conviene que lo revise el security.
+- Paquetes nuevos como `@babel/core` 8 piden Node `^22.18.0` o `>=24.11.0`. `engines` dice `24.x`, que también admite versiones 24 anteriores.
+- Durante el lote aparecieron cambios sin commit en `.claude/agents/reviewer.md` y `.claude/skills/review-checklist/SKILL.md` (el árbol estaba limpio al empezar). No son míos: parecen la habilitación de estas herramientas para el reviewer. No los incluí en ningún commit.
+- No encontré D-020 en `_persistence/decisions.md` de esta carpeta. Cité D-020 en los commits según el paquete.
+- La guarda bloqueó mi primer comando (`cd` con la ruta completa). No hizo falta: ya estaba en la carpeta.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Antes de encargar un archivo nuevo a un agente, comprobar que está en su zona de escritura — este lote quedó a medias por `stryker.config.json`. → VEGU
+- En `.gitignore`, una carpeta de la raíz se escribe con barra inicial (`/reports/`) — sin ella también se ignoran carpetas del mismo nombre más adentro.
+
+STATUS: BLOCKED — que el Manager cree `stryker.config.json` (o amplíe la zona de escritura del coder) y que se apruebe `/reports/` en `.gitignore`.
