@@ -8,16 +8,12 @@ skills:
   - project-context
   - tdd-cycle
   - design-system
-# COMPLETAR AL DECIDIR: en los hooks, cambiar <codigo> por la carpeta del código (p. ej. "src" o "app"),
-# <pruebas-aceptacion> por la carpeta de las pruebas del tester y <comandos-del-stack> por los prefijos de los
-# comandos de instalación, pruebas, lint, tipos y migraciones (uno por argumento, p. ej. "npm test" "npx vitest").
-# Mientras sigan los marcadores, el coder no puede escribir en el código ni correr comandos del stack.
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|NotebookEdit"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-write-zone.mjs" "<codigo>" "_project/slices/*/reports/coder.md" "!<pruebas-aceptacion>" "!<codigo>/.env" "!<codigo>/.env.local" "!<codigo>/.env.production"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-write-zone.mjs" "src" "index.html" "package.json" "package-lock.json" "tsconfig.json" "vitest.config.ts" "playwright.config.ts" "eslint.config.js" ".gitignore" ".gitattributes" ".github/workflows" "_project/slices/*/reports/coder.md" "!tests" "!.env" "!.env.local" "!.env.production"
     - matcher: "Read|Grep"
       hooks:
         - type: command
@@ -25,7 +21,7 @@ hooks:
     - matcher: "Bash|PowerShell"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "<comandos-del-stack>" "cd <codigo>" "npx ctx7@latest" "npx -y ctx7@latest" "date" "git status" "git diff" "git log" "git add" "git commit" "git switch" "git branch --show-current"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "npm install" "npm ci" "npm run" "npx vitest" "npx playwright" "npx tsc" "npx eslint" "cd src" "npx ctx7@latest" "npx -y ctx7@latest" "date" "git status" "git diff" "git log" "git add" "git commit" "git switch" "git branch --show-current"
 ---
 
 # Coder — construye EXACTAMENTE lo planeado, con TDD

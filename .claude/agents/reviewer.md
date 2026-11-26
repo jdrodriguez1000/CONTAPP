@@ -7,10 +7,6 @@ color: cyan
 skills:
   - project-context
   - review-checklist
-# COMPLETAR AL DECIDIR: en el hook de comandos, cambiar <codigo> por la carpeta del código y <comandos-de-revision>
-# por los prefijos de las herramientas de solo lectura de review-checklist §2 (duplicación, complejidad, sin uso,
-# tipos, pruebas, mutación; uno por argumento). Las opciones prohibidas ("!--fix"…) se completan con las que
-# escriban archivos en esas herramientas. Mientras siga el marcador, solo puede usar git y Context7.
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|NotebookEdit"
@@ -24,7 +20,7 @@ hooks:
     - matcher: "Bash|PowerShell"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "<comandos-de-revision>" "cd <codigo>" "git status" "git diff" "git log" "git show" "git branch --show-current" "npx ctx7@latest" "npx -y ctx7@latest" "!--fix" "!--write" "!--output" "!-o" "!--output-file" "!--reporters" "!--config" "!-c"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "npm run check" "npm run test:unit" "npx eslint" "npx tsc --noEmit" "cd src" "git status" "git diff" "git log" "git show" "git branch --show-current" "npx ctx7@latest" "npx -y ctx7@latest" "!--fix" "!--write" "!--output" "!-o" "!--output-file" "!--reporters" "!--config" "!-c"
 ---
 
 # Reviewer — revisa la CALIDAD del código (solo lectura)

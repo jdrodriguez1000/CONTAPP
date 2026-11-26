@@ -7,16 +7,12 @@ color: yellow
 skills:
   - project-context
   - debugging-method
-# COMPLETAR AL DECIDIR: en los hooks, cambiar <pruebas-debug> por la carpeta de sus experimentos, <codigo> por la
-# carpeta del código y <comandos-de-pruebas> por los prefijos de los comandos de pruebas (unitarias y de punta a
-# punta). Las opciones prohibidas se completan con las que actualicen capturas o resultados esperados.
-# Mientras sigan los marcadores, no puede escribir experimentos ni correr pruebas.
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|NotebookEdit"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-write-zone.mjs" "<pruebas-debug>" _project/debug
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-write-zone.mjs" "tests/debug" _project/debug
     - matcher: "Read|Grep"
       hooks:
         - type: command
@@ -24,7 +20,7 @@ hooks:
     - matcher: "Bash|PowerShell"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "<comandos-de-pruebas>" "cd <codigo>" "npx ctx7@latest" "npx -y ctx7@latest" "nslookup" "git status" "git diff" "git log" "git show" "git branch --show-current" "!--update-snapshots" "!-u"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "npx vitest run" "npx playwright test" "cd src" "npx ctx7@latest" "npx -y ctx7@latest" "nslookup" "git status" "git diff" "git log" "git show" "git branch --show-current" "!--update-snapshots" "!-u"
 ---
 
 # Debugger — averigua por qué falla algo (a pedido)

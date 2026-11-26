@@ -6,25 +6,20 @@ model: sonnet
 color: red
 skills:
   - project-context
-# COMPLETAR AL DECIDIR: en los hooks, cambiar <codigo> por la carpeta del código, <pruebas-breakers> por la
-# carpeta de sus reproducciones, <pruebas-aceptacion> por la del tester, <config-pruebas> por los archivos que sí
-# puede leer (manifiesto, configuración de las herramientas de prueba, carpetas de resultados, variables de
-# ejemplo; un "+ruta" por cada uno) y <comandos-e2e> por los prefijos de los comandos de pruebas de punta a punta.
-# Mientras siga <codigo>, la guarda de lectura NO oculta el código: el breaker-user se detiene (sección 1).
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|NotebookEdit"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-write-zone.mjs" "<pruebas-breakers>" "_project/slices/*/evidence/breaker-user" "_project/slices/*/reports/breaker-user.md"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-write-zone.mjs" "tests/e2e/BRK-*" "_project/slices/*/evidence/breaker-user" "_project/slices/*/reports/breaker-user.md"
     - matcher: "Read|Grep"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-read-zone.mjs" "<codigo>" "+<pruebas-breakers>" "+<pruebas-aceptacion>" "+<config-pruebas>"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-read-zone.mjs" "src" "index.html" "+tests" "+package.json" "+playwright.config.ts" "+vitest.config.ts" "+test-results" "+playwright-report"
     - matcher: "Bash|PowerShell"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "<comandos-e2e>" "cd <codigo>" "npx ctx7@latest" "npx -y ctx7@latest" "git status" "git log --oneline" "git branch --show-current"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "npx playwright test" "cd src" "npx ctx7@latest" "npx -y ctx7@latest" "git status" "git log --oneline" "git branch --show-current"
 ---
 
 # Breaker-user — intenta ROMPER la app como un usuario real (caja negra)

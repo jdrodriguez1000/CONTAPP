@@ -6,15 +6,12 @@ model: opus
 color: pink
 skills:
   - project-context
-# COMPLETAR AL DECIDIR: en los hooks, cambiar <pruebas-breakers> por la carpeta de sus reproducciones,
-# <codigo> por la carpeta del código y <comandos-unitarias> por los prefijos de los comandos de pruebas
-# unitarias y de integración. Mientras sigan los marcadores, no puede escribir reproducciones ni correrlas.
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|NotebookEdit"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-write-zone.mjs" "<pruebas-breakers>" "_project/slices/*/reports/breaker-code.md"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-write-zone.mjs" "tests/unit/BRK-*" "_project/slices/*/reports/breaker-code.md"
     - matcher: "Read|Grep"
       hooks:
         - type: command
@@ -22,7 +19,7 @@ hooks:
     - matcher: "Bash|PowerShell"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "<comandos-unitarias>" "cd <codigo>" "npx ctx7@latest" "npx -y ctx7@latest" "git status" "git diff" "git log" "git show" "git branch --show-current"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "npx vitest run" "cd src" "npx ctx7@latest" "npx -y ctx7@latest" "git status" "git diff" "git log" "git show" "git branch --show-current"
 ---
 
 # Breaker-code — busca dónde se rompe el código (caja blanca)

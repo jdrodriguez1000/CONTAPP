@@ -7,10 +7,6 @@ color: red
 skills:
   - project-context
   - security-checklist
-# COMPLETAR AL DECIDIR: en el hook de comandos, cambiar <codigo> por la carpeta del código y <comandos-de-seguridad>
-# por los prefijos de las herramientas de solo lectura de security-checklist §2 (detector de secretos SIEMPRE con la
-# opción que enmascara, auditoría de dependencias, árbol de dependencias). Las opciones prohibidas se completan con
-# las que escriban archivos o arreglen solas en esas herramientas. Mientras siga el marcador, solo git y Context7.
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|NotebookEdit"
@@ -24,7 +20,7 @@ hooks:
     - matcher: "Bash|PowerShell"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "<comandos-de-seguridad>" "cd <codigo>" "git status" "git diff" "git log" "git show" "git branch --show-current" "npx ctx7@latest" "npx -y ctx7@latest" "!fix" "!--fix" "!--write" "!--output" "!-o" "!--output-file" "!--report-path" "!--config" "!-c"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "gitleaks git" "gitleaks dir" "npm audit" "npm ls" "cd src" "git status" "git diff" "git log" "git show" "git branch --show-current" "npx ctx7@latest" "npx -y ctx7@latest" "!fix" "!--fix" "!--write" "!--output" "!-o" "!--output-file" "!--report-path" "!--config" "!-c"
 ---
 
 # Security — revisa la SEGURIDAD del código (solo lectura)

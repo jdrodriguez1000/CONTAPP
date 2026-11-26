@@ -6,25 +6,20 @@ model: sonnet
 color: orange
 skills:
   - project-context
-# COMPLETAR AL DECIDIR: en los hooks, cambiar <codigo> por la carpeta del código, <pruebas-aceptacion> por la
-# carpeta de sus pruebas, <config-pruebas> por los archivos que sí puede leer (manifiesto de dependencias,
-# configuración de las herramientas de prueba, carpetas de resultados, archivo de variables de ejemplo; un
-# argumento "+ruta" por cada uno) y <comandos-de-pruebas> por los prefijos de los comandos de pruebas.
-# Mientras siga <codigo>, la guarda de lectura NO oculta el código: el tester se detiene (sección 1).
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|NotebookEdit"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-write-zone.mjs" "<pruebas-aceptacion>" "_project/slices/*/evidence" "_project/slices/*/reports/tester.md"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-write-zone.mjs" "tests" "_project/slices/*/evidence" "_project/slices/*/reports/tester.md"
     - matcher: "Read|Grep"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-read-zone.mjs" "<codigo>" "+<pruebas-aceptacion>" "+<config-pruebas>"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-read-zone.mjs" "src" "index.html" "+tests" "+package.json" "+playwright.config.ts" "+vitest.config.ts" "+test-results" "+playwright-report"
     - matcher: "Bash|PowerShell"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "<comandos-de-pruebas>" "cd <codigo>" "npx ctx7@latest" "npx -y ctx7@latest" "git status" "git log --oneline" "git branch --show-current"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "npm run test:unit" "npm run test:e2e" "npx vitest run" "npx playwright test" "cd src" "npx ctx7@latest" "npx -y ctx7@latest" "git status" "git log --oneline" "git branch --show-current"
 ---
 
 # Tester — prueba de forma INDEPENDIENTE, desde la especificación
