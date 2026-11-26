@@ -21,11 +21,10 @@
 
 ## Próximos pasos (desde tasks.md)
 1. **T-003 — VS-002:** lanzar al architect con la fila de VS-002 de `roadmap.md` (F-002, F-003), las preguntas abiertas del usuario y la deuda propuesta para esta slice (DT-004, DT-008, DT-009).
-2. **T-004 — VEGU:** en una sesión en la carpeta de VEGU, llevar D-019/L-027 y las lecciones `→ VEGU`, con la opinión del usuario como evidencia.
+2. **T-005 — guarda del tester:** agregar `npm run check` (promueve L-012), antes del primer tester de VS-002.
+3. **T-004 — VEGU:** en una sesión en la carpeta de VEGU, llevar D-019/L-027 y las lecciones `→ VEGU` (el usuario confirmó que el piloto le sirvió).
 
 ## Bloqueos / pendientes del usuario
 - Ninguno que bloquee.
-- **Opinión sobre el piloto de ubicación** (¿el mapa y `status.html` le sirvieron?): es la evidencia de T-004.
-- **L-012 se repitió** (el tester no pudo correr `npm run check` dos veces más): propuesta del Manager, agregarlo a la guarda del tester (regla en el origen).
 - Para decidir cuando convenga: (a) regla automática contra caracteres invisibles en `src/` y `tests/` (L-018); (b) si el ícono de inicio (VS-006) se adelanta; (c) slices donde se atienden DT-001 a DT-011; (d) dónde se comprueban a mano la composición del teclado y arrastrar y soltar (bordes que esperan).
-- La carpeta vacía `../CONTAPP-VS-001` no se pudo borrar (Windows la tiene en uso); borrarla después de reiniciar.
+- La carpeta vacía `../CONTAPP-VS-001` la borra el usuario más adelante (Windows la tenía en uso).
