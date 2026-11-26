@@ -260,3 +260,36 @@ Revisé las 4 capturas nuevas del lote 3 (estado 2 "pingüino" con foco y estado
 - **Propuesta para la verificación en la preview (VS-001):** juntar en una sola lista las fotos que solo el iPhone puede dar: estado 2 con el teclado abierto y el anillo de foco (hallazgos 1 y 2 de este lote), y estado 4 con la frase de 100 caracteres (hallazgo 4 del lote 2). Por qué: así el Manager las toma en una sola pasada y ningún pendiente de L-010 se pierde entre lotes.
 
 STATUS: DONE
+
+# Trabajo B — Ajuste teclado — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Diseño de feature (ajuste del documento) · **Commit base:** `907ee77`
+
+## Resumen
+Miré la foto del iPhone real (`_project/slices/VS-001/evidence/lote3-iphone-estado2-teclado.jpg`). Confirma lo que me pasaron: con "pingüino" y el teclado abierto en Safari, la fila Vocales / Consonantes se ve completa. De la fila Números / Otros se ven los "0", pero los nombres quedan cortados por la barra de la dirección de Safari, que va encima de la barra "⌃ ⌄ Listo" y del teclado. Mi cálculo de §5.5 (≈ 433 de ≈ 457 px) no contó esas dos barras de Safari. Como decidió el usuario, **solo corregí el documento**: la pantalla no cambia en VS-001 y el problema queda en el borde de VS-002. Esto cierra el hallazgo 1 del lote 3. El hallazgo 2 queda confirmado en modo claro: el anillo de foco se ve al tocar el campo con el dedo (en la foto se ve el doble borde verde). Falta probarlo en modo oscuro.
+
+## Archivos creados o modificados
+- `_project/features/F-001.md` — solo la viñeta de §5.5 sobre el teclado abierto (línea 128).
+- `_project/slices/VS-001/reports/designer.md` — esta sección, agregada al final.
+
+## Líneas cambiadas
+**F-001 §5.5, línea 128 — antes:**
+> - **Con el teclado abierto** (≈ 340 px) y el campo en 2 líneas, las 4 fichas se ven completas (≈ 433 de ≈ 457 px visibles). **Límite conocido:** si el campo crece a 3 o más líneas con el teclado abierto, la segunda fila de fichas queda detrás del teclado. Es el borde "Teclado abierto tapando los conteos", que espera en VS-002.
+
+**Después:**
+> - **Con el teclado abierto**, medido en el iPhone real con Safari (2026-11-26, foto `_project/slices/VS-001/evidence/lote3-iphone-estado2-teclado.jpg`): aun con el campo en 2 líneas, la primera fila (Vocales, Consonantes) se ve completa, pero de la segunda fila solo se ven los números; los nombres "Números" y "Otros" quedan cortados. Causa: además del teclado, Safari pone encima la barra de la dirección y la barra "⌃ ⌄ Listo". Al tocar "Listo" se cierra el teclado y se ven las 4 fichas. **Límite conocido** (decisión del usuario, 2026-11-26: no se cambia en VS-001): es el borde "Teclado abierto tapando los conteos", que se resuelve en VS-002.
+
+**Otras frases revisadas, sin cambios:**
+- §5 (línea 66, "Los 4 conteos deben verse… borde que espera, VS-002"): ya remite a VS-002 y no promete nada sobre lo que se ve. La dejé igual. Además, esa parte es del architect.
+- §5.3, fila del estado 2: describe el foco y que los conteos cambian al instante. No dice nada sobre las fichas por encima del teclado, así que la dejé igual.
+- F-001 no tiene sección de historial, así que no agregué nota. El cambio queda en este reporte y en git.
+
+## Cómo revisar
+- Abre `_project/features/F-001.md` §5.5 y compara la viñeta del teclado con la foto.
+
+## Preguntas para el usuario
+- Ninguna.
+
+## Decisiones o lecciones propuestas
+- **Lección propuesta (diseño para el celular):** cuando se calcula el espacio libre con el teclado abierto en Safari del iPhone, hay que restar también la barra de la dirección y la barra "⌃ ⌄ Listo", no solo el teclado. Mejor aún: medirlo en el iPhone real antes de prometerlo en la feature (refuerza L-010). Por qué: mi cálculo de §5.5 no las contó y prometió algo que el iPhone no cumple. Sirve como dato de partida para VS-002.
+
+STATUS: DONE
