@@ -379,3 +379,93 @@ Ninguno.
 - Para verificar versiones de GitHub Actions, Context7 no basta con todas: `gitleaks-action` no está indexado. Conviene decidir en el plan con qué otra fuente se confirma — evita dejar una versión sin verificar.
 
 STATUS: DONE
+
+# Ronda 1 — VS-001
+**Fecha:** 2026-11-26 · **Rama:** feature/VS-001-contar-en-el-celular (sin subir)
+
+## Resumen
+En pantalla, los 7 hallazgos quedan corregidos según las 43 E2E de la ronda (WebKit simulado, no el iPhone real). **La ronda no está terminada:** quedan **4 unitarias de TC-047 en rojo**. Necesitan una decisión (ver "Bloqueo").
+
+## Hallazgo → pasos y commits
+| Hallazgo | Casos | Commits (test → feat) | Razón del rojo que vi | Estado |
+|---|---|---|---|---|
+| 1. Volver atrás | TC-043 | P-6: rojo `c9f7515` (tester) → `812bfc8` | Volvía "casa 12" | Verde |
+| 4. "ſ" | TC-046 | `ab2285d` → `11dd3ce` | Entraba "caſa" | Verde |
+| 6 y 7. Tildes sobre algo que no es letra | TC-048, TC-049 | `70d83c6` → `dfb5ba4` | La tilde entraba con la base (4 rojos; el dígito ajeno + tilde era control) | Verde |
+| 3. Pase libre por U+20E3 o emoji | TC-045, TC-049 | `ef6d423` → `e550a05` | Entraban `ç⃣`, `1⃣` y lo pegado delante o detrás del emoji (16 rojos) | Verde |
+| 2a. Cambio que no termina en el cursor | TC-044 | `6491280` → `0c0dbe7` | Entraban la "ç" y el carácter 101 (3 rojos; borrar lejos del cursor era control) | Verde |
+| 2b. Deshacer y rehacer | TC-044 | rojo `c9f7515` (tester) → `fda4d0f` | "casacasacasaç" y, tras 2a, "casacasacasa" | Verde |
+| 5. Pegar sobre una selección | TC-047 | rojo `c9f7515` (tester) → `a6f81c6` | Quedaba el texto viejo (4 E2E) | **E2E en verde; 4 unitarias en rojo** |
+
+- Los hallazgos 6 y 7 son una sola regla (D-018): tienen un commit de prueba y uno de código.
+- En 1, 2b y 5 el cambio está en `src/main.ts`, que usa la pantalla (Vitest corre en `node`). Su rojo es el commit del tester; no escribí pruebas que lo repitan.
+- No hubo refactor.
+
+## Bloqueo: las 4 unitarias de TC-047
+`applyInput(anterior, nuevo, cursor)` no recibe qué estaba seleccionado. Con `("casa", "caça", 3)` hay dos acciones posibles:
+- **Pegar "aç" sobre "as":** TC-047 pide "caa".
+- **Escribir "ç" sobre la "s":** el plan §5.1 pide que quede "casa".
+
+Con las pruebas pasa lo mismo:
+- Mi prueba anterior `P-7: rejected input over a selection keeps the text` pide que `("casa", "cça", 2)` deje "casa".
+- TC-047 pide que `("casa", "caç", 3)` deje "ca".
+
+Las dos entradas tienen la misma forma: se reemplazan dos letras por una "ç". No encontré una regla que cumpla ambas sin ser un truco hecho a la medida de las pruebas. Es una deducción leyendo el código y las pruebas.
+
+**Cómo quedó la pantalla:** `main.ts` anota la selección en `beforeinput`. Si el cambio la reemplazó, llama a `applyInput` con el texto aceptado **sin la parte seleccionada**. Si no entra nada, deja el texto como estaba. Con eso pasan las E2E de TC-047 y la de TC-018 ("ç" sobre una selección no borra nada). La interfaz no cambió.
+
+**Opciones (decide el Manager o el usuario):**
+- **B (recomendada):** el tester ajusta las 4 unitarias para llamar como llama la pantalla, p. ej. `applyInput("ca", "caça", 3)` → "caa". Se precisa en §5.2 que, si hubo selección, `previousText` va sin esa parte. No debería requerir más código. No lo corrí como unitaria, pero las E2E pasan por ese camino. **Contra:** cambian pruebas de aceptación y el significado de un parámetro.
+- **A:** `applyInput`, ante un reemplazo del que no entra nada, quita solo lo rechazado. Cambio mi prueba anterior y el paso 5 de §5.2. Las pruebas de TC-047 quedan intactas. **Contra:** si algún camino del iPhone no dispara `beforeinput`, escribir "ç" sobre una selección podría borrar texto.
+
+Un cuarto parámetro con la selección no resuelve el choque: las unitarias llaman con tres.
+
+## Explicación para el usuario
+### P-6 — Volver atrás (`src/main.ts`)
+Al tocar "atrás", el navegador puede volver a poner el texto viejo sin avisarle a la app. Por eso, cada vez que la página se muestra (`pageshow`), la app vacía el campo y pone las 4 fichas en 0.
+
+### P-7 — El filtro (`src/inputFilter.ts`)
+Solo dos cosas entran completas: la tecla de número exacta (como 1️⃣) y el emoji. Lo que venga pegado delante se revisa aparte. Las tildes y letras pegadas detrás se quitan. Sobre un espacio, un número o un signo, las tildes se quitan y queda la base. Las letras del español se comparan una por una, así que la "ſ" ya no pasa por "s". Si el cambio no termina donde está el cursor, también se revisa.
+
+### P-7 — Deshacer y selección (`src/main.ts`)
+El navegador guarda un historial para deshacer. Cuando la app corrige el campo, ese historial queda desfasado y repetía texto. Desde ese momento, deshacer y rehacer ya no cambian nada. La app también recuerda qué estaba seleccionado, para saber qué se pegó de verdad.
+
+## Líneas de app (`src/`, sin pruebas; `git diff --numstat c9f7515`)
+| Archivo | Agregadas | Quitadas |
+|---|---|---|
+| `src/inputFilter.ts` | 33 | 13 |
+| `src/main.ts` | 49 | 3 |
+| **Total** | **82** | 16 |
+
+Además, `src/inputFilter.test.ts` suma 82 líneas de pruebas. `index.html` no cambió.
+
+## Estado de las pruebas
+- Revisión estática (`npm run check`): ok.
+- Unitarias completas (`npm run test:unit`): **203/207. Fallan 4**, las de TC-047 en `tests/unit/round1.test.ts`. Los controles pasan.
+- E2E (`npx playwright test` con `round1`, `typing`, `foreign-letters`, `max-length`, `screen` y `skeleton`, `--project=iphone`): **113/113**, incluidas las 43 de `round1`.
+- No modifiqué las pruebas del tester ni mis pruebas anteriores. No corrí capturas.
+
+## Variables de entorno nuevas
+- Ninguna.
+
+## Desviaciones del plan (necesitan aprobación)
+- **`previousText` con selección:** la pantalla lo pasa sin la parte seleccionada. §5.2 lo define como el texto aceptado.
+- **Deshacer y rehacer:** quedan sin efecto después de la primera vez que la app reescribe el campo (un rechazo, un filtrado o unir una letra en dos piezas). Duran así hasta recargar. TC-044 no exige que deshacer funcione, pero el usuario debe saberlo.
+- **Detrás de un emoji:** además de las marcas, quito las letras que se pegan a él (probé U+FF9E y U+0E33). §5.2 solo habla de signos combinables; me basé en C-011 y L-023.
+- **Commits:** de una línea y sin `Co-Authored-By`, porque la guarda no admite `<`, `>` ni saltos de línea.
+
+## Notas sin verificar
+- No probé en un iPhone real: "atrás", deshacer con gestos, composición del teclado, ni si `beforeinput` informa bien la selección. Conviene la comprobación manual de TC-043, TC-044 y TC-047.
+- Si Safari devuelve la página completa desde memoria, `pageshow` la vacía, pero ese vaciado **no** marca el historial como desfasado. Deshacer ahí no está probado.
+- Tras anular un deshacer, el cursor queda donde lo deje el navegador al reponer el texto; ninguna regla lo define.
+- Un carácter "que se antepone" delante de una tecla de número no tiene regla propia: pasa por las reglas normales.
+- Un emoji seguido de muchas piezas U+FE0F o U+200D las conserva y cuenta como 1. Es un borde que ya existía.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Antes de fijar en una prueba unitaria un caso que depende de la selección, comprobar que la firma de la función la distingue — con solo texto anterior, texto nuevo y cursor, dos acciones distintas dan la misma entrada.
+- Si la app reescribe un campo, hay que decidir en el plan qué pasa con deshacer y rehacer — el historial del navegador queda desfasado.
+
+STATUS: BLOCKED — decidir (Manager o usuario) entre la opción B (el tester ajusta las 4 unitarias de TC-047 y se precisa §5.2; recomendada) y la opción A (autorizar el cambio en `applyInput`, en mi prueba anterior y en §5.2), y aprobar las desviaciones.
