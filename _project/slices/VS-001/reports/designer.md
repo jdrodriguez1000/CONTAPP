@@ -42,3 +42,41 @@ Tres propuestas de estilo para toda la app, distintas entre sí, cada una con mo
 - **Los conteos no se ven como botones** (sin sombra ni relieve). Por qué: en VS-001 no se pueden tocar, y un niño intentaría tocarlos.
 
 STATUS: DONE
+
+# Trabajo A — Propuesta C2 — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Sistema de diseño (primera etapa: ajuste de la propuesta elegida)
+
+## Resumen
+Nueva maqueta **C2 — Pizarra con fichas**. Tiene la paleta, la letra y el estilo de C, en claro y oscuro, con los 4 grupos dispuestos como en B: fichas en cuadrícula 2 × 2, el número grande arriba y el nombre debajo. Los colores no cambian; solo se ajustaron el tamaño del número y la forma de las fichas. Pasa WCAG AA en ambos modos, y con el teclado abierto los 4 conteos se ven completos. No toqué las propuestas A, B ni C, ni escribí `design-system.md` ni la sección 5 de F-001.
+
+## Archivos creados o modificados
+- `_project/design/propuestas/propuesta-c2.html` — ficha (qué cambió frente a C, paleta, letra, tamaños, contraste, teclado) y los 3 estados en claro y oscuro, en marcos de 390 × 844.
+- `_project/slices/VS-001/reports/designer.md` — esta sección, agregada al final.
+
+## Qué decidí en las fichas, y por qué
+| Cambio frente a C | Decisión | Por qué |
+|---|---|---|
+| Insignia detrás del número | **Se quita** | Dentro de una ficha sería una caja dentro de otra caja. Obligaría a achicar el número y recargaría la ficha. Sin ella, el número sube de 26 a **48 px** y se lee mejor desde lejos. |
+| Color del número | **Acento** (`--color-primary`): verde escolar en claro, amarillo tiza en oscuro | Conserva el resalte que daba la insignia. El nombre va en el color de texto normal, así número y nombre no compiten. |
+| Separadores punteados de C | Pasan a ser el **borde de cada ficha** (2 px, punteado, decorativo) | Mantienen la idea de "tiza" de C. Sin sombra, para que las fichas no parezcan botones. |
+| Esquinas | Fichas de 20 px (el tablero de C tenía 16) | A ese tamaño se ven más amables. |
+| Tokens | Mismos nombres y valores de color que C; cambian solo `--font-size-count` (48 px) y `--radius-card` (20 px) | Al construir, pasar de C a C2 solo cambia dos valores y la disposición. |
+
+**Contraste del par nuevo** (número en acento sobre la ficha): 5,9:1 en claro y 10,8:1 en oscuro. Pasa incluso el 4,5:1 del texto normal, aunque al ser texto grande bastaría con 3:1. Los demás pares son los de C, todos ✓.
+
+**Con el teclado abierto:** quedan ≈ 457 px visibles y C2 usa ≈ 433 px. Los 4 conteos se ven completos, con ≈ 24 px de margen. "Consonantes" en 20 px negrita (≈ 127 px) cabe en una ficha de ≈ 173 px de ancho.
+
+## Cómo revisar
+- Abre `propuesta-c2.html` con doble clic. Puedes compararla con `propuesta-c.html` y `propuesta-b.html`: C2 debe sentirse como C, pero ordenada como B.
+- Mira sobre todo: (1) que el número de 48 px se lea de un vistazo en los dos modos; (2) en "Escribiendo", que las 4 fichas queden completas por encima del bloque gris del teclado; (3) si el borde punteado te gusta o prefieres un borde liso.
+- **Lo que no verifiqué:** igual que antes, no pude abrir el archivo en un navegador. Que cabe lo comprobé sumando medidas, y el contraste, con la fórmula de WCAG. Pido al Manager que lo abra y confirme que nada se corta, en especial la frase de 100 caracteres dentro del campo de 5 líneas.
+
+## Preguntas para el usuario
+- ¿C2 queda como la propuesta elegida para convertirla en el sistema de diseño (segunda etapa)?
+- ¿Borde punteado de tiza, o liso? Recomiendo punteado: es lo que distingue el estilo Pizarra.
+- Siguen pendientes las preguntas 2 a 6 de la sección anterior. "Contapp" y "Escribe una palabra o frase" quedan como provisionales.
+
+## Decisiones o lecciones propuestas
+- **En una ficha, el número va sin insignia y en el color de acento.** Por qué: a igual alto, el número casi se duplica (26 → 48 px), y en VS-002 ese mismo número puede tomar el color de su grupo sin agregar otra caja.
+
+STATUS: DONE

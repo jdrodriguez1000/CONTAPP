@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Propuesta C2 — Pizarra con fichas · Contapp (VS-001 · F-001)</title>
+<style>
+/* =========================================================
+   1) PÁGINA DE LA PROPUESTA (ficha y marcos). NO es parte de la app.
+   ========================================================= */
+*{box-sizing:border-box}
+body{margin:0;padding:24px 16px 64px;background:#E6E6EC;color:#1C1C22;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.sheet{max-width:1080px;margin:0 auto 40px;background:#fff;border-radius:16px;padding:24px 32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.sheet .tag{display:inline-block;font-size:13px;font-weight:600;color:#4A4A55;background:#F0F0F5;border-radius:999px;padding:2px 10px;margin-bottom:8px}
+.sheet h1{margin:0 0 4px;font-size:30px}
+.sheet .lead{margin:0 0 8px;color:#3A3A44;font-size:17px}
+.sheet h2{font-size:18px;margin:24px 0 8px}
+.sheet table{border-collapse:collapse;width:100%;font-size:14px}
+.sheet th,.sheet td{border:1px solid #D9D9E0;padding:6px 8px;text-align:left;vertical-align:top}
+.sheet th{background:#F3F3F7}
+.sheet code{font-size:13px;background:#F3F3F7;border-radius:4px;padding:0 4px}
+.sheet ul{margin:4px 0;padding-left:20px}
+.sw{display:inline-block;width:18px;height:18px;border-radius:4px;border:1px solid #8A8A95;vertical-align:-4px;margin-right:6px}
+.ok{color:#1F6B33;font-weight:700}
+.state{max-width:1080px;margin:0 auto 48px}
+.state>h2{font-size:22px;margin:0 0 4px}
+.state>p{margin:0 0 16px;color:#3A3A44}
+.pair{display:flex;flex-wrap:wrap;gap:40px;justify-content:center}
+figure{margin:0}
+figcaption{text-align:center;font-weight:600;margin-top:10px}
+/* Marco de iPhone: el área interior mide exactamente 390 × 844 */
+.phone{box-sizing:content-box;width:390px;height:844px;border:10px solid #121214;border-radius:58px;overflow:hidden;position:relative}
+/* Teclado del sistema (no es de la app; colores del iPhone) */
+.kb{position:absolute;left:0;right:0;bottom:0;height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font:500 15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center;padding:0 24px}
+.theme-light .kb{background:#D1D4DB;color:#2A2A30}
+.theme-dark .kb{background:#2C2C2E;color:#E5E5EA}
+.kb small{font-size:13px;opacity:.85}
+
+/* =========================================================
+   2) TOKENS DE LA APP — mismos nombres en todas las propuestas
+   Colores idénticos a la propuesta C. Cambian solo:
+   --font-size-count (26 → 48 px) y --radius-card (16 → 20 px).
+   ========================================================= */
+:root{
+  --font-family-base:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,"Segoe UI",Roboto,sans-serif;
+  --font-size-title:28px;   --font-weight-title:800;
+  --font-size-label:18px;   --font-weight-label:600;
+  --font-size-input:24px;   --font-weight-input:600;
+  --font-size-group:20px;   --font-weight-group:700;
+  --font-size-count:48px;   --font-weight-count:800;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px; --space-6:24px;
+  --radius-card:20px; --radius-input:14px; --radius-badge:12px;
+  --border-width-input:2px;
+}
+.theme-light{
+  color-scheme:light;
+  --color-bg:#FFFFFF;
+  --color-surface:#EEF5EE;
+  --color-text:#112211;
+  --color-text-muted:#445544;
+  --color-primary:#1F6B33;
+  --color-on-primary:#FFFFFF;
+  --color-border:#BBCCBB;
+  --color-input-bg:#FFFFFF;
+  --color-input-border:#556655;
+  --color-focus:#1F6B33;
+}
+.theme-dark{
+  color-scheme:dark;
+  --color-bg:#142017;
+  --color-surface:#1C2E20;
+  --color-text:#F5F5EE;
+  --color-text-muted:#AABBAA;
+  --color-primary:#FFDD55;
+  --color-on-primary:#142017;
+  --color-border:#3B5540;
+  --color-input-bg:#1C2E20;
+  --color-input-border:#88AA88;
+  --color-focus:#FFDD55;
+}
+
+/* =========================================================
+   3) PANTALLA DE F-001 (usa solo tokens)
+   ========================================================= */
+.screen{height:100%;background:var(--color-bg);color:var(--color-text);font-family:var(--font-family-base)}
+.status{height:47px;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 36px;font-weight:600;font-size:16px}
+.home{position:absolute;bottom:8px;left:50%;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--color-text);opacity:.85}
+.app{padding:var(--space-3) var(--space-4) 0}
+.app-title{margin:0 0 var(--space-4);font-size:var(--font-size-title);line-height:1.2;font-weight:var(--font-weight-title);color:var(--color-primary)}
+.field-label{display:block;margin:0 0 var(--space-2);font-size:var(--font-size-label);font-weight:var(--font-weight-label);line-height:1.3;color:var(--color-text-muted)}
+.field{display:block;width:100%;margin:0;resize:none;overflow:hidden;font-family:inherit;font-size:var(--font-size-input);font-weight:var(--font-weight-input);line-height:1.3;padding:var(--space-3) 14px;color:var(--color-text);background:var(--color-input-bg);border:var(--border-width-input) solid var(--color-input-border);border-radius:var(--radius-input)}
+.field.is-focus{border-color:var(--color-focus);outline:3px solid var(--color-focus);outline-offset:2px}
+/* Propuesta C2: 4 fichas 2 × 2 (como B) con el estilo Pizarra (como C).
+   Sin insignia: el número va grande, en el color de acento, directo sobre la ficha;
+   el borde punteado "de tiza" de C pasa a ser el borde de cada ficha. */
+.counts{margin:var(--space-5) 0 0;display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+.count{display:flex;flex-direction:column-reverse;align-items:center;justify-content:center;min-height:104px;padding:var(--space-3) var(--space-2);background:var(--color-surface);border:2px dashed var(--color-border);border-radius:var(--radius-card)}
+.count dt{font-size:var(--font-size-group);font-weight:var(--font-weight-group);line-height:1.3;margin-top:2px}
+.count dd{margin:0;font-size:var(--font-size-count);font-weight:var(--font-weight-count);line-height:1.1;color:var(--color-primary);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+<header class="sheet">
+  <span class="tag">VS-001 · F-001 · Propuesta de estilo C2 (C con las fichas de B)</span>
+  <h1>C2 — Pizarra con fichas</h1>
+  <p class="lead"><strong>Idea:</strong> la paleta, la letra gruesa y el tema escolar de <strong>C — Pizarra</strong>, con la disposición de <strong>B — Recreo</strong>: cuatro fichas grandes en cuadrícula 2 × 2, el número grande arriba y el nombre del grupo debajo. Cada ficha es un pedazo de tablero con borde punteado, como dibujado con tiza.</p>
+
+  <h2>Qué cambió respecto a C, y por qué</h2>
+  <ul>
+    <li><strong>Colores:</strong> ninguno. Son los mismos tokens y valores de C, en claro y en oscuro.</li>
+    <li><strong>Se quita la insignia</strong> (el cuadrito de color detrás del número). Dentro de una ficha, la insignia sería una caja dentro de otra caja: obligaría a achicar el número para que quepa y la ficha se vería recargada. Sin insignia, el número puede ir a <strong>48 px</strong> (antes 26 px) y se lee mejor desde lejos.</li>
+    <li><strong>El número va en el color de acento</strong> (<code>--color-primary</code>: verde escolar en claro, amarillo tiza en oscuro). Así conserva el "brillo" que le daba la insignia en C. El nombre del grupo va en el color de texto normal.</li>
+    <li><strong>Las líneas punteadas de tiza</strong> que en C separaban las filas ahora bordean cada ficha (2 px). Son decorativas: las fichas no se tocan y no tienen sombra, para que no parezcan botones.</li>
+    <li><strong>Esquinas de la ficha:</strong> 20 px (antes 16 px en el tablero), un poco más amables a ese tamaño.</li>
+    <li><code>--color-on-primary</code> queda reservado: ya no se usa en VS-001.</li>
+  </ul>
+
+  <h2>Paleta (tokens; idénticos a C)</h2>
+  <table>
+    <tr><th>Token</th><th>Uso en C2</th><th>Claro</th><th>Oscuro</th></tr>
+    <tr><td><code>--color-bg</code></td><td>Fondo de la pantalla</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td><span class="sw" style="background:#142017"></span>#142017</td></tr>
+    <tr><td><code>--color-surface</code></td><td>Fondo de cada ficha</td><td><span class="sw" style="background:#EEF5EE"></span>#EEF5EE</td><td><span class="sw" style="background:#1C2E20"></span>#1C2E20</td></tr>
+    <tr><td><code>--color-text</code></td><td>Texto principal, nombres de los grupos, texto escrito</td><td><span class="sw" style="background:#112211"></span>#112211</td><td><span class="sw" style="background:#F5F5EE"></span>#F5F5EE</td></tr>
+    <tr><td><code>--color-text-muted</code></td><td>Etiqueta del campo</td><td><span class="sw" style="background:#445544"></span>#445544</td><td><span class="sw" style="background:#AABBAA"></span>#AABBAA</td></tr>
+    <tr><td><code>--color-primary</code></td><td>Título de la app y <strong>número de cada ficha</strong></td><td><span class="sw" style="background:#1F6B33"></span>#1F6B33</td><td><span class="sw" style="background:#FFDD55"></span>#FFDD55</td></tr>
+    <tr><td><code>--color-on-primary</code></td><td>Texto sobre el acento (reservado; no se usa en VS-001)</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td><span class="sw" style="background:#142017"></span>#142017</td></tr>
+    <tr><td><code>--color-border</code></td><td>Borde punteado de tiza de las fichas (decorativo)</td><td><span class="sw" style="background:#BBCCBB"></span>#BBCCBB</td><td><span class="sw" style="background:#3B5540"></span>#3B5540</td></tr>
+    <tr><td><code>--color-input-bg</code></td><td>Fondo del campo para escribir</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td><span class="sw" style="background:#1C2E20"></span>#1C2E20</td></tr>
+    <tr><td><code>--color-input-border</code></td><td>Borde del campo</td><td><span class="sw" style="background:#556655"></span>#556655</td><td><span class="sw" style="background:#88AA88"></span>#88AA88</td></tr>
+    <tr><td><code>--color-focus</code></td><td>Borde y anillo del campo cuando se está escribiendo</td><td><span class="sw" style="background:#1F6B33"></span>#1F6B33</td><td><span class="sw" style="background:#FFDD55"></span>#FFDD55</td></tr>
+  </table>
+
+  <h2>Tipografía y tamaños</h2>
+  <p><strong>Fuente:</strong> la del sistema del iPhone, <strong>SF Pro</strong> (<code>-apple-system</code>), en pesos gruesos, igual que C. Sin fuentes descargadas. En un computador con Windows esta página muestra <em>Segoe UI</em> en su lugar.</p>
+  <table>
+    <tr><th>Uso</th><th>Token</th><th>Tamaño / peso</th></tr>
+    <tr><td>Título de la app</td><td><code>--font-size-title</code></td><td>28 px · extra negrita (800)</td></tr>
+    <tr><td>Etiqueta del campo</td><td><code>--font-size-label</code></td><td>18 px · seminegrita (600)</td></tr>
+    <tr><td>Texto escrito en el campo</td><td><code>--font-size-input</code></td><td>24 px · seminegrita (600)</td></tr>
+    <tr><td>Nombre del grupo (debajo del número)</td><td><code>--font-size-group</code></td><td>20 px · negrita (700)</td></tr>
+    <tr><td>Número del conteo (arriba, centrado)</td><td><code>--font-size-count</code></td><td><strong>48 px</strong> · extra negrita (800), cifras del mismo ancho</td></tr>
+  </table>
+  <p><strong>Espacios:</strong> 4 · 8 · 12 · 16 · 20 · 24 px (<code>--space-1</code> a <code>--space-6</code>); 12 px entre fichas. <strong>Formas:</strong> fichas de ≈ 173 × 109 px con esquinas de 20 px y borde punteado de 2 px, campo de 14 px, borde del campo de 2 px, sin sombras.</p>
+
+  <h2>Contraste medido (fórmula WCAG 2.x; mínimo AA)</h2>
+  <p>"Contraste" es cuánto se distingue un color de su fondo: 1:1 es igual, 21:1 es negro sobre blanco. AA pide 4,5:1 para texto normal y 3:1 para texto grande y bordes de controles.</p>
+  <table>
+    <tr><th>Par</th><th>Mínimo</th><th>Claro</th><th>Oscuro</th></tr>
+    <tr><td>Texto sobre fondo</td><td>4,5:1</td><td>16,7:1 <span class="ok">✓</span></td><td>15,4:1 <span class="ok">✓</span></td></tr>
+    <tr><td><strong>Número (acento) sobre la ficha</strong> (nuevo par)</td><td>3:1 (texto grande); también pasa 4,5:1</td><td>5,9:1 <span class="ok">✓</span></td><td>10,8:1 <span class="ok">✓</span></td></tr>
+    <tr><td>Nombre del grupo sobre la ficha</td><td>4,5:1</td><td>15,0:1 <span class="ok">✓</span></td><td>13,1:1 <span class="ok">✓</span></td></tr>
+    <tr><td>Texto escrito sobre el fondo del campo</td><td>4,5:1</td><td>16,7:1 <span class="ok">✓</span></td><td>13,1:1 <span class="ok">✓</span></td></tr>
+    <tr><td>Etiqueta (texto tenue) sobre fondo</td><td>4,5:1</td><td>8,0:1 <span class="ok">✓</span></td><td>8,3:1 <span class="ok">✓</span></td></tr>
+    <tr><td>Título (acento) sobre fondo</td><td>4,5:1</td><td>6,5:1 <span class="ok">✓</span></td><td>12,6:1 <span class="ok">✓</span></td></tr>
+    <tr><td>Borde del campo sobre fondo / sobre el campo</td><td>3:1</td><td>6,1:1 / 6,1:1 <span class="ok">✓</span></td><td>6,5:1 / 5,6:1 <span class="ok">✓</span></td></tr>
+    <tr><td>Anillo de foco sobre fondo</td><td>3:1</td><td>6,5:1 <span class="ok">✓</span></td><td>12,6:1 <span class="ok">✓</span></td></tr>
+  </table>
+  <p>El borde punteado de las fichas (<code>--color-border</code>) es decorativo (no son controles), por eso no tiene mínimo. La ficha se distingue del fondo por su color de fondo y por ese borde.</p>
+
+  <h2>Teclado y campo</h2>
+  <ul>
+    <li>Campo de varias líneas que crece con el texto (empieza con 2 líneas y llega a 5), para que la frase de 100 caracteres se vea completa y se acepten saltos de línea (A-001). <em>Provisional: es la pregunta 4 pendiente del usuario.</em></li>
+    <li>Sin corrector ni sugerencias (D-009): <code>autocorrect="off"</code>, <code>spellcheck="false"</code>, <code>autocomplete="off"</code>.</li>
+    <li><strong>Con el teclado abierto</strong> (≈ 340 px) quedan ≈ 457 px visibles. Esta propuesta usa ≈ 433 px: título 34 + etiqueta 23 + campo de 2 líneas 90 + dos filas de fichas 230 (2 × ≈ 109 + 12) + espacios 56. <strong>Los 4 conteos se ven completos</strong>, con ≈ 24 px de margen. Es mejor que C (≈ 430 px con números de 26 px): con la cuadrícula, el número casi se duplica y la altura casi no cambia.</li>
+  </ul>
+
+  <h2>Textos provisionales</h2>
+  <p>"Contapp" (título) y "Escribe una palabra o frase" (etiqueta) siguen siendo provisionales: esperan las preguntas 2 y 6 del usuario.</p>
+
+  <h2>Cómo crecería en VS-002 (no se dibuja aún)</h2>
+  <p>Cada ficha recibe la imagen de su grupo encima del número, y el número (o el borde de tiza) toma el color de su grupo, con tokens nuevos <code>--color-vowel</code>, <code>--color-consonant</code>, <code>--color-digit</code> y <code>--color-other</code>. El nombre escrito se mantiene, para no depender solo del color. Con fichas de ≈ 173 px de ancho, las imágenes caben grandes. Se mantiene un límite de C: en modo oscuro, los cuatro colores de grupo deben verse bien sobre el verde pizarra.</p>
+</header>
+
+<!-- ===================== ESTADO 1: VACÍO ===================== -->
+<section class="state">
+  <h2>1. Vacío — al abrir la app (CA-1)</h2>
+  <p>Campo vacío y los 4 grupos en 0. No se pide cuenta ni contraseña.</p>
+  <div class="pair">
+    <figure>
+      <div class="phone theme-light"><div class="screen">
+        <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+        <main class="app">
+          <h1 class="app-title">Contapp</h1>
+          <label class="field-label" for="c2-l-1">Escribe una palabra o frase</label>
+          <textarea class="field" id="c2-l-1" rows="2" readonly autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+          <dl class="counts">
+            <div class="count"><dt>Vocales</dt><dd>0</dd></div>
+            <div class="count"><dt>Consonantes</dt><dd>0</dd></div>
+            <div class="count"><dt>Números</dt><dd>0</dd></div>
+            <div class="count"><dt>Otros</dt><dd>0</dd></div>
+          </dl>
+        </main>
+        <div class="home" aria-hidden="true"></div>
+      </div></div>
+      <figcaption>Modo claro</figcaption>
+    </figure>
+    <figure>
+      <div class="phone theme-dark"><div class="screen">
+        <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+        <main class="app">
+          <h1 class="app-title">Contapp</h1>
+          <label class="field-label" for="c2-d-1">Escribe una palabra o frase</label>
+          <textarea class="field" id="c2-d-1" rows="2" readonly autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+          <dl class="counts">
+            <div class="count"><dt>Vocales</dt><dd>0</dd></div>
+            <div class="count"><dt>Consonantes</dt><dd>0</dd></div>
+            <div class="count"><dt>Números</dt><dd>0</dd></div>
+            <div class="count"><dt>Otros</dt><dd>0</dd></div>
+          </dl>
+        </main>
+        <div class="home" aria-hidden="true"></div>
+      </div></div>
+      <figcaption>Modo oscuro</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===================== ESTADO 2: ESCRIBIENDO ===================== -->
+<section class="state">
+  <h2>2. Escribiendo — "pingüino", con el teclado abierto (CA-2)</h2>
+  <p>4 vocales (i, ü, i, o) y 4 consonantes (p, n, g, n). El campo muestra que está activo con el borde y el anillo de foco. Las 4 fichas quedan completas por encima del teclado.</p>
+  <div class="pair">
+    <figure>
+      <div class="phone theme-light"><div class="screen">
+        <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+        <main class="app">
+          <h1 class="app-title">Contapp</h1>
+          <label class="field-label" for="c2-l-2">Escribe una palabra o frase</label>
+          <textarea class="field is-focus" id="c2-l-2" rows="2" readonly autocomplete="off" autocorrect="off" spellcheck="false">pingüino</textarea>
+          <dl class="counts">
+            <div class="count"><dt>Vocales</dt><dd>4</dd></div>
+            <div class="count"><dt>Consonantes</dt><dd>4</dd></div>
+            <div class="count"><dt>Números</dt><dd>0</dd></div>
+            <div class="count"><dt>Otros</dt><dd>0</dd></div>
+          </dl>
+        </main>
+        <div class="kb" aria-hidden="true">Teclado del iPhone (≈ 340 px)<small>sin corrector ni sugerencias</small></div>
+      </div></div>
+      <figcaption>Modo claro</figcaption>
+    </figure>
+    <figure>
+      <div class="phone theme-dark"><div class="screen">
+        <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+        <main class="app">
+          <h1 class="app-title">Contapp</h1>
+          <label class="field-label" for="c2-d-2">Escribe una palabra o frase</label>
+          <textarea class="field is-focus" id="c2-d-2" rows="2" readonly autocomplete="off" autocorrect="off" spellcheck="false">pingüino</textarea>
+          <dl class="counts">
+            <div class="count"><dt>Vocales</dt><dd>4</dd></div>
+            <div class="count"><dt>Consonantes</dt><dd>4</dd></div>
+            <div class="count"><dt>Números</dt><dd>0</dd></div>
+            <div class="count"><dt>Otros</dt><dd>0</dd></div>
+          </dl>
+        </main>
+        <div class="kb" aria-hidden="true">Teclado del iPhone (≈ 340 px)<small>sin corrector ni sugerencias</small></div>
+      </div></div>
+      <figcaption>Modo oscuro</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===================== ESTADO 3: 100 CARACTERES ===================== -->
+<section class="state">
+  <h2>3. Frase en el límite de 100 caracteres (CA-6)</h2>
+  <p>"El niño Mateo tiene 7 años y lee cuentos largos con su abuela. ¡Hoy contó 25 ovejas antes de dormir!" — 100 caracteres con los espacios; 81 sin ellos = 35 + 40 + 3 + 3. Nada avisa que se llegó al límite (D-007).</p>
+  <div class="pair">
+    <figure>
+      <div class="phone theme-light"><div class="screen">
+        <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+        <main class="app">
+          <h1 class="app-title">Contapp</h1>
+          <label class="field-label" for="c2-l-3">Escribe una palabra o frase</label>
+          <textarea class="field" id="c2-l-3" rows="5" readonly autocomplete="off" autocorrect="off" spellcheck="false">El niño Mateo tiene 7 años y lee cuentos largos con su abuela. ¡Hoy contó 25 ovejas antes de dormir!</textarea>
+          <dl class="counts">
+            <div class="count"><dt>Vocales</dt><dd>35</dd></div>
+            <div class="count"><dt>Consonantes</dt><dd>40</dd></div>
+            <div class="count"><dt>Números</dt><dd>3</dd></div>
+            <div class="count"><dt>Otros</dt><dd>3</dd></div>
+          </dl>
+        </main>
+        <div class="home" aria-hidden="true"></div>
+      </div></div>
+      <figcaption>Modo claro</figcaption>
+    </figure>
+    <figure>
+      <div class="phone theme-dark"><div class="screen">
+        <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+        <main class="app">
+          <h1 class="app-title">Contapp</h1>
+          <label class="field-label" for="c2-d-3">Escribe una palabra o frase</label>
+          <textarea class="field" id="c2-d-3" rows="5" readonly autocomplete="off" autocorrect="off" spellcheck="false">El niño Mateo tiene 7 años y lee cuentos largos con su abuela. ¡Hoy contó 25 ovejas antes de dormir!</textarea>
+          <dl class="counts">
+            <div class="count"><dt>Vocales</dt><dd>35</dd></div>
+            <div class="count"><dt>Consonantes</dt><dd>40</dd></div>
+            <div class="count"><dt>Números</dt><dd>3</dd></div>
+            <div class="count"><dt>Otros</dt><dd>3</dd></div>
+          </dl>
+        </main>
+        <div class="home" aria-hidden="true"></div>
+      </div></div>
+      <figcaption>Modo oscuro</figcaption>
+    </figure>
+  </div>
+</section>
+
+</body>
+</html>
