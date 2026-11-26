@@ -86,6 +86,15 @@ describe("applyInput: only Spanish letters and digits 0-9 get in (P-7)", () => {
   });
 });
 
+describe("applyInput: letters are compared exactly (P-7, round 1)", () => {
+  // Ignoring case, the long s folds to "s", but it is not a Spanish letter.
+  test("TC-046: pasting casa written with a long s keeps caa", () => {
+    const longS = String.fromCharCode(0x017f);
+
+    expect(insert("", `ca${longS}a`)).toEqual(accepted("caa"));
+  });
+});
+
 describe("applyInput: the cursor and what was already written (P-7)", () => {
   test("P-7: rejected input keeps the cursor where it was", () => {
     expect(insert("casa", "ç", 2)).toEqual(accepted("casa", 2));
