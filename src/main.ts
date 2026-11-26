@@ -44,3 +44,10 @@ textField.addEventListener("input", (event) => {
   else filterChange();
 });
 textField.addEventListener("compositionend", filterChange);
+
+// Coming back with "back", the browser can put the old text back: start empty (D-017).
+window.addEventListener("pageshow", () => {
+  textField.value = "";
+  acceptedText = "";
+  refreshScreen();
+});
