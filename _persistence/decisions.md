@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-25
-**Último ID usado:** D-007
+**Último ID usado:** D-009
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -17,6 +17,8 @@
 - D-005 — En VS-001 una letra de otro idioma simplemente no entra al texto, sin aviso; el aviso llega en VS-004 (F-006)
 - D-006 — Desde VS-004, una letra de otro idioma muestra un mensaje lindo al niño y borra todo el texto para escribirlo de nuevo
 - D-007 — El carácter 101 se ignora en silencio, sin aviso; se retira F-005 del roadmap (ajusta D-002)
+- D-008 — La app se publica como dirección web que se abre en el navegador del celular (sin tienda de apps)
+- D-009 — Dispositivo de las pruebas de punta a punta: iPhone con Safari; en el campo se apagan corrector y sugerencias del teclado
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -68,3 +70,17 @@
 - **Alternativas descartadas:** un aviso amable en VS-004.
 - **Estado:** Vigente
 - **Relacionada con:** A-001, D-002, VS-004
+
+### D-008 — 2026-11-25 — Cómo se publica la app
+- **Decisión:** la app es una página web que se abre con una dirección en el navegador del celular. La plataforma concreta y las tecnologías las propone el planner con documentación vigente y las aprueba el usuario.
+- **Razón:** sin tienda de apps ni cuentas de desarrollador; hay planes gratis; encaja con VS-006 (ícono y uso sin internet).
+- **Alternativas descartadas:** app de tienda (Google Play / App Store): más lenta y costosa.
+- **Estado:** Vigente
+- **Relacionada con:** VS-001, VS-006, C-010
+
+### D-009 — 2026-11-25 — Dispositivo de prueba y teclado
+- **Decisión:** las pruebas de punta a punta se hacen en iPhone con Safari, el celular que el usuario usa con los niños. El campo de texto apaga el corrector y las sugerencias del teclado.
+- **Razón:** regla 6 del roadmap (un solo dispositivo); el corrector podría cambiar lo que escribe el niño y los conteos.
+- **Alternativas descartadas:** Android con Chrome.
+- **Estado:** Vigente
+- **Relacionada con:** VS-001, C-009

@@ -28,7 +28,7 @@ description: Shared catalog of the project's edge cases — boundary-value and e
 - **Exactitud:** si una regla pide valores exactos, ninguna operación produce decimales sueltos y **la suma de las partes es igual al total**. Un reparto con residuo necesita una regla de redondeo decidida.
 - **Entrada del usuario:** con y sin separadores de miles, con símbolo, con espacios, con el separador decimal de su región y el de otra, letras, vacío y solo espacios.
 - **Salida:** el formato de la región del usuario, incluidos cero y negativos; ojo con los espacios que no se parten que ponen las funciones estándar de formato.
-- **Largo del texto** (A-001): 99, 100 y 101 caracteres; vacío y solo espacios (C-008, C-012). El carácter 101 (escrito o pegado) no entra, el conteo no cambia y **no se muestra ningún aviso** (D-007).
+- **Largo del texto** (A-001): 99, 100 y 101 caracteres; vacío y solo espacios (C-008, C-012). El carácter 101 (escrito o pegado) no entra, el conteo no cambia y **no se muestra ningún aviso** (D-007). Los espacios ocupan lugar en los 100; al pegar de más entra el comienzo hasta 100. Caracteres raros y tildes en dos piezas: C-014, C-015.
 - **Emojis y caracteres compuestos:** un emoji (incluso los de varias partes, como una familia o una bandera) cuenta como **1** otro, no como varias posiciones.
 - **La suma cuadra:** vocales + consonantes + números + otros = total de caracteres sin espacios.
 
@@ -54,6 +54,9 @@ description: Shared catalog of the project's edge cases — boundary-value and e
 | C-008 Espacios | espacios al inicio, al final y dobles; tabulación; salto de línea |
 | C-011 Letras de otros idiomas | à â ö ç ß y letras de otros alfabetos (α, ж): no entran al texto ni cambian el conteo; también al pegarlas. **VS-001 a VS-003:** sin aviso (D-005). **Desde VS-004:** mensaje lindo para el niño y se borra **todo** el texto (conteos en 0), también al pegar un texto mezclado como "façade" (D-006) |
 | C-012 Texto vacío | vacío y solo espacios: los 4 grupos en 0 |
+| C-014 Letras en dos piezas | á é í ó ú ü ñ en dos piezas cuentan igual que las normales y ocupan 1; "à" en dos piezas no entra nada |
+| C-015 Caracteres raros | 1️⃣, ² ½ ª º y tildes sueltas → otros; ٣ e invisibles sueltos no entran (las piezas invisibles de un emoji se conservan); espacios especiales no se cuentan |
+| C-016 Pegar texto mezclado | solo la letra de otro idioma no entra: "façade" → "faade" |
 
 ## 6. Catálogo y datos
 - **Nombres repetidos en grupos distintos:** la app debe distinguirlos siempre, también al buscar y al mostrar.

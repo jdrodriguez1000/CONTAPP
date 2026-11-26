@@ -14,4 +14,4 @@
 ## Presentación en pantalla
 | ID | Supuesto | Valor | Unidad | Fuente | Fecha | Estado | Confianza | Revisar el | Dónde se usa |
 |---|---|---|---|---|---|---|---|---|---|
-| A-001 | Largo máximo del texto que se puede escribir, para que el resultado quepa en la pantalla del celular | 100 | caracteres (un emoji cuenta como 1) | Propuesta del Manager, aceptada por el usuario | 2026-11-25 | Validado | Media | Al ver la primera pantalla en el celular | `edge-cases` §2–3 |
+| A-001 | Largo máximo del texto que se puede escribir, para que el resultado quepa en la pantalla del celular | 100 | caracteres (un emoji cuenta como 1; los espacios **sí** ocupan lugar; al pegar de más entra el comienzo hasta 100, sin aviso — D-007) | Propuesta del Manager, aceptada por el usuario | 2026-11-25 | Validado | Media | Al ver la primera pantalla en el celular | `edge-cases` §3, F-001 |
