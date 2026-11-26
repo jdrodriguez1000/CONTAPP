@@ -23,12 +23,12 @@ description: How the project's design system is structured and used — required
 
 ## 2. Tokens: del diseño al código
 - Los colores se nombran por su **uso**, no por cómo se ven: `primary`, `destructive`, `muted`, y los de los estados del dominio (p. ej. `status-ok`, `status-warning`, `status-over`).
-- **En el código**, cada token se define **una sola vez** (modo claro y oscuro) y los componentes lo usan por su nombre. COMPLETAR AL DECIDIR: dónde se definen los tokens y cómo se publican a la librería de estilos, con un ejemplo de una línea.
+- **En el código**, cada token se define **una sola vez** (modo claro y oscuro) y los componentes lo usan por su nombre. En este proyecto no hay librería de estilos (D-011): los tokens son variables CSS en `src/styles.css`, en `:root` y en `@media (prefers-color-scheme: dark)`. Ejemplo: `.count dd { color: var(--color-primary); }`.
 - **Prohibido en los componentes:** colores escritos a mano (`#e11d48`), tamaños o espacios arbitrarios y colores de la paleta base donde existe un token. Si falta un token, se pide; no se improvisa.
 - **En las maquetas** (`_project/design/F-XXX/mockup.html`), el designer usa los **mismos nombres de token** que tendrá el código, para que el paso de la maqueta a la app sea directo.
 
 ## 3. Componentes
-- **Primero la librería de componentes del stack**, ajustada con tokens y variantes. COMPLETAR AL DECIDIR: librería y comando para agregar un componente. Un componente propio solo si está aprobado en la tabla de componentes de `design-system.md`.
+- **Primero la librería de componentes del stack**, ajustada con tokens y variantes. En este proyecto no hay librería de componentes (D-011): cada componente es HTML con una clase CSS propia en `src/styles.css`, que usa solo tokens. Un componente propio solo si está aprobado en la tabla de componentes de `design-system.md`.
 - Un componente = **un solo lugar** en el código; las pantallas lo reutilizan, no lo copian.
 - Nombres de componentes en el idioma del código y del glosario de project-context.
 

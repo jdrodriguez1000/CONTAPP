@@ -18,10 +18,10 @@ description: How the security agent checks each OWASP row — read-only commands
 ## 2. Comandos (uno por vez)
 | Revisión | Comando | Notas |
 |---|---|---|
-| Secretos en el historial | COMPLETAR AL DECIDIR: p. ej. `gitleaks git --redact --no-banner` | Revisa **todos** los commits, no solo el último. |
-| Secretos en los archivos | COMPLETAR AL DECIDIR: p. ej. `gitleaks dir --redact --no-banner .` | Incluye archivos aún sin commit. |
-| Dependencias | COMPLETAR AL DECIDIR: auditoría completa y solo de producción | Lo que llega a producción pesa más. |
-| Origen de una dependencia | COMPLETAR AL DECIDIR: árbol de dependencias de un paquete | Quién trae un paquete vulnerable. |
+| Secretos en el historial | `gitleaks git --redact --no-banner` | Revisa **todos** los commits, no solo el último. |
+| Secretos en los archivos | `gitleaks dir --redact --no-banner .` | Incluye archivos aún sin commit. |
+| Dependencias | `npm audit` (completa) y `npm audit --omit=dev` (solo producción) | Lo que llega a producción pesa más. Hoy la app publicada no lleva dependencias: todas son de desarrollo (plan VS-001 §2.2; DT-001). |
+| Origen de una dependencia | `npm explain <paquete>` | Quién trae un paquete vulnerable. |
 
 - **El detector de secretos siempre enmascara.** Sin esa opción, imprime el secreto completo en pantalla. El hook debe exigirla.
 - Un código de salida de error puede significar "encontró algo" **o** "falló": lee el mensaje antes de concluir.
@@ -35,12 +35,12 @@ Cada riesgo trae las señales que valen en cualquier stack web; debajo, las del 
 - Las consultas filtran por el dueño (`id` **y** usuario de la sesión). Buscar consultas por `id` sin el filtro de usuario.
 - El usuario sale **siempre** de la sesión, nunca de un formulario, de la URL ni del cuerpo de la petición.
 - Al navegador solo llegan los campos necesarios, no la fila completa de la base.
-- COMPLETAR AL DECIDIR: señales propias del framework (cómo se declara una función de servidor, dónde se lee la sesión).
+- En este proyecto: no hay servidor, API ni sesión (C-010, D-011). Señal de alerta: cualquier archivo `api/` o función de Vercel nueva, o un `fetch` desde `src/`.
 
 **2. Inyección**
 - El constructor de consultas y las plantillas parametrizadas están bien.
 - SQL o comandos armados concatenando texto con datos del usuario → **Crítica**.
-- COMPLETAR AL DECIDIR: la forma "cruda" de la librería de base de datos que hay que buscar.
+- En este proyecto: no hay base de datos (C-010). Lo que sí hay que buscar: `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write` o `eval` con el texto escrito (debe mostrarse con `textContent` o `value`).
 
 **3. Secretos**
 - Variables que el framework publica al navegador (por prefijo o configuración) **nunca** llevan un secreto.
@@ -58,7 +58,7 @@ Cada riesgo trae las señales que valen en cualquier stack web; debajo, las del 
 - Expiración de la sesión: anota el valor y señálalo si nadie lo decidió.
 - Cookies seguras (`HttpOnly`, `Secure`, `SameSite`); orígenes de confianza solo con los dominios propios.
 - Cerrar sesión invalida la sesión en el servidor. Los errores de inicio de sesión no dicen si falló el usuario o la clave.
-- COMPLETAR AL DECIDIR: opciones de la librería de autenticación que hay que revisar y su valor por defecto.
+- En este proyecto: no aplica, no hay inicio de sesión (C-010).
 
 **6. Entradas del usuario**
 - Validación **en el servidor**, no solo en el navegador: valores en rango según las reglas del dominio, fechas válidas, textos con largo máximo.
@@ -69,7 +69,7 @@ Cada riesgo trae las señales que valen en cualquier stack web; debajo, las del 
 - Encabezados de seguridad: `Content-Security-Policy` o `frame-ancestors`, `Referrer-Policy`, `X-Content-Type-Options`.
 - En producción, los errores no muestran detalles internos y no hay mapas de código fuente públicos.
 - Las previews están protegidas y **nunca** usan la base de producción con datos reales.
-- COMPLETAR AL DECIDIR: dónde se configuran encabezados y protección de previews en la plataforma.
+- En este proyecto (Vercel): los encabezados se configuran en `vercel.json` (`headers`), que aún no existe. La protección de previews (Vercel Authentication) está **apagada a propósito** (D-013): no hay datos ni base, así que no es hallazgo; sí lo sería si la app empezara a guardar datos.
 
 **8. Privacidad en logs**
 - Buscar mensajes de log con objetos completos, datos personales o sensibles del dominio, correos, tokens o la sesión.

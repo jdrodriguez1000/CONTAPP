@@ -18,10 +18,10 @@ description: How the reviewer runs each check of its table — read-only command
 | Revisión | Comando | Notas |
 |---|---|---|
 | Duplicación | COMPLETAR AL DECIDIR: p. ej. `npx jscpd <codigo> --min-lines 10` | Reporte en consola. La duplicación en pruebas pesa menos que en el código. Si **una** de las copias está en el diff, el hallazgo es **del cambio**; si ninguna, **preexistente**. |
-| Complejidad | COMPLETAR AL DECIDIR: lint con la regla de complejidad ciclomática (máx. 10) | La regla debe estar activa desde la walking skeleton. Si no está, es un hallazgo: "revisión de complejidad incompleta". |
+| Complejidad | `npx eslint .` (regla `complexity: ["error", { max: 10 }]` en `eslint.config.js`, activa desde P-1) | La regla debe estar activa desde la walking skeleton. Si no está, es un hallazgo: "revisión de complejidad incompleta". |
 | Código sin uso | COMPLETAR AL DECIDIR: p. ej. `npx knip` | Si la herramienta distingue lo que llega a producción, córrela también así. |
-| Tipos | COMPLETAR AL DECIDIR: revisión de tipos que no genere archivos | Si el lenguaje no tiene tipos, la fila no aplica. |
-| Pruebas | COMPLETAR AL DECIDIR: comando de unitarias e integración | Confirma que están en verde antes de opinar sobre ellas. |
+| Tipos | `npx tsc --noEmit` | Si el lenguaje no tiene tipos, la fila no aplica. |
+| Pruebas | `npm run test:unit` (no hay pruebas de integración: sin base ni servidor) | Confirma que están en verde antes de opinar sobre ellas. |
 | Mutación | COMPLETAR AL DECIDIR: herramienta de mutación (sección 10) | |
 
 **Prohibido**, porque modifica archivos o escribe reportes: opciones como `--fix`, `--write`, `--output` / `-o`, `--output-file`, `--reporters`, `--config` / `-c`, y cualquier modo que "arregla" o "genera". El hook lo bloquea. Si una herramienta no corre, **no la reemplaces por tu opinión**: anótalo como revisión incompleta.

@@ -25,7 +25,7 @@ Un fallo cumple un disparador si es: **(a)** sin explicación al primer intento 
 
 ## 4. Cómo reproducir (uno por vez, desde la carpeta del código)
 - **Prueba intermitente:** repetirla muchas veces seguidas (p. ej. 20), **sin reintentos**, **de a una a la vez**, guardando la traza solo de las que fallan y parando en el primer fallo. Después, la misma en paralelo: si solo falla en paralelo, es competencia por la base o por el servidor.
-  COMPLETAR AL DECIDIR: el comando exacto (p. ej. `npx playwright test <archivo> --repeat-each 20 --retries 0 --workers 1 --trace retain-on-failure --output ../_project/debug/DBG-XXX/evidence/<corrida>`).
+  E2E: `npx playwright test <archivo> --project=iphone --repeat-each 20 --retries 0 --workers 1 --max-failures 1 --trace retain-on-failure --output _project/debug/DBG-XXX/evidence/<corrida>`. Unitaria: `npx vitest run <archivo>` repetida en un ciclo de la consola.
 - **Una prueba concreta:** filtrar por su `TC-XXX`. **Otro dispositivo o entorno:** el nombre del proyecto de pruebas que corresponda.
 - **Prueba de integración intermitente:** correr solo esa prueba varias veces y anotar cada resultado. Si usa una base remota, un corte de conexión no es un defecto de la app hasta que se demuestre.
 - **DNS o red:** `nslookup <host>` 2 o 3 veces antes de dar por caído un servicio.

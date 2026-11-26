@@ -6,7 +6,7 @@ description: How the coder applies strict TDD (red → green → refactor) to ea
 # Ciclo TDD del proyecto
 
 > Complementa la sección "Ciclo TDD" del coder. Aquí está el **cómo hacerlo bien**. Si algo de este skill choca con el plan aprobado, manda el plan: detente y repórtalo.
-> Molde de VEGU 2.0. Los ejemplos de código usan la herramienta de pruebas del proyecto cuando ya está decidida: COMPLETAR AL DECIDIR: herramienta de pruebas unitarias y forma de fijar la hora (p. ej. `vi.useFakeTimers()` en Vitest).
+> Molde de VEGU 2.0. Los ejemplos de código usan la herramienta de pruebas del proyecto cuando ya está decidida: unitarias con **Vitest** (D-011), junto al código (`src/*.test.ts`); fijar la hora no aplica porque la app no usa fechas (si algún día las usa: `vi.useFakeTimers()`).
 
 ## 1. Por qué TDD
 - La prueba se escribe **antes** que el código: así cada comportamiento nace con alguien que lo vigila.
