@@ -80,3 +80,41 @@ Nueva maqueta **C2 — Pizarra con fichas**. Tiene la paleta, la letra y el esti
 - **En una ficha, el número va sin insignia y en el color de acento.** Por qué: a igual alto, el número casi se duplica (26 → 48 px), y en VS-002 ese mismo número puede tomar el color de su grupo sin agregar otra caja.
 
 STATUS: DONE
+
+# Trabajo A y B — Sistema de diseño y F-001 — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Sistema de diseño (segunda etapa) y Diseño de feature
+
+## Resumen
+Escribí el sistema de diseño a partir de C2 "Pizarra con fichas" (D-010), con las 10 secciones obligatorias del skill y sin nombrar librerías. También completé la sección 5 de F-001 (boceto, estados, textos exactos, teclado, accesibilidad y anchos) y la maqueta definitiva con 5 estados en claro y oscuro. Apliqué las respuestas del usuario: "Contapp", "Escribe una palabra o frase", mayúscula automática apagada, el modo lo decide el celular y el campo va de 2 a 5 líneas. No toqué las propuestas ni las demás secciones de F-001.
+
+## Archivos creados o modificados
+- `_project/design-system.md` — **nuevo**: principios, 10 tokens de color con su contraste en claro y oscuro, letra, espacios y formas, 4 componentes (`AppTitle`, `TextField`, `CountGrid`, `CountCard`), valores del dominio, navegación, textos, accesibilidad e historial.
+- `_project/features/F-001.md` — **solo la sección 5**: quité la línea "Pendiente — designer.", agregué `Aprobación del diseño: Pendiente` y las subsecciones 5.1 a 5.7. La lista de necesidades del architect se conserva tal cual.
+- `_project/design/F-001/mockup.html` — **nuevo**: maqueta autocontenida con los tokens copiados de `design-system.md`. Estados: 1 Vacío · 2 Escribiendo "pingüino" con teclado · 3 "¡Hola, 2026! 😀" (2/2/4/4) · 4 Límite de 100 (35/40/3/3) · 5 Comprobación a 320 × 568.
+- Este reporte (sección agregada al final).
+
+## Cómo revisar
+- Abre `_project/design/F-001/mockup.html` con doble clic. Arriba hay un resumen y debajo los 5 estados, con claro a la izquierda y oscuro a la derecha.
+- Compara los textos de la maqueta con la tabla 5.4 de F-001: deben ser idénticos, letra por letra.
+- Revisa en la tabla 5.3 de F-001 que los estados cubren todo lo que esperas, en especial el 5 (rechazo silencioso: no cambia nada en pantalla).
+- **Lo que no verifiqué:** no pude abrir los archivos en un navegador. Que todo cabe (fichas sobre el teclado, frase de 100 en 5 líneas, "Consonantes" a 320 px) lo comprobé sumando medidas. Pido al Manager que abra la maqueta y confirme que nada se corta.
+
+## Qué agregué al diseño (más allá de C2), para que el usuario lo vea
+- **Estado 3, frase con números, signos y emoji:** muestra las 4 fichas con valores distintos de 0 (TC-015).
+- **Ancho mínimo de 320 px:** con menos de 360 px, el nombre baja a 18 px y el número a 44 px. Si no, "Consonantes" no cabe en su ficha. Es una regla del skill (funcionar desde 320 px), no una pantalla nueva.
+- **Ancho máximo de 480 px**, centrado, para computador y celular girado. El ajuste fino queda para VS-002.
+- **Accesibilidad:** cada ficha se lee "Vocales, 4", y los conteos **no** se anuncian solos con cada tecla (sería ruidoso para un lector de pantalla).
+- **Letra del campo nunca menor a 16 px**, para que Safari no acerque la pantalla al tocar el campo.
+
+## Límite conocido (para el usuario y el architect)
+- Con el teclado abierto, las 4 fichas se ven completas mientras el campo tiene 2 líneas. Si crece a 3 o más, la segunda fila (Números, Otros) empieza a quedar detrás del teclado. Es el borde que ya espera en VS-002 ("Teclado abierto tapando los conteos"); no lo resolví aquí para no agrandar VS-001.
+
+## Preguntas para el usuario
+- Ninguna nueva. Solo falta su aprobación del diseño: la línea `Aprobación del diseño: Pendiente` de F-001 la cambia él (el Manager la registra).
+
+## Decisiones o lecciones propuestas
+- **Regla de pantallas angostas:** con menos de 360 px de ancho, `--font-size-group` = 18 px y `--font-size-count` = 44 px. Por qué: garantiza que "Consonantes" quepa a 320 px sin cortarse.
+- **Los conteos no se anuncian solos en VS-001.** Por qué: evita ruido para lectores de pantalla; se revisa si alguien lo pide.
+- **Para el coder, cuando se decida el stack:** los tokens se definen una sola vez y el modo se elige con la preferencia del sistema (en CSS, `prefers-color-scheme`). La maqueta los fuerza con clases solo para mostrarlos lado a lado.
+
+STATUS: DONE

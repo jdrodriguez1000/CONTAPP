@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-25
-**Último ID usado:** D-009
+**Último ID usado:** D-010
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -19,6 +19,7 @@
 - D-007 — El carácter 101 se ignora en silencio, sin aviso; se retira F-005 del roadmap (ajusta D-002)
 - D-008 — La app se publica como dirección web que se abre en el navegador del celular (sin tienda de apps)
 - D-009 — Dispositivo de las pruebas de punta a punta: iPhone con Safari; en el campo se apagan corrector y sugerencias del teclado
+- D-010 — Estilo visual: propuesta C2 "Pizarra con fichas" (claro y oscuro, sigue el modo del celular); nombre "Contapp"; mayúscula automática apagada
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -84,3 +85,10 @@
 - **Alternativas descartadas:** Android con Chrome.
 - **Estado:** Vigente
 - **Relacionada con:** VS-001, C-009
+
+### D-010 — 2026-11-26 — Estilo visual de la app
+- **Decisión:** la base del sistema de diseño es la propuesta C2 "Pizarra con fichas" (`_project/design/propuestas/propuesta-c2.html`): colores y letra de C, 4 grupos en fichas 2 × 2 con el número grande arriba, borde punteado. Modo claro y oscuro, siguiendo el modo del celular sin botón. Nombre en pantalla "Contapp"; etiqueta "Escribe una palabra o frase"; campo de 2 a 5 líneas; mayúscula automática apagada (además del corrector, D-009).
+- **Razón:** elección del usuario tras comparar las propuestas A, B, C y C2.
+- **Alternativas descartadas:** A "Cuaderno limpio", B "Recreo", C "Pizarra" (lista con insignias).
+- **Estado:** Vigente
+- **Relacionada con:** D-009, VS-001, VS-002
