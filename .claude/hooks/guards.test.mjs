@@ -75,7 +75,8 @@ function agentGuardArgs(agent, hook) {
   const definition = readFileSync(path.join(PROJECT, ".claude", "agents", `${agent}.md`), "utf8");
   const line = definition.split(/\r?\n/).find((l) => l.includes(hook));
   assert.ok(line, `${agent}.md no usa ${hook}`);
-  const afterHook = line.slice(line.indexOf(hook) + hook.length);
+  // Skip the hook's name and the quote that closes its path, so the pairs of quotes line up.
+  const afterHook = line.slice(line.indexOf(hook) + hook.length + 1);
   return [...afterHook.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
 }
 
