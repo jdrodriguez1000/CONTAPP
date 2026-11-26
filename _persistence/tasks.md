@@ -13,11 +13,9 @@
 ## Índice (tareas abiertas, por prioridad)
 | ID | Tarea | Prioridad | Estado | Depende de |
 |---|---|---|---|---|
-| T-001 | Entendimiento del proyecto (Fase 0) | Alta | Backlog | — |
 | T-002 | Primera vertical slice: la walking skeleton | Alta | Backlog | T-001 |
 
 ## Detalle
 | ID | Tarea | Prioridad | Estado | Depende de | Nota |
 |---|---|---|---|---|---|
-| T-001 | Entendimiento del proyecto (Fase 0) | Alta | Backlog | — | El Manager, en este orden: (1) explica al usuario cómo funciona la memoria y los protocolos de inicio y cierre; (2) le pregunta qué es el proyecto, para quién es, qué problema resuelve y qué no hará o no está incluido; (3) completa con el usuario los `COMPLETAR:` (`AGENTS.md`, memoria, reglas, skills); los `COMPLETAR AL DECIDIR:` del stack se quedan: se llenan cuando el Manager decide cada pieza; (4) ajusta `AGENTS.md` y lo demás que haga falta. Termina cuando el usuario confirma que el Manager entiende lo que se va a construir y no queda ninguna marca `COMPLETAR:` por llenar: ``grep -rnE '(^|[^`])COMPLETAR[:]' . --exclude-dir=.git`` no devuelve nada. Las menciones entre comillas invertidas y las marcas `COMPLETAR AL DECIDIR:` no cuentan |
-| T-002 | Primera vertical slice: la walking skeleton | Alta | Backlog | T-001 | Lo mínimo corriendo de punta a punta, de verdad (PI-4), siguiendo el flujo de `orchestrator-playbook` |
+| T-002 | Primera vertical slice: la walking skeleton | Alta | Backlog | T-001 | VS-001 — Contar en el celular (F-001), definida en `_project/roadmap.md`. Lo mínimo corriendo de punta a punta, de verdad (PI-4), siguiendo el flujo de `orchestrator-playbook`. T-001 ya está completada (2026-11-25) |
