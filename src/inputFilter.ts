@@ -2,8 +2,12 @@ export const MAX_TEXT_LENGTH = 100; // A-001
 
 export type InputResult = { text: string; cursor: number };
 
-// An emoji comes in whole, with its invisible pieces: pictographs, flags and keycaps.
-const EMOJI = /\p{Extended_Pictographic}|\p{Regional_Indicator}|\u{20E3}/u;
+// The only two free passes, and they are exact (L-023). A number key is just these pieces:
+const NUMBER_KEY = /^[0-9#*]\u{FE0F}?\u{20E3}/u;
+// An emoji starts at a pictograph or at a flag letter.
+const EMOJI_START = /\p{Extended_Pictographic}|\p{Regional_Indicator}/u;
+// Not part of an emoji: letters and combining marks (U+20E3 too). U+FE0F is its own piece.
+const STUCK_TO_EMOJI = /(?![\u{FE00}-\u{FE0F}]|\p{Extended_Pictographic})[\p{L}\p{M}]/gu;
 // Format characters, controls (but tab and line breaks) and variation selectors.
 const INVISIBLE = /(?![\t\n\r])(?:\p{Cc}|\p{Cf}|[\u{FE00}-\u{FE0F}])/gu;
 const LETTER = /\p{L}/u;
@@ -34,11 +38,20 @@ function keepAllowed(character: string): string {
   return character.replace(MARKS, "");
 }
 
+function filterPlain(text: string): string {
+  // NFC again: without the invisible, a letter and its mark can join (C-014).
+  return keepAllowed(text.replace(INVISIBLE, "").normalize("NFC"));
+}
+
 // What gets in from one character: all of it, a clean version or nothing ("").
 function filterGrapheme(grapheme: string): string {
-  if (EMOJI.test(grapheme)) return grapheme;
-  // NFC again: without the invisible, a letter and its mark can join (C-014).
-  return keepAllowed(grapheme.replace(INVISIBLE, "").normalize("NFC"));
+  const numberKey = NUMBER_KEY.exec(grapheme);
+  if (numberKey) return numberKey[0];
+  const emojiAt = grapheme.search(EMOJI_START);
+  if (emojiAt === -1) return filterPlain(grapheme);
+  // What was glued before the emoji (a "prepend" character) is checked on its own.
+  const emoji = grapheme.slice(emojiAt).replace(STUCK_TO_EMOJI, "");
+  return filterPlain(grapheme.slice(0, emojiAt)) + emoji;
 }
 
 // Where the new part starts: what did not change before the cursor, moved back to the
