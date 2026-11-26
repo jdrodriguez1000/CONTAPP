@@ -285,9 +285,13 @@ export function applyInput(previousText: string, nextText: string, cursor: numbe
   1. Separa `nextText` en: lo que estaba antes del cambio, **lo nuevo** (lo que se escribió o pegó, que termina en `cursor`) y lo que estaba después. El corte siempre cae en el borde de un grafema completo, nunca en medio de un emoji o de una letra con tilde.
   2. Si no hay nada nuevo (se borró), acepta `nextText` tal cual.
   3. Filtra **solo lo nuevo** (P-7), grafema por grafema, después de pasarlo a NFC:
-     - Un grafema que contiene un **emoji** (propiedad `Extended_Pictographic`, indicador regional de bandera o el signo de tecla `U+20E3` de `1️⃣`) **entra completo**, con sus piezas invisibles.
+     - **Pase completo, exacto (L-023; ronda 1, D-018):** solo dos formas entran completas, con sus piezas invisibles:
+       - **Tecla de número:** exactamente `[0-9#*]` + `U+FE0F` opcional + `U+20E3` (`1️⃣`). En cualquier otro lugar, `U+20E3` es un signo combinable y se trata como tal (abajo).
+       - **Emoji:** el grafema **empieza** por un carácter `Extended_Pictographic` o un indicador regional de bandera (`😀`, `👨‍👩‍👧`, `🇨🇴`). Si delante del emoji vienen caracteres que se anteponen (Prepend), esos se separan y se revisan con las reglas normales; el emoji entra.
+       - **No debe pasar** (ejemplos negativos): `ç⃣`, `α⃣`, `ж⃣`, `٣⃣` → no entran; con `c` escrita, pegar `U+0327 U+20E3` → sigue `c`; con `1` escrito, pegar `U+20E3` → sigue `1`; `U+0D4E 😀` o `U+0600 😀` → entra solo `😀`.
      - En los demás, se quitan los **invisibles** (categoría `Cf`, p. ej. `U+200B`, `U+200D`, `U+2060`, `U+FEFF`, `U+00AD`; caracteres de control salvo tabulación `U+0009`, salto de línea `U+000A` y retorno `U+000D`; selectores de variante `U+FE00`–`U+FE0F`). Si no queda nada, no entra.
-     - **No entra** el grafema que: tiene una letra que no es del alfabeto español (C-011; se permiten `a–z`, `ñ`, `á é í ó ú ü` en mayúscula y minúscula, y `ª º`); empieza por un signo combinable suelto (p. ej. `U+0301` solo); o tiene un dígito que no es `0`–`9` (`٣`, C-015).
+     - **No entra** el grafema que: tiene una letra que no es del alfabeto español (C-011; se permiten `a–z`, `ñ`, `á é í ó ú ü` en mayúscula y minúscula, y `ª º`); empieza por un signo combinable suelto (p. ej. `U+0301` solo); o tiene un dígito que no es `0`–`9` (`٣`, C-015). La comparación de letras es exacta, sin plegar mayúsculas (`ſ` no es `s`).
+     - **Signos combinables (D-018):** tras NFC, si el grafema tiene una **letra** como base y le quedan signos combinables (no forman una letra del español), **no entra nada** (C-014, "à" en dos piezas). Si la base **no es letra** (espacio, dígito, signo, símbolo), se quitan todos los signos combinables y entra la base: espacio + `U+0300` → espacio; `1` + `U+0301` → `1`; `?` + 2.000 `U+0301` → `?`.
      - Todo lo demás entra en el mismo orden (C-016).
   4. Tope (P-8): de lo nuevo ya filtrado entra solo el comienzo, hasta que el texto completo llegue a `MAX_TEXT_LENGTH` grafemas.
   5. `text` = antes + lo nuevo aceptado + después; `cursor` = largo de (antes + lo nuevo aceptado). Si no entró nada, `text` es igual a `previousText` y el cursor queda donde empezaba lo nuevo.
@@ -345,8 +349,15 @@ export function applyInput(previousText: string, nextText: string, cursor: numbe
 | TC-040 | P-7 | E2E | tester |
 | TC-041 | P-7 | E2E + unitaria | tester + coder |
 | TC-042 | P-8 | E2E | tester |
+| TC-043 | P-6 (ronda 1) | E2E | tester |
+| TC-044 | P-7 (ronda 1) | E2E | tester |
+| TC-045 | P-7 (ronda 1) | E2E + unitaria | tester |
+| TC-046 | P-7 (ronda 1) | E2E + unitaria | tester |
+| TC-047 | P-7 (ronda 1) | E2E + unitaria | tester |
+| TC-048 | P-7 (ronda 1) | E2E + unitaria | tester |
+| TC-049 | P-7, P-8 (ronda 1) | Unitaria | tester |
 
-Los 42 casos quedan cubiertos. Cada restricción dura citada por F-001 tiene al menos un caso (trazabilidad del architect). C-013 en el código la revisa el reviewer.
+Los 42 casos quedan cubiertos; TC-043 a TC-049 vienen de la ronda 1 (`reports/clasificacion-9c.md`). Cada restricción dura citada por F-001 tiene al menos un caso (trazabilidad del architect). C-013 en el código la revisa el reviewer.
 
 ---
 
