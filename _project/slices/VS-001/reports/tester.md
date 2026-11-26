@@ -464,3 +464,38 @@ El paquete solo nombraba el primero. El segundo también quedó contrario a la d
 Ninguna pregunta pendiente. Fallo sin explicar: ninguno.
 
 STATUS: DONE
+
+## Ronda 1 — ajuste de TC-047 (selección)
+**Fecha:** 2026-11-26 · Plan §5.1 y §5.2 del commit `8c81659`
+
+Las 4 unitarias de TC-047 llamaban `applyInput` con el texto completo como `previousText`. La función no recibe la selección, así que pegar "aç" sobre "as" y escribir "ç" sobre "s" le daban la misma entrada: no se podían cumplir. Era un problema entre mi prueba y el contrato de ese momento. Con el contrato precisado (aprobado por el usuario el 2026-11-26), la pantalla pasa `previousText` sin la parte seleccionada.
+
+### Qué cambié
+Solo el cuerpo de la prueba de TC-047 en `tests/unit/round1.test.ts` (sirve para las 4 filas), con un comentario. Los textos esperados, cursores y conteos no cambiaron; los cursores coinciden con §5.2, paso 5 (largo de lo anterior + lo nuevo aceptado). No toqué las E2E, las demás pruebas ni la función auxiliar `pasteInto`.
+
+| Caso (TC-047, unitaria, C-016) | Llamada: `applyInput(previousText, nextText, cursor)` | Espera | Resultado |
+|---|---|---|---|
+| "casa", "as" ← "aç" | ("ca", "caça", 3) | "caa", cursor 2, 2/1/0/0 | Verde |
+| "casa" entera ← "caç" | ("", "caç", 3) | "ca", cursor 2, 1/1/0/0 | Verde |
+| "banana" entera ← "ban٣" | ("", "ban٣", 4) | "ban", cursor 3, 1/2/0/0 | Verde |
+| 100 "a" ← 10 "a" + "ç" | ("", 10 "a" + "ç", 11) | 10 "a", cursor 10, 10/0/0/0 | Verde |
+
+El paquete ponía cursor 3 en la llamada de "banana" como resultado ("ban"): la entrada es 4 (después de "٣") y el cursor que devuelve es 3.
+
+### Cifras (corridas completas de mis dos archivos)
+| Comando | Total | En verde | En rojo |
+|---|---|---|---|
+| `npx vitest run tests/unit/round1.test.ts` | 66 | 66 | 0 |
+| `npx playwright test tests/e2e/round1.spec.ts --project=iphone` | 43 | 43 | 0 |
+
+- **Sin rojo para la forma nueva:** el código ya tenía las correcciones, así que no vi fallar estas 4 llamadas contra el código anterior. Con `previousText` sin la selección, tres de ellas parten del campo vacío: comprueban el filtrado de lo pegado, no el reemplazo de la selección.
+- **Quién cubre la selección:** las E2E de TC-047 (4 casos y 1 control), que seleccionan en el campo y pegan. Pasan.
+- **Cuando no entra nada sobre una selección:** es de la pantalla y estas unitarias no lo cubren. La prueba es "TC-018 — borde" de `tests/e2e/foreign-letters.spec.ts`, que no corrí en este ajuste (no estaba en el encargo). Comprueba que el texto y los conteos no cambian; **no** comprueba cómo quedan la selección ni el cursor.
+- **`npm run check`: sin verificar** (L-012); lo corre el Manager.
+- Regresión: la CI (la verifica el Manager). No hice commits ni guardé archivos en `evidence/`.
+
+### Preguntas y fallo sin explicar
+- **Redacción del plan (para el Manager; no bloquea este ajuste):** en un rechazo total sobre una selección, §5.1 dice que "la selección se quita y el cursor queda donde empezaba lo nuevo", y §5.2 dice que "la pantalla deja el texto como estaba, con la selección". Se puede leer como "con el texto seleccionado todavía ahí" (compatible con §5.1) o como "todavía marcado como seleccionado" (contrario). Recomiendo escribir en §5.2 "con la parte que estaba seleccionada" si vale §5.1. Si se quiere comprobar la selección o el cursor en ese caso, primero hay que dejar una sola lectura.
+- Fallo sin explicar: ninguno.
+
+STATUS: DONE

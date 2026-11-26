@@ -176,8 +176,10 @@ describe("TC-047 — pasting over a selection something that starts like it (C-0
       10,
       "10/0/0/0",
     ],
-  ])("TC-047 — %s", (_name, previous, from, to, clip, text, cursor, counts) => {
-    expectAccepted(pasteInto(previous, clip, from, to), text, counts, cursor);
+  ])("TC-047 — %s", (_name, written, from, to, clip, text, cursor, counts) => {
+    // Called as the screen does (plan §5.2): previousText comes without the selected part.
+    const unselected = written.slice(0, from) + written.slice(to);
+    expectAccepted(pasteInto(unselected, clip, from), text, counts, cursor);
   });
 });
 
