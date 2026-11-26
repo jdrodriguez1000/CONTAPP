@@ -87,7 +87,34 @@ test("tester bash guard: may run npm run check, but not with --fix nor chained",
   assert.equal(fix.code, 2);
   assert.match(fix.stderr, /prohibida/);
   assert.equal(run("guard-bash-allowlist.mjs", rules, bash("npm run check && rm -rf src")).code, 2);
+  // What it could already run must still be allowed.
   assert.equal(run("guard-bash-allowlist.mjs", rules, bash("npm run test:unit")).code, 0);
+  assert.equal(
+    run("guard-bash-allowlist.mjs", rules, bash("npx playwright test tests/e2e/typing.spec.ts --project=iphone")).code,
+    0
+  );
+});
+
+test("tester bash guard: options that write files, load code or switch project are blocked (MANT-001 S1)", () => {
+  const rules = agentGuardArgs("tester", "guard-bash-allowlist.mjs");
+  const attempts = [
+    "npm run check -- -- --fix", // a second "--" really reaches eslint
+    "npm run check -- -- --fix=true",
+    "npm run check -- -- -o tests/report.txt", // writes a file anywhere
+    "npm run check -- -- --output-file=src/x.ts",
+    "npm run check -- -- -c tests/evil.config.js", // loads and runs a JS file
+    "npm run check -- -- --config tests/evil.config.js",
+    "npm run check -- -- --cache",
+    "npm run check -- -- --cache-location src/x",
+    "npm run check -- -- -f json", // json prints the source of src/
+    "npm run check -- -- --format json",
+    "npm run check --prefix tests", // runs another package.json's "check"
+  ];
+  for (const command of attempts) {
+    const result = run("guard-bash-allowlist.mjs", rules, bash(command));
+    assert.equal(result.code, 2, command);
+    assert.match(result.stderr, /prohibida/, command);
+  }
 });
 
 test("every guard fails closed on unreadable input", () => {
