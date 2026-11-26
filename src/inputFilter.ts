@@ -1,4 +1,10 @@
+export const MAX_TEXT_LENGTH = 100; // A-001
+
 export type InputResult = { text: string; cursor: number };
+
+export function textLength(text: string): number {
+  return text.length;
+}
 
 // An emoji comes in whole, with its invisible pieces: pictographs, flags and keycaps.
 const EMOJI = /\p{Extended_Pictographic}|\p{Regional_Indicator}|\u{20E3}/u;

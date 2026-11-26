@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { applyInput } from "./inputFilter";
+import { applyInput, MAX_TEXT_LENGTH, textLength } from "./inputFilter";
 
 // Combining marks, invisible characters and composed emojis are built from their codes
 // (L-002, L-009): in an editor they cannot be told apart.
@@ -7,6 +7,7 @@ const GRAVE = String.fromCharCode(0x0300);
 const ACUTE = String.fromCharCode(0x0301);
 const CIRCUMFLEX = String.fromCharCode(0x0302);
 const TILDE = String.fromCharCode(0x0303);
+const DIAERESIS = String.fromCharCode(0x0308);
 const CEDILLA = String.fromCharCode(0x0327);
 const ZERO_WIDTH_SPACE = String.fromCharCode(0x200b);
 const ZERO_WIDTH_JOINER = String.fromCharCode(0x200d);
@@ -106,5 +107,64 @@ describe("applyInput: the cursor and what was already written (P-7)", () => {
 
   test("P-7: replacing an emoji by one that starts with the same code never splits it", () => {
     expect(insert(THUMB_UP, THUMB_DOWN, 0, THUMB_UP.length)).toEqual(accepted(THUMB_DOWN));
+  });
+});
+
+describe("textLength: characters as a person sees them (P-8)", () => {
+  test.each([
+    { name: "the empty text", text: "", length: 0 },
+    { name: "TC-032: a + combining acute", text: `a${ACUTE}`, length: 1 },
+    { name: "TC-032: canción in two pieces", text: `cancio${ACUTE}n`, length: 7 },
+    { name: "TC-039: u + combining diaeresis", text: `u${DIAERESIS}`, length: 1 },
+    { name: "TC-039: n + combining tilde", text: `n${TILDE}`, length: 1 },
+    { name: "TC-039: pingüino in two pieces", text: `pingu${DIAERESIS}ino`, length: 8 },
+    { name: "TC-039: Ñandú in two pieces", text: `N${TILDE}andu${ACUTE}`, length: 5 },
+    { name: "spaces, a tab and a line break", text: "a b\tc\n", length: 6 },
+    { name: "a family, a flag and a keycap", text: FAMILY + FLAG + KEYCAP_ONE, length: 3 },
+  ])("$name has length $length", ({ text, length }) => {
+    expect(textLength(text)).toBe(length);
+  });
+});
+
+describe("applyInput: 100 characters at most (P-8)", () => {
+  const a = (times: number) => "a".repeat(times);
+
+  test("P-8: the limit is 100", () => {
+    expect(MAX_TEXT_LENGTH).toBe(100);
+  });
+
+  test("P-8: the character number 100 gets in and the 101 does not", () => {
+    expect(insert(a(99), "b")).toEqual(accepted(`${a(99)}b`));
+    expect(insert(a(100), "b")).toEqual(accepted(a(100)));
+  });
+
+  test("P-8: pasting too much keeps the beginning of what was pasted", () => {
+    expect(insert("", `${a(97)}b7?z`)).toEqual(accepted(`${a(97)}b7?`));
+  });
+
+  test("TC-030: pasting xyz in the middle of 98 a keeps xy", () => {
+    expect(insert(a(98), "xyz", 49)).toEqual(accepted(`${a(49)}xy${a(49)}`, 51));
+  });
+
+  test("TC-030: pasting xyz over 2 selected of 100 keeps xy", () => {
+    expect(insert(a(100), "xyz", 10, 12)).toEqual(accepted(`${a(10)}xy${a(88)}`, 12));
+  });
+
+  test("P-8: with 100, typing in the middle changes nothing", () => {
+    expect(insert(a(100), "c", 50)).toEqual(accepted(a(100), 50));
+  });
+
+  test("P-8: an emoji takes one place and is never cut in half", () => {
+    expect(insert(a(99), FAMILY + FLAG)).toEqual(accepted(a(99) + FAMILY));
+  });
+
+  test("P-8: what the filter rejects takes no place", () => {
+    expect(insert("", `${"ç".repeat(10)}${a(99)}${"ß".repeat(10)}bc`)).toEqual(
+      accepted(`${a(99)}b`),
+    );
+  });
+
+  test("P-8: 101 two-piece letters keep 100 whole ones", () => {
+    expect(insert("", `a${ACUTE}`.repeat(101))).toEqual(accepted("á".repeat(100)));
   });
 });
