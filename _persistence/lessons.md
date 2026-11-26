@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-26
-**Último ID usado:** L-020
+**Último ID usado:** L-026
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -15,6 +15,7 @@
 ## Índice por categoría (lecciones vigentes)
 
 ### Enseñanza y conteo
+- L-023 — Un "pase libre" en un filtro (p. ej. "si trae emoji, entra completo") se define por lo que el carácter es en total, no por una parte
 - L-001 — Una regla dicha en negativo ("nada de X") se confirma: ¿X no se permite o solo no cuenta en su grupo?
 
 ### Producto y estructura
@@ -31,11 +32,16 @@
 - L-011 — La guarda de Bash del coder bloquea `;` en los mensajes de commit → VEGU
 - L-015 — El espacio con el teclado abierto en el iPhone se mide restando también las barras de Safari (dirección y "⌃ ⌄ Listo"), no solo el teclado
 - L-018 — Caracteres especiales en el código de la app (no solo en pruebas): escribirlos como `\u{...}` y buscar `\p{Mn}`, `\p{Me}`, `\p{Cf}` después (repite L-009)
+- L-024 — No usar la bandera `i` con `u` en una lista cerrada de letras: acepta letras que se pliegan ("ſ" → "s")
+- L-026 — La dirección única de la preview de un commit sale con `vercel ls contapp -m githubCommitSha=<sha completo>`
 - L-019 — Una corrida con muchos rojos se corta en la terminal del agente: correr por grupos con `--grep` para leer la razón de cada fallo → VEGU
 
 ### Datos y supuestos
 
 ### Proceso y memoria
+- L-021 — El rojo de una prueba sobre la versión publicada se corre contra la versión que muestra la pantalla sin el comportamiento, no por número de lote → VEGU
+- L-022 — Antes de planear la CI, revisar los minutos de GitHub Actions de la cuenta (son compartidos entre repositorios privados) → VEGU
+- L-025 — En una pantalla que reescribe un campo, atacar también "volver atrás" y deshacer/rehacer: escribir y pegar no pasan por el historial del navegador → VEGU
 - L-003 — Todo mensaje al usuario va en español de Colombia, también los que siguen a un reporte de agente en otro idioma → VEGU
 - L-005 — Para elegir el sistema de diseño, pedir varias propuestas (claro y oscuro) y dejar que el usuario combine: salió C2 de C + B → VEGU
 - L-008 — La guarda de Bash de los agentes bloquea `<` y `>`: sus commits salen sin `Co-Authored-By` → VEGU
@@ -245,3 +251,63 @@
 - **Cómo aplicarla:** el tester lo aplica en toda captura de un límite de tamaño. → VEGU
 - **Estado:** Vigente
 - **Relacionada con:** `tests/e2e/captures.spec.ts`, propuesta del designer (lote 4)
+
+### L-021 — 2026-11-26 — Contra qué versión se corre el rojo de una prueba publicada
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el plan pedía el rojo de P-10 contra la preview del lote 1, que no tiene campo. El tester avisó que la prueba fallaría por la pantalla y no por el conteo; se usó la del lote 2 (`bc098a3`) y TC-002 falló justo en `counts after "c"`.
+- **Lección:** se elige la versión por lo que muestra (la pantalla completa sin el comportamiento), no por el número de lote.
+- **Por qué importa:** un rojo que falla antes de llegar a lo que se quiere demostrar no prueba nada (PI-5).
+- **Cómo aplicarla:** el planner lo escribe así en el plan; el Manager revisa la razón del rojo antes de aceptarlo. → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** plan VS-001 §P-10, propuesta del tester (lote 5)
+
+### L-022 — 2026-11-26 — Los minutos de GitHub Actions son de la cuenta
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** al empezar P-9 el usuario recordó que otro proyecto (BankApp) ya había usado 1.986 de los 2.000 minutos gratis de noviembre; la CI de CONTAPP no habría alcanzado. Se resolvió volviendo público el repositorio (D-016).
+- **Lección:** antes de planear la CI se revisa el consumo de la cuenta (`gh api users/<usuario>/settings/billing/usage`) y la visibilidad del repositorio.
+- **Por qué importa:** la CI es la red de seguridad de la fusión; si se queda sin minutos, bloquea la entrega.
+- **Cómo aplicarla:** el planner lo incluye en el paso de CI de la walking skeleton. → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** D-016, plan VS-001 §P-9
+
+### L-023 — 2026-11-26 — Un pase libre en un filtro debe ser exacto
+- **Categoría:** Enseñanza y conteo
+- **Etapa:** Construcción
+- **Qué pasó:** el filtro dejaba entrar completo todo carácter que tuviera algo de emoji (U+20E3); por ahí entraron "ç⃣" y "α⃣", y una "c" escrita se volvió "ç⃣" (BRK-C-1 a C-3, BRK-U-3).
+- **Lección:** un pase libre se define por lo que el carácter es en total, no porque contenga una parte permitida.
+- **Por qué importa:** lo que va pegado a la parte permitida (letras, marcas, invisibles) entra sin revisar y rompe C-011 y C-015.
+- **Cómo aplicarla:** el planner escribe las reglas de pase completo con ejemplos de lo que NO debe pasar; el tester los prueba.
+- **Estado:** Vigente
+- **Relacionada con:** `src/inputFilter.ts`, plan §5.2, propuesta del breaker-code
+
+### L-024 — 2026-11-26 — Bandera `i` en listas cerradas de letras
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** `SPANISH_LETTER` usaba las banderas `iu`; la "ſ" (U+017F) se pliega a "s" y entró (BRK-C-4, BRK-U-6).
+- **Lección:** en una lista cerrada de letras se escriben mayúsculas y minúsculas una por una, sin `i`.
+- **Por qué importa:** con `u`, `i` acepta letras de otros alfabetos que se pliegan a las de la lista.
+- **Cómo aplicarla:** el coder no usa `i` en expresiones de letras permitidas; el reviewer lo revisa.
+- **Estado:** Vigente
+- **Relacionada con:** C-011, propuesta del breaker-code
+
+### L-025 — 2026-11-26 — Atacar "volver atrás" y deshacer/rehacer
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** las pruebas de escribir, pegar y recargar pasaban, pero volver atrás restauraba el texto con conteos en 0 (BRK-U-1) y rehacer tras un rechazo metía la "ç" y repetía el texto (BRK-U-2).
+- **Lección:** en una pantalla que reescribe un campo, el architect incluye "volver atrás" y deshacer/rehacer en las reglas y el tester los prueba, comparando con un campo sin la app.
+- **Por qué importa:** el navegador puede cambiar el campo sin pasar por el camino que se probó.
+- **Cómo aplicarla:** agregarlo al catálogo `edge-cases` (uso de la app). → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** D-017, CA-7, propuestas del breaker-user
+
+### L-026 — 2026-11-26 — Dirección única de la preview de un commit
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** para el rojo de P-10 hacía falta la preview de un commit viejo; la API de despliegues de GitHub no la tiene (L-007).
+- **Lección:** `vercel ls contapp -m githubCommitSha=<sha completo>` devuelve la dirección única de ese commit (abre sin iniciar sesión, D-013).
+- **Por qué importa:** la dirección de la rama cambia con cada push; para comparar versiones se usa la única.
+- **Cómo aplicarla:** el Manager la usa para rojos sobre versiones publicadas.
+- **Estado:** Vigente
+- **Relacionada con:** L-007, D-013, `evidence/published/p10-publicada.md`

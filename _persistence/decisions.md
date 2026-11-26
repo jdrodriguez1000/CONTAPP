@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-26
-**Último ID usado:** D-015
+**Último ID usado:** D-018
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -25,6 +25,9 @@
 - D-013 — Previews de Vercel sin protección (abren sin iniciar sesión); producción en `contapp-tawny.vercel.app`
 - D-014 — Medidas fijas aprobadas sin token en `design-system.md` §4; cada una se vuelve token al usarse en un segundo lugar
 - D-015 — En VS-001 no se cambia la pantalla porque el teclado tape la 2.ª fila de fichas (medido en el iPhone); se resuelve en VS-002 y F-001 §5.5 lleva la medida real
+- D-016 — El repositorio `jdrodriguez1000/CONTAPP` es público (minutos de GitHub Actions gratis; la bolsa privada la usa BankApp)
+- D-017 — Al volver atrás a la app (o restaurarse la página), el campo queda vacío y los 4 conteos en 0, como al recargar
+- D-018 — Una tilde combinable pegada sola entra solo si forma con la letra anterior una letra del español; si no, no entra y lo demás sí (amplía C-015)
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -132,3 +135,24 @@
 - **Alternativas descartadas:** un paso pequeño de diseño y CSS dentro de VS-001.
 - **Estado:** Vigente
 - **Relacionada con:** F-001 §5.5, VS-002, L-010, L-015, hallazgo 1 del designer (trabajo C, lote 3)
+
+### D-016 — 2026-11-26 — Repositorio público
+- **Decisión:** `jdrodriguez1000/CONTAPP` pasa de privado a público (hecho por el Manager con `gh repo edit` a pedido del usuario). La CI corre en cada push, como dice el plan §P-9.
+- **Razón:** los 2.000 minutos gratis de GitHub Actions son por cuenta y BankApp ya había usado 1.986 en noviembre de 2026; en repositorios públicos los minutos son gratis. Se revisó antes: el correo del usuario no aparece en el historial (los commits usan `@users.noreply.github.com`) y gitleaks salió limpio.
+- **Alternativas descartadas:** esperar al 1 de diciembre para P-9; pagar por uso con tope (~US$ 1 al mes); GitHub Pro (US$ 4 al mes).
+- **Estado:** Vigente
+- **Relacionada con:** D-004, D-011, plan VS-001 §P-9
+
+### D-017 — 2026-11-26 — Volver atrás deja la app vacía
+- **Decisión:** si el navegador restaura la página al volver atrás (o por cualquier otra vía) con texto en el campo, la app arranca con el campo vacío y los 4 conteos en 0, igual que al recargar. Amplía CA-7 de F-001.
+- **Razón:** hallazgo BRK-U-1: el texto reaparecía con los conteos en 0 (conteo falso). Vaciar encaja con C-010 (la app no guarda nada) y es lo más simple de explicar.
+- **Alternativas descartadas:** mostrar el texto restaurado con su conteo correcto (contradice CA-7).
+- **Estado:** Vigente
+- **Relacionada con:** CA-7, C-010, `reports/clasificacion-9c.md` (ronda 1)
+
+### D-018 — 2026-11-26 — Tildes combinables sobre algo que no es letra
+- **Decisión:** una tilde combinable que llega pegada solo entra si forma con la letra anterior una letra del español (á é í ó ú ü ñ, en mayúscula o minúscula). Si no, la tilde no entra y lo demás sí: espacio + tilde → queda el espacio; "1" + tilde → "1" (cuenta como número); "?" + 2.000 tildes → "?". Amplía C-015.
+- **Razón:** hallazgos BRK-U-4 y BRK-C-5: la regla no definía el caso, y las tildes amontonadas pueden tapar la pantalla (A-001).
+- **Alternativas descartadas:** dejarlas entrar como "otro" (riesgo de tildes amontonadas).
+- **Estado:** Vigente
+- **Relacionada con:** C-011, C-015, A-001, `reports/clasificacion-9c.md` (ronda 1)
