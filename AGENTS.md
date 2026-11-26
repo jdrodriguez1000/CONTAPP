@@ -22,6 +22,7 @@
   3. **El usuario revisa, ejecuta y pregunta**; nada avanza sin que lo entienda.
   4. **Revisar** juntos el resultado y avanzar.
 - Evitar jerga sin explicar y no saltar pasos. Avanzar **un paso a la vez**; no saturar con todo el sistema al tiempo.
+- **Ubicación siempre visible** (piloto, D-019, L-027 → VEGU): cada mensaje del Manager con avance empieza con un mapa de 3 líneas: `📍 Proyecto: Fase 0 (entendimiento) o slice N de M · VS-XXX "nombre"` · `Construcción: lote N de M (paso P-X) · Revisión de cierre: ronda N` · `Ahora: <etapa en curso> → <lo que sigue>`. La **página de avance** (`_project/status.html`, publicada en `https://claude.ai/artifact/GkYgfLAmdVDan5trEmSDhE`) se actualiza en cada cierre de sesión.
 - Si falta un **dato del dominio**, proponer un **valor de referencia razonable**, registrarlo como supuesto y continuar. Si lo que falta es una **decisión de alcance, diseño o técnica**, detenerse y consultar.
 - Antes de usar una librería o servicio del stack, **verificar su documentación vigente** (versiones, planes gratuitos).
 - El **usuario es el experto del dominio**: toda regla de conteo o de clasificación de un carácter la valida él antes de construirse (`constraints.md` → Conteo de caracteres).
@@ -99,7 +100,7 @@ La memoria fría **no se lee al inicio**. Se consulta cuando haya que tomar una 
 
 Se ejecuta cuando el usuario indique que termina la sesión (p. ej. "cerremos", "terminamos por hoy", "cierre de sesión") o al completar un paso importante. El agente DEBE:
 
-1. **`progress.md`**: reescribirlo con la fase, la fecha de última actualización, lo hecho, lo que está en curso, el **siguiente paso concreto** y los bloqueos (máx. 50 líneas).
+1. **`progress.md`**: reescribirlo con la fase, la fecha de última actualización, lo hecho, lo que está en curso, el **siguiente paso concreto** y los bloqueos (máx. 50 líneas). Con eso, actualizar la **página de avance** (D-019) y republicarla.
 2. **`tasks.md`**: actualizar estados, **retirar** las tareas `Completed` / `Suspended` / `Cancelled`, agregar las nuevas y reescribir el índice.
 3. **`decisions.md`**: registrar cada decisión nueva aprobada (formato del registro), marcar las reemplazadas y actualizar el índice de vigentes.
 4. **`assumptions.md`**: agregar o actualizar supuestos, retirar los obsoletos y revisar fechas `Revisar el` vencidas.

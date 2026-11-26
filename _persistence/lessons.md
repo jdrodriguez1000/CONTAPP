@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-26
-**Último ID usado:** L-026
+**Último ID usado:** L-027
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -49,6 +49,7 @@
 - L-014 — Leer la fila de un supuesto en `assumptions.md` antes de citarlo al usuario → VEGU
 - L-016 — Durante una slice, los reportes y documentos de la slice se editan solo en su rama: editarlos también en `main` choca al traer `main` → VEGU
 - L-017 — Al cerrar cada lote, juntar en una sola lista lo que solo el dispositivo real puede confirmar y pedírselo al usuario en una pasada → VEGU
+- L-027 — Un usuario con poca experiencia se pierde entre slices, lotes, pasos y rondas: mapa de ubicación en cada mensaje y página `status.html` con los colores de la app → VEGU
 
 ## Registro completo
 
@@ -311,3 +312,13 @@
 - **Cómo aplicarla:** el Manager la usa para rojos sobre versiones publicadas.
 - **Estado:** Vigente
 - **Relacionada con:** L-007, D-013, `evidence/published/p10-publicada.md`
+
+### L-027 — 2026-11-26 — Ubicación siempre visible para el usuario
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el usuario dijo que se pierde: muchas veces no sabe en qué vertical slice, lote o paso está, ni cuánto lleva y cuánto falta del proyecto.
+- **Lección:** la ubicación no puede vivir solo en `progress.md` ni en la cabeza del Manager; hay que mostrarla siempre, en dos niveles: un mapa de 3 líneas al comienzo de cada mensaje con avance (proyecto · construcción/revisión · ahora → sigue) y una página de avance (`_project/status.html`, publicada como artifact) con el camino completo del proyecto: primero la **Fase 0 (entendimiento)**, que es donde arranca todo proyecto, y luego todas las slices, la slice en curso paso a paso y un glosario corto.
+- **Por qué importa:** sin saber dónde está, el usuario no puede revisar ni decidir con criterio (rol de tutor de `AGENTS.md`).
+- **Cómo aplicarla:** el Manager pone el mapa en cada mensaje con avance y actualiza y republica `status.html` en cada cierre de sesión. La página usa **solo los colores definidos para la app** en su sistema de diseño (claro y oscuro) y marca los estados con símbolos (✓ terminado · ▸ en curso · ○ pendiente), sin colores propios (decisión del usuario, 2026-11-26). Piloto en Contapp; se lleva a VEGU al cerrar VS-001 con la opinión del usuario como evidencia.
+- **Estado:** Vigente
+- **Relacionada con:** D-019, `AGENTS.md` §1 (perfil del usuario), `_project/status.html` → VEGU
