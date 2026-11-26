@@ -19,7 +19,7 @@ hooks:
     - matcher: "Bash|PowerShell"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "npm run test:unit" "npm run test:e2e" "npx vitest run" "npx playwright test" "cd src" "npx ctx7@latest" "npx -y ctx7@latest" "git status" "git log --oneline" "git branch --show-current" "npm run check" "!--fix"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "npm run test:unit" "npm run test:e2e" "npx vitest run" "npx playwright test" "cd src" "npx ctx7@latest" "npx -y ctx7@latest" "git status" "git log --oneline" "git branch --show-current" "npm run check" "!--fix" "!-o" "!--output-file" "!-c" "!--config" "!--cache" "!--cache-location" "!-f" "!--format" "!--prefix"
 ---
 
 # Tester — prueba de forma INDEPENDIENTE, desde la especificación
