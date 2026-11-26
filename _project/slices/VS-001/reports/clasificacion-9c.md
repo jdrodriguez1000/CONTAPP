@@ -4,6 +4,7 @@
 | Entrega | Base del diff | Nivel | Archivos que lo deciden | Aprobado por el usuario |
 |---|---|---|---|---|
 | Revisión inicial (ronda 1) | `main...065c0d7` | **Alto** | `src/counting.ts`, `src/inputFilter.ts` (reglas críticas: conteo y validación de entrada); `.github/workflows/ci.yml`, `package.json`, `package-lock.json` y configuraciones (cadena de entrega, dependencias) | Sí, 2026-11-26 |
+| Revisión de calidad y seguridad (etapa 10), tras la ronda 1 y el mini-lote de herramientas (D-020) | `main...1b042df` (cambios desde la revisión anterior: `1261549...1b042df`) | **Alto** | `src/inputFilter.ts`, `src/main.ts` (validación de entrada); `package.json`, `package-lock.json`, `stryker.config.json`, `.gitignore`, `.claude/agents/reviewer.md` (dependencias y cadena de entrega). Breakers no se relanzan (82 líneas de corrección); designer C no aplica (sin cambio de pantalla) | Sí, 2026-11-26 |
 
 ## Ronda 1 — hallazgos de los breakers (commit `0b8c019`)
 Reproducidos por el Manager el 2026-11-26: 14/14 de breaker-code (Vitest) y 14/14 de breaker-user (Playwright WebKit). **Aprobado por el usuario el 2026-11-26**, con las recomendaciones del Manager.
