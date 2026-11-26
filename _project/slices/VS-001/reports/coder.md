@@ -171,3 +171,67 @@ Ninguno.
 - Herramienta: la guarda de Bash también bloquea un `;` dentro del mensaje de un commit. Los mensajes se escriben sin `; & | < >`.
 
 STATUS: DONE
+
+# Lote 3 — VS-001
+**Fecha:** 2026-11-26 · **Rama:** feature/VS-001-contar-en-el-celular
+
+## Pasos construidos
+| Paso | Commits (test → feat → refactor) | Casos de prueba cubiertos | Razón del rojo |
+|---|---|---|---|
+| P-5 | test: `5662fdb` → feat: `0249f80` → refactor: no hizo falta | TC-010 a TC-015, TC-034, TC-035 (parte unitaria), TC-037 | `npx vitest run src/counting.test.ts`: **15 fallaron y 25 pasaron** de 40. Las 15 fallaron en la aserción porque `digit` y `other` seguían en 0 (la suma de TC-015 dio 4 en vez de 12). Las 25 que pasaron son las 20 del lote 2 y 5 controles: TC-013 (2), TC-014 (2) y TC-037 |
+| P-6 | test: `854bb27` (tester) → feat: `a8132ab` → refactor: no hizo falta | TC-002, TC-003, TC-024, TC-025, TC-027 | `typing.spec.ts`: **4 fallaron y 3 pasaron** de 7. Las 4 de TC-002 y TC-003 fallaron porque los conteos se quedaban en `0/0/0/0`. Pasaron los controles TC-024, TC-025 y TC-027 |
+
+- En el plan, TC-037 no figura entre los controles ("espacios y vacío son *control*"), pero es un caso de espacios: con el código de P-4 ya daba 3 y 3. Protege que el espacio que no se parte no termine contado en "otros".
+- No toqué nada de `tests/` y no escribí otra E2E.
+
+## Explicación para el usuario
+### P-5 — Números, "otros" y espacios
+La función que cuenta ahora conoce los 4 grupos. Recorre el texto **carácter por carácter como lo ve una persona**: el emoji de una familia está hecho por dentro de varias piezas, pero cuenta como 1. Si el carácter es solo un espacio, una tabulación o un salto de línea, lo salta. Si no, `classify` hace cuatro preguntas en orden: ¿es vocal?, ¿es consonante?, ¿es un número del 0 al 9? y, si nada de eso, es "otro". Por eso `²`, `½` o `1️⃣` son "otros" y ningún carácter visible queda sin grupo. Archivos: `src/counting.ts`, `src/counting.test.ts`.
+
+### P-6 — Contar mientras se escribe
+Conectamos el campo con la función de conteo. El navegador avisa cada vez que el campo cambia (al escribir, pegar o borrar). En ese momento la app hace dos cosas: ajusta el alto del campo y llama a `showCounts`, que cuenta todo el texto y escribe cada número en su ficha. No hay botón, espera ni animación. Tampoco se guarda nada, así que al recargar todo vuelve a 0. Archivo: `src/main.ts`.
+
+**Si prueba la app ahora:** todavía no existen los filtros del lote 4. Una letra de otro idioma como "ç" entra y cuenta en "Otros", y se pueden escribir más de 100 caracteres. Eso lo resuelven P-7 y P-8.
+
+## Estado de las pruebas
+Cierre del lote, corrido después de `a8132ab`:
+| Suite | Comando | Resultado |
+|---|---|---|
+| Revisión estática (tipos y lint) | `npm run check` | ok |
+| Unitarias | `npm run test:unit` | **65/65** en 2 archivos: 40 en `src/counting.test.ts` y 25 en `tests/unit/counting.test.ts` |
+| E2E del lote | `npx playwright test tests/e2e/typing.spec.ts --project=iphone` | **7/7** |
+| E2E afectada | `npx playwright test tests/e2e/screen.spec.ts --project=iphone` | **10/10** |
+| Capturas | `npx playwright test --project=captures --output=_project/slices/VS-001/evidence/capturas/lote-3` | **10/10** |
+
+No corrí la E2E completa, `skeleton.spec.ts` ni `published.spec.ts`: el paquete no los pidió. No subí la rama.
+
+## Líneas de app agregadas
+**29 agregadas y 4 quitadas** (`git diff --numstat 854bb27 HEAD -- index.html src`, sin contar `counting.test.ts`). El plan estimaba ~45 y el límite es ~200.
+| Archivo | Agregadas | Quitadas |
+|---|---|---|
+| `src/counting.ts` | 16 | 3 |
+| `src/main.ts` | 13 | 1 |
+
+## Capturas
+Carpeta: `_project/slices/VS-001/evidence/capturas/lote-3/`, con 10 imágenes (cada una en su subcarpeta) y el `.last-run.json` que genera Playwright.
+- Estados 1 (390 × 844 y 320 × 568), 2, 3 y crecimiento del campo, todos en claro y oscuro.
+- Abrí 3 como autorrevisión: estado 2 claro ("pingüino": 4/4/0/0, con anillo de foco), estado 3 oscuro (2/2/4/4) y crecimiento claro, que ahora muestra 35/40/3/3 con la frase de 100 caracteres en 4 líneas. **Las otras 7 no las abrí.** No reemplaza la revisión del designer.
+- Son capturas simuladas en Windows: lo que cabe en cada renglón se confirma en el iPhone real (L-010).
+
+Las capturas y este reporte quedan **sin commit**, para que el Manager decida qué incluir.
+
+## Variables de entorno nuevas
+- Ninguna.
+
+## Desviaciones del plan
+- Ninguna.
+- `src/main.ts` encuentra cada ficha por su `data-testid` (`count-vowel`, `count-consonant`…), que son parte de las interfaces públicas (§5.1). Así no hubo que cambiar `index.html`, que no está entre los archivos de P-6. Consecuencia: esos identificadores ahora también los usa la app, no solo las pruebas.
+- Los commits no llevan `Co-Authored-By` (L-008).
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Ninguna nueva. L-009 sirvió: los invisibles y los emojis compuestos se armaron con su código, y una búsqueda posterior no encontró ninguno (ni signos combinables) escrito tal cual en `counting.test.ts`.
+
+STATUS: DONE
