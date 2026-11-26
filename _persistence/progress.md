@@ -4,22 +4,24 @@
 > **Reglas del archivo:** gerencial, no acumulativo: se **reemplaza** en cada cierre (historial en git). Máx. **50 líneas**. Estructura fija: Última actualización · Dónde estamos · Última sesión · En curso · Próximos pasos (desde `tasks.md`) · Bloqueos / pendientes del usuario.
 
 ## Dónde estamos
-- **Fase actual:** VS-001 — Contar en el celular (walking skeleton). **Lote 1 de 5 terminado** (P-1, P-2). Sigue el lote 2 (P-3, P-4).
-- **Rama:** `feature/VS-001-contar-en-el-celular` en `../CONTAPP-VS-001` (worktree), subida a GitHub; último commit `f633d79`.
-- **Preview de la rama (estable, D-013):** `https://contapp-git-feature-vs-00-588149-jdrodriguez1000-8207s-projects.vercel.app` · Producción: `https://contapp-tawny.vercel.app` (vacía hasta fusionar).
+- **Fase actual:** VS-001 — Contar en el celular (walking skeleton). **Lotes 1 y 2 de 5 terminados** (P-1 a P-4). Sigue el lote 3 (P-5 números, otros y espacios · P-6 contar mientras se escribe).
+- **Rama:** `feature/VS-001-contar-en-el-celular` en `../CONTAPP-VS-001` (worktree), subida a GitHub; último commit `bc098a3`. `main` tiene commits que la rama no tiene (`b5857d6`, `e682bce` y este cierre).
+- **Preview de la rama (estable, D-013):** `https://contapp-git-feature-vs-00-588149-jdrodriguez1000-8207s-projects.vercel.app` (ya muestra la pantalla con las 4 fichas en 0) · Producción: `https://contapp-tawny.vercel.app` (vacía hasta fusionar).
 
 ## Última sesión
-- **2026-11-26:** el usuario aprobó las guardas de los agentes y la opción B de las previews (D-013). Tester escribió `skeleton.spec.ts` y `published.spec.ts` (`e83804a`). Coder: P-1 (rojo "título vacío" → verde) y `chore(P-2)`; versiones del plan sin respaldos. Manager verificó (`npm run check` ok, `test:e2e` 1/1), rojo de P-2 contra producción (404) y verde contra la preview tras apagar Vercel Authentication. Captura del iPhone en `evidence/p2-iphone.jpg`.
-- DT-001 (avisos moderados de `npm audit` en eslint/typescript-eslint, solo desarrollo) registrada en `main`; se atiende con la revisión de security.
-- Lecciones L-006 a L-008.
+- **2026-11-26 (2.ª):** lote 2 completo. Tester A: `screen.spec.ts` (10, rojo verificado), `captures.spec.ts` (6), `tests/unit/counting.test.ts` (25) → commit en rojo `23e3567`. Coder: P-3 (pantalla, tokens claro/oscuro, campo de 2 a 5 líneas) y P-4 (Vitest 5.0.3 + `countCharacters` de vocales y consonantes), 180 líneas de app. Manager verificó: `check` ok, unitarias 45/45, E2E 11/11, `test:published` 1/1 contra la preview.
+- Designer C (lote 2): sin bloqueantes, 4 menores. El usuario aprobó la opción A (D-014) y la corrección de la maqueta; el designer ajustó `design-system.md` y `mockup.html` en `main` (`e682bce`).
+- El usuario probó la preview en su iPhone: todo como esperaba; la frase de 100 caracteres ocupa 4 líneas y no se corta → **A-001 confirmado**.
+- `COMPLETAR AL DECIDIR` del stack llenados en playbook, project-context, roadmap y skills (`b5857d6`); quedan solo duplicación, código sin uso y mutación del reviewer (D-012) y las señales por regla del dominio.
+- Lecciones L-009 a L-014.
 
 ## En curso
 - Nada. Ningún agente abierto.
 
 ## Próximos pasos (desde tasks.md)
-1. **Lote 2:** lanzar al **tester** (trabajo A) en `../CONTAPP-VS-001`: `screen.spec.ts` y `captures.spec.ts` (estado 1 claro/oscuro, 320 × 568 y crecimiento del campo). Commit en rojo y luego **coder** con P-3 (pantalla) y P-4 (Vitest + vocales/consonantes).
-2. Al cerrar el lote 2: capturas a `evidence/capturas/lote-2/` → **designer** (trabajo C). Antes de subir, el Manager corre `npm run check`, `npm run test:unit` y `npm run test:e2e` (no hay CI hasta el lote 5); luego `curl -sI` + `test:published` contra la preview.
-3. Llenar los `COMPLETAR AL DECIDIR` del playbook y de `project-context` con el plan §8 (pendiente desde la sesión anterior).
+1. **Traer `main` a la rama** antes del lote 3 (`git merge main` en `../CONTAPP-VS-001`; el `designer.md` de main y de la rama tienen secciones nuevas al final: conservar las dos). Así los agentes leen las skills y el sistema de diseño al día.
+2. **Lote 3:** tester A con `typing.spec.ts` y `captures.spec.ts` (+ estados 2 y 3); pedirle también quitar los dos `@ts-ignore` de `tests/unit/counting.test.ts` (ya sobran). El Manager corre `npm run check` antes del commit en rojo (L-012). Luego coder con P-5 y P-6; E2E afectada: `screen.spec.ts`.
+3. Al cerrar el lote 3: Manager corre `check`, `test:unit`, `test:e2e`, sube y prueba la preview; capturas `lote-3/` → designer C. En el lote 4, el designer pide la captura del tope de 5 líneas (hallazgo 3).
 
 ## Bloqueos / pendientes del usuario
-- Ninguno. A-001 se revisa "al ver la primera pantalla en el celular" (la pantalla real llega en el lote 2).
+- Ninguno. Para decidir cuando convenga: agregar `npm run check` a la guarda del tester (L-012, riesgo alto) y si el ícono de inicio (VS-006) se adelanta en el roadmap (el usuario preguntó; se ve al cerrar VS-001).

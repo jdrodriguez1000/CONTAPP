@@ -18,4 +18,4 @@
 ## Detalle
 | ID | Tarea | Prioridad | Estado | Depende de | Nota |
 |---|---|---|---|---|---|
-| T-002 | Primera vertical slice: la walking skeleton | Alta | In Progress | T-001 | Lote 1 de 5 terminado (2026-11-26); sigue el lote 2. VS-001 — Contar en el celular (F-001), definida en `_project/roadmap.md`. Lo mínimo corriendo de punta a punta, de verdad (PI-4), siguiendo el flujo de `orchestrator-playbook`. T-001 ya está completada (2026-11-25) |
+| T-002 | Primera vertical slice: la walking skeleton | Alta | In Progress | T-001 | Lotes 1 y 2 de 5 terminados (2026-11-26); sigue el lote 3 (P-5, P-6). VS-001 — Contar en el celular (F-001), definida en `_project/roadmap.md`. Lo mínimo corriendo de punta a punta, de verdad (PI-4), siguiendo el flujo de `orchestrator-playbook`. T-001 ya está completada (2026-11-25) |

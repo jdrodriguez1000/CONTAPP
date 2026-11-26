@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-26
-**Último ID usado:** D-013
+**Último ID usado:** D-014
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -23,6 +23,7 @@
 - D-012 — Plan de VS-001 aprobado (5 lotes); herramientas de calidad (duplicación, sin uso, mutación) se deciden al llegar a la etapa 10
 - D-010 — Estilo visual: propuesta C2 "Pizarra con fichas" (claro y oscuro, sigue el modo del celular); nombre "Contapp"; mayúscula automática apagada
 - D-013 — Previews de Vercel sin protección (abren sin iniciar sesión); producción en `contapp-tawny.vercel.app`
+- D-014 — Medidas fijas aprobadas sin token en `design-system.md` §4; cada una se vuelve token al usarse en un segundo lugar
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -116,3 +117,10 @@
 - **Alternativas descartadas:** opción A (dejar la protección y usar `VERCEL_AUTOMATION_BYPASS_SECRET`): agrega un secreto y obliga a iniciar sesión en el iPhone.
 - **Estado:** Vigente
 - **Relacionada con:** D-008, D-011, C-010, plan VS-001 R-1
+
+### D-014 — 2026-11-26 — Medidas fijas del sistema de diseño
+- **Decisión:** opción A del hallazgo 2 de la revisión visual del lote 2: `design-system.md` §4 lleva una lista de "medidas fijas aprobadas" (104 px alto mínimo de la ficha, anillo de foco 3 px separado 2 px, 2 px entre número y nombre, 480 px de ancho máximo, altos de línea 1,1 / 1,2 / 1,3) que pueden ir sin token; cada una se vuelve token cuando se use en un segundo lugar; toda otra medida nueva se pide como token. También se corrige la maqueta de F-001 (`14px` → `var(--space-3)`).
+- **Razón:** el código ya usa esos valores aprobados; crear tokens para medidas de un solo uso agrega nombres y obliga a tocar un CSS en verde.
+- **Alternativas descartadas:** opción B (8 tokens nuevos ya).
+- **Estado:** Vigente
+- **Relacionada con:** D-010, D-011, `_project/design-system.md`, reporte del designer (trabajo C, lote 2)

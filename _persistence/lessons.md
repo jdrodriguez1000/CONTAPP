@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-26
-**Último ID usado:** L-008
+**Último ID usado:** L-014
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -18,12 +18,16 @@
 - L-001 — Una regla dicha en negativo ("nada de X") se confirma: ¿X no se permite o solo no cuenta en su grupo?
 
 ### Producto y estructura
+- L-013 — En las maquetas toda medida va con token o con una medida fija aprobada (D-014), nunca un número suelto
 
 ### Herramienta
 - L-002 — Ediciones masivas con tildes, emojis y comillas: escribir un script en el scratchpad, no un heredoc en Bash
 - L-004 — Las maquetas HTML se verifican con capturas de Edge sin ventana (`msedge --headless --screenshot`), porque el designer no puede abrir un navegador
 - L-006 — Si la preview de Vercel "falla", mirar primero `curl -sI`: un 302 a `vercel.com/sso-api` es la protección encendida, no la app
 - L-007 — La dirección de la preview de rama no sale por `gh` (apunta al panel privado): pedirla una vez al usuario; es estable para toda la rama
+- L-009 — Letras en dos piezas en pruebas: armarlas con `String.fromCharCode(0x0301)` y revisar con `\p{Mn}`
+- L-010 — Las capturas simuladas (Windows) no usan SF Pro: lo que cabe se confirma en el iPhone real
+- L-011 — La guarda de Bash del coder bloquea `;` en los mensajes de commit → VEGU
 
 ### Datos y supuestos
 
@@ -31,6 +35,8 @@
 - L-003 — Todo mensaje al usuario va en español de Colombia, también los que siguen a un reporte de agente en otro idioma → VEGU
 - L-005 — Para elegir el sistema de diseño, pedir varias propuestas (claro y oscuro) y dejar que el usuario combine: salió C2 de C + B → VEGU
 - L-008 — La guarda de Bash de los agentes bloquea `<` y `>`: sus commits salen sin `Co-Authored-By` → VEGU
+- L-012 — El tester no puede correr `npm run check`: el Manager lo corre antes del commit en rojo → VEGU
+- L-014 — Leer la fila de un supuesto en `assumptions.md` antes de citarlo al usuario → VEGU
 
 ## Registro completo
 
@@ -113,3 +119,63 @@
 - **Cómo aplicarla:** al revisar VEGU, decidir si los agentes llevan la línea (y permitirla en la guarda, p. ej. con `git commit -F <archivo>`) o si basta con la del Manager. → VEGU
 - **Estado:** Vigente
 - **Relacionada con:** `.claude/agents/coder.md`, reporte del coder lote 1
+
+### L-009 — 2026-11-26 — Letras en dos piezas: construirlas con su código
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** al escribir `counting.test.ts`, la herramienta de archivos convirtió los escapes de las marcas combinables en el carácter real; el tester lo detectó buscando `\p{Mn}` y lo corrigió.
+- **Lección:** en pruebas con letras en dos piezas, armar la marca con `String.fromCharCode(0x0301)` (o similar) y revisar después con una búsqueda de `\p{Mn}`.
+- **Por qué importa:** una "á" en dos piezas se ve igual que en una; la prueba dejaría de probar lo que dice.
+- **Cómo aplicarla:** complementa L-002; el tester y el coder lo aplican en cada prueba con tildes en dos piezas.
+- **Estado:** Vigente
+- **Relacionada con:** L-002, C-014, `tests/unit/counting.test.ts`
+
+### L-010 — 2026-11-26 — Las capturas simuladas no usan la letra del iPhone
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** las capturas del lote 2 se tomaron con WebKit en Windows, que usa Segoe UI en vez de SF Pro; el designer pidió confirmar en el iPhone real que la frase de 100 caracteres cabe (cupo en 4 líneas).
+- **Lección:** los saltos de renglón y lo que cabe a 320 px se confirman en la preview con el iPhone real (D-009); la captura simulada solo prueba colores, orden y medidas.
+- **Por qué importa:** un texto que cabe en la captura puede cortarse en el celular.
+- **Cómo aplicarla:** cuando un lote cambie textos o tamaños, pedir al usuario una prueba concreta en la preview (frase exacta y qué mirar).
+- **Estado:** Vigente
+- **Relacionada con:** D-009, A-001
+
+### L-011 — 2026-11-26 — La guarda de Bash del coder bloquea `;` en los mensajes de commit
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** un commit del coder se bloqueó por un `;` dentro del mensaje.
+- **Lección:** los mensajes de commit de los agentes se escriben sin `; & | < >`.
+- **Por qué importa:** ahorra intentos fallidos al coder.
+- **Cómo aplicarla:** recordarlo en el paquete del coder; revisar junto con L-008 si conviene `git commit -F <archivo>`. → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** L-008, `.claude/agents/coder.md`
+
+### L-012 — 2026-11-26 — El tester no puede correr `npm run check`
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** la guarda del tester no incluye `npm run check`, así que no pudo verificar tipos y lint de sus pruebas; el Manager lo corrió antes del commit en rojo (verde).
+- **Lección:** antes del commit en rojo del tester, el Manager corre `npm run check` en la carpeta de la slice.
+- **Por qué importa:** un rojo con tipos o lint rotos dejaría al coder con una revisión estática fallando que no puede arreglar (no toca `tests/`).
+- **Cómo aplicarla:** hasta decidir si se agrega `npm run check` a la guarda del tester (cambio de riesgo alto, lo aprueba el usuario), es paso fijo del Manager. → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** `.claude/agents/tester.md`, reporte del tester lote 2
+
+### L-013 — 2026-11-26 — En las maquetas no van números sueltos
+- **Categoría:** Producto y estructura
+- **Etapa:** Construcción
+- **Qué pasó:** la maqueta de F-001 tenía `14px` escrito a mano en el campo, contra `--space-3` (12 px) de `design-system.md`; el coder tuvo que elegir entre los dos documentos.
+- **Lección:** en las maquetas, toda medida va con su token o con un valor de la lista de medidas fijas aprobadas (D-014).
+- **Por qué importa:** la maqueta y el sistema de diseño deben decir lo mismo; si no, el coder adivina.
+- **Cómo aplicarla:** el designer lo revisa antes de entregar una maqueta.
+- **Estado:** Vigente
+- **Relacionada con:** D-014, `_project/design/F-001/mockup.html`
+
+### L-014 — 2026-11-26 — Leer la fila de un supuesto antes de citarlo
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el Manager le dijo al usuario que A-001 era el tamaño de la letra; al leer `assumptions.md` vio que es el largo máximo (100 caracteres) y lo corrigió con el usuario.
+- **Lección:** antes de pedir al usuario que valide un supuesto, leer su fila en `assumptions.md`.
+- **Por qué importa:** pedir validar lo que no es hace perder la prueba y confunde al usuario.
+- **Cómo aplicarla:** cada vez que un `A-XXX` aparezca en un mensaje al usuario. → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** A-001
