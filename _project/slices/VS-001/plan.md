@@ -248,6 +248,8 @@ En cada ficha el `<dt>` va **antes** que el `<dd>` en el HTML (se lee "Vocales, 
 - **Texto del campo:** después de cualquier cambio, el valor queda en **forma NFC** (una letra con su tilde es una sola pieza: `"ñ"` pegada queda `"ñ"`).
 - **Rechazo silencioso** (letra de otro idioma, número de otro alfabeto, invisible suelto, carácter 101): el valor del campo **no cambia**, el cursor (`selectionStart` y `selectionEnd`) queda **donde estaba antes del intento**, y los 4 conteos no cambian. Si había una parte seleccionada, la selección se quita y el cursor queda donde empezaba lo nuevo (§5.2, paso 5; decisión del usuario 2026-11-26).
 - **Pegar en medio:** lo aceptado entra en la posición del cursor; el cursor queda justo después de lo que entró.
+- **Volver atrás o página restaurada** (`pageshow`): campo vacío y los 4 conteos en 0 (D-017, TC-043).
+- **Deshacer y rehacer:** después de la primera vez que la app reescribe el campo (un rechazo, un filtrado o unir una letra en dos piezas), dejan de cambiar el texto hasta recargar; así nunca meten lo rechazado ni repiten texto (TC-044). Limitación aceptada por el usuario el 2026-11-26 como deuda técnica para una slice futura.
 - **Ningún aviso, nunca:** no hay elementos con `role="alert"`, `role="status"`, `role="dialog"` ni `aria-live`; no se abre `alert`, `confirm` ni `prompt`; el texto visible de la página es solo el título, la etiqueta, los 4 nombres, los 4 números y lo escrito.
 - **Nada sale de la página:** después de cargar, escribir no genera ninguna petición de red.
 - **Al recargar:** campo vacío y los 4 en `0`.
@@ -281,14 +283,14 @@ export type InputResult = { text: string; cursor: number };
 export function applyInput(previousText: string, nextText: string, cursor: number): InputResult; // P-7, P-8
 ```
 - `textLength`: número de grafemas del texto en NFC; **los espacios, tabulaciones y saltos de línea sí cuentan**; un emoji cuenta 1; `"á"` cuenta 1.
-- `applyInput`: `previousText` es el texto que ya estaba aceptado; `nextText` es lo que quedó en el campo después del cambio; `cursor` es la posición del cursor después del cambio (`selectionEnd`, en unidades de JavaScript). Devuelve el texto aceptado y dónde dejar el cursor. Nunca lanza error.
+- `applyInput`: `previousText` es el texto que ya estaba aceptado; **si el cambio reemplazó una selección, la pantalla lo pasa sin la parte seleccionada** (la función no recibe la selección; ronda 1, aprobado por el usuario el 2026-11-26). Si de lo nuevo no entra nada, la pantalla deja el texto como estaba, con la selección (TC-018, TC-047); `nextText` es lo que quedó en el campo después del cambio; `cursor` es la posición del cursor después del cambio (`selectionEnd`, en unidades de JavaScript). Devuelve el texto aceptado y dónde dejar el cursor. Nunca lanza error.
   1. Separa `nextText` en: lo que estaba antes del cambio, **lo nuevo** (lo que se escribió o pegó, que termina en `cursor`) y lo que estaba después. El corte siempre cae en el borde de un grafema completo, nunca en medio de un emoji o de una letra con tilde.
   2. Si no hay nada nuevo (se borró), acepta `nextText` tal cual.
   3. Filtra **solo lo nuevo** (P-7), grafema por grafema, después de pasarlo a NFC:
      - **Pase completo, exacto (L-023; ronda 1, D-018):** solo dos formas entran completas, con sus piezas invisibles:
        - **Tecla de número:** exactamente `[0-9#*]` + `U+FE0F` opcional + `U+20E3` (`1️⃣`). En cualquier otro lugar, `U+20E3` es un signo combinable y se trata como tal (abajo).
        - **Emoji:** el grafema **empieza** por un carácter `Extended_Pictographic` o un indicador regional de bandera (`😀`, `👨‍👩‍👧`, `🇨🇴`). Si delante del emoji vienen caracteres que se anteponen (Prepend), esos se separan y se revisan con las reglas normales; el emoji entra.
-       - **Signos combinables pegados detrás de una tecla o un emoji** (tildes, `U+20E3` de más): se quitan y la tecla o el emoji entran intactos, con sus piezas propias (`U+200D`, `U+FE0F`, tono de piel): `😀` + 2.000 `U+0301` → `😀`; `1️⃣` + `U+0301` → `1️⃣` (D-018, aprobado por el usuario el 2026-11-26).
+       - **Signos combinables o letras pegados detrás de una tecla o un emoji** (tildes, `U+20E3` de más, letras de otros idiomas que se unen al grafema, p. ej. `U+0E33`, `U+FF9E`): se quitan y la tecla o el emoji entran intactos, con sus piezas propias (`U+200D`, `U+FE0F`, tono de piel): `😀` + 2.000 `U+0301` → `😀`; `1️⃣` + `U+0301` → `1️⃣` (D-018, aprobado por el usuario el 2026-11-26).
        - Lo pegado **nunca convierte lo ya escrito** en tecla o emoji: con `1` escrito, pegar `U+20E3` o `U+FE0F U+20E3` → sigue `1` (C-015).
        - **No debe pasar** (ejemplos negativos): `ç⃣`, `α⃣`, `ж⃣`, `٣⃣` → no entran; con `c` escrita, pegar `U+0327 U+20E3` → sigue `c`; con `1` escrito, pegar `U+20E3` → sigue `1`; `U+0D4E 😀` o `U+0600 😀` → entra solo `😀`.
      - En los demás, se quitan los **invisibles** (categoría `Cf`, p. ej. `U+200B`, `U+200D`, `U+2060`, `U+FEFF`, `U+00AD`; caracteres de control salvo tabulación `U+0009`, salto de línea `U+000A` y retorno `U+000D`; selectores de variante `U+FE00`–`U+FE0F`). Si no queda nada, no entra.
