@@ -270,3 +270,78 @@ Ninguno.
 - La salida de una corrida con muchos rojos se corta en la terminal del agente. Correr por grupos con `--grep` (sin `|`, que la guarda bloquea) permite leer la razón de cada fallo — así no se da por buena una razón que no se vio.
 
 STATUS: DONE
+
+# Lote 5 — trabajo A — VS-001
+**Fecha:** 2026-11-26
+
+## Resumen
+Agregué TC-001, TC-002 y TC-024 a `tests/e2e/published.spec.ts`. La prueba P-2 no cambió; solo se agregaron las importaciones. **No corrí ninguna prueba contra ninguna dirección**, así que el rojo y el verde están sin verificar. **`npm run check` no se corrió** (mi guarda no lo permite, L-012): los tipos y el lint siguen sin verificar. **Ojo:** contra la preview del lote 1 no pasa lo que supone el paquete (ver "Rojo esperado"). No hice commits.
+
+## Archivos
+- Modificado: `tests/e2e/published.spec.ts` (usa `readCounts` y `expectNoNotice` de `field-helpers.ts`, que no cambió)
+
+## Cobertura
+Todas son E2E del proyecto `published` (iPhone 13, WebKit). Las tres exigen primero `E2E_BASE_URL`, respuesta **200**, que no haya redirección a otro sitio (p. ej. el inicio de sesión de Vercel, L-006) y el título `Contapp`. Los conteos van como vocal/consonante/número/otro.
+
+| Caso | Qué prueba | Restricción | Resultado |
+|---|---|---|---|
+| TC-001 | Campo vacío y sin foco; `Vocales`, `Consonantes`, `Números` y `Otros` en ese orden, cada uno en `0`; h1 `Contapp`; etiqueta `Escribe una palabra o frase`; `es-CO`. Sin pantalla de cuenta: ruta `/`, sin contraseña, el campo es el único control y el texto visible es exactamente `Contapp Escribe una palabra o frase Vocales 0 Consonantes 0 Números 0 Otros 0`; sin avisos ni diálogos | C-010, C-012 | Sin correr |
+| TC-002 | "casa" letra por letra, con una sola lectura y sin reintentos tras cada letra: `c` 0/1/0/0 → `ca` 1/1/0/0 → `cas` 1/2/0/0 → `casa` 2/2/0/0; sin avisos | C-001 | Sin correr |
+| TC-024 | Escribe "casa"; comprueba que no quede nada en `localStorage`, `sessionStorage`, cookies, IndexedDB ni caché; recarga: campo vacío, los 4 en `0`, sin avisos. Abre otra pestaña: también vacía y en 0 | C-010 | Sin correr |
+
+## Rojo esperado contra una app que no cuenta
+Depende de **qué versión** se use. Esto es lo esperado según el plan y los títulos de los commits; **no está verificado**.
+
+| Versión | P-2 | TC-001 | TC-002 | TC-024 |
+|---|---|---|---|---|
+| **Lote 1** (solo el título; plan P-1) | pasa | **falla**: no existe el campo | **falla**: no existe el campo | **falla**: no existe el campo |
+| **Lote 2** (campo y 4 fichas en 0, sin conectar) | pasa | **puede pasar** | **falla** en `counts after "c"`: espera `0/1/0/0` y recibe `0/0/0/0` | **puede pasar** |
+
+- **La preview del lote 1 no sirve como la demostración que pide P-10.** Ahí TC-002 falla porque no hay campo, no porque la app no cuente. La pantalla llegó en el lote 2 (`feat(P-3)`) y la conexión del conteo en el lote 3 (`feat(P-6)`).
+- **Recomendación:** usar la dirección única de una publicación **del lote 2**: un commit desde `0dad16c` y anterior a `a8132ab`. No sé cuáles de esos commits tienen publicación en Vercel. No sirve la dirección de la rama, porque cambia con cada push.
+- **El rojo que vale:** TC-002 pasa las comprobaciones de la pantalla inicial, escribe la "c", el campo la recibe y **falla en el conteo** (`counts after "c"`). Un fallo por estado HTTP, redirección, título, campo inexistente o `E2E_BASE_URL` ausente **no vale** como rojo.
+- **Por qué TC-001 podría pasar ahí:** solo mira el estado inicial. Una app que no cuenta también muestra el campo vacío y los 4 en 0. Es un **control**.
+- **Por qué TC-024 podría pasar ahí:** exige volver a vacío y a 0, y que no se guarde nada. En una app que no cuenta, los conteos nunca salen de 0 y al recargar el campo queda vacío. A propósito no exige conteos antes de recargar: eso lo prueba TC-002. Es un **control**. Por sí solo no demuestra que la app "volvió" a 0; esa demostración es TC-002 y TC-024 juntos en verde sobre el mismo commit.
+
+## Capturas
+En `_project/slices/VS-001/evidence/published/` (390 px de ancho, modo claro, solo la parte visible). También quedan adjuntas al reporte de Playwright.
+
+| Archivo | Prueba | Qué debe verse |
+|---|---|---|
+| `tc-001-al-abrir.png` | TC-001 | Campo vacío y los 4 en 0 |
+| `tc-002-casa.png` | TC-002 | "casa" y 2 / 2 / 0 / 0 |
+| `tc-024-despues-de-recargar.png` | TC-024 | Campo vacío y los 4 en 0, ya recargada |
+
+- P-2 no genera captura.
+- Una captura solo se guarda si la prueba llega hasta ese punto.
+- **El rojo también escribe en esa carpeta:** contra el lote 2, TC-001 y TC-024 podrían guardar sus capturas de la versión vieja. La ruta es fija y la corrida verde las sobrescribe. Corre el verde **de último**, y toma las capturas como evidencia solo si **las 4 pruebas pasan** en esa corrida. Si alguna falla, en la carpeta puede quedar una imagen de la corrida anterior.
+- La carpeta es la misma con cualquier dirección. Las rutas son relativas a la raíz: corre el comando desde la carpeta de la slice.
+
+## Resultados de la ejecución
+- Pruebas del coder: no aplica (P-10 no tiene código de la app)
+- Pruebas del tester: **0 corridas**
+- `npx playwright test --list --project=published`: el archivo carga y lista **4 pruebas** (P-2, TC-001, TC-002, TC-024). No abre ninguna dirección ni revisa tipos
+- `npm run check`: **sin verificar**
+- Regresión: la CI (la verifica el Manager); este archivo solo corre con `npm run test:published`
+- Evidencia: todavía ninguna; la genera la corrida del Manager
+
+## Fallos
+Ninguno: no hubo corridas.
+
+## Notas para el Manager
+- **Antes del commit:** correr `npm run check` (L-012).
+- **Comandos:** `E2E_BASE_URL=<dirección> npm run test:published`. Antes, `curl -sI <dirección>` (L-006).
+- **Riesgo de entorno, sin verificar:** si la preview de Vercel inyectara su barra de herramientas o guardara cookies o datos propios, TC-001 (un solo control) o TC-024 (nada guardado) fallarían por la plataforma. P-2 no comprobaba ninguna de las dos cosas. Si pasa, hay que ver qué se encontró antes de clasificarlo como defecto.
+- TC-031 en el iPhone real no está en este archivo: sigue en la lista manual de P-10.
+
+## Preguntas para el usuario o el Manager
+No bloquean la escritura.
+- **¿Contra qué versión se corre el rojo?** El plan (§3, P-10) dice "preview del lote 1 (que no cuenta)", pero esa versión no tiene pantalla. Recomendación: usar una publicación del lote 2 y precisarlo en el plan o en la evidencia. Si no hay ninguna disponible, correr contra el lote 1 y anotar que ese rojo solo demuestra que la prueba detecta una app sin pantalla de conteo, **no** una pantalla que no cuenta.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Para el rojo de una prueba publicada, elegir la versión por **lo que muestra** (la pantalla completa sin el comportamiento) y no por el número de lote — si la pantalla no existe, la prueba falla antes de llegar a lo que quiere demostrar. → VEGU
+
+STATUS: DONE
