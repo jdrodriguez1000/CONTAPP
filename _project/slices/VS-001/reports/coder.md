@@ -235,3 +235,70 @@ Ninguno.
 - Ninguna nueva. L-009 sirvió: los invisibles y los emojis compuestos se armaron con su código, y una búsqueda posterior no encontró ninguno (ni signos combinables) escrito tal cual en `counting.test.ts`.
 
 STATUS: DONE
+
+# Lote 4 — VS-001
+**Fecha:** 2026-11-26 · **Rama:** feature/VS-001-contar-en-el-celular
+
+## Pasos construidos
+| Paso | Commits (test → feat → refactor) | Casos de prueba cubiertos | Razón del rojo |
+|---|---|---|---|
+| P-7 | aceptación: `8c63602` (tester) · test: `b897eff` → feat: `0552e17` → refactor: no hizo falta | TC-016 a TC-019, TC-029, TC-033, TC-035 (parte E2E), TC-036, TC-038, TC-040, TC-041 | `foreign-letters.spec.ts`: **26 fallaron y 6 pasaron** de 32. En los fallos que revisé, lo que debía rechazarse o limpiarse había entrado al campo. Las 6 que pasaron son los controles (TC-019 ×2, TC-035 ×2, TC-038 ×2). Unitarias, con `applyInput` como esqueleto que devolvía `nextText`: **23 fallaron y 9 pasaron** de 32, todas en la comparación. Las 9 son controles (lo que debe entrar o quedar igual) |
+| P-8 | aceptación: `8c63602` (tester) · test: `4e94643` → feat: `eaa6459` → refactor: no hizo falta | TC-020 a TC-023, TC-028, TC-030, TC-042, TC-032 (largo), TC-039 (largo) | `max-length.spec.ts` (corrido ya con P-7): **17 fallaron y 3 pasaron** de 20. En los fallos que revisé, el texto pasaba de 100. Las 3 que pasaron son los controles (TC-020, reemplazar con 100, pegar 100 exactos). Unitarias, con `textLength` como esqueleto que devolvía `text.length`: **15 fallaron y 35 pasaron** de 50, en la comparación. Las 35 son las 32 de P-7 y 3 controles (texto vacío, largo con espacios, el límite es 100) |
+
+- No toqué nada de `tests/` y no escribí otra E2E.
+
+## Explicación para el usuario
+### P-7 — Letras de otros idiomas no entran
+Antes de aceptar un cambio, la app compara el texto de antes con el de ahora para encontrar **solo lo nuevo**, sin partir nunca un emoji por la mitad. Revisa lo nuevo carácter por carácter: un emoji entra completo; a lo demás le quita las piezas invisibles y une las letras que llegan en dos piezas ("n" + "~" → "ñ"). No entran las letras de otros idiomas, los números de otros alfabetos ni las tildes que llegan solas. Si no queda nada, el campo vuelve a como estaba, sin aviso y con el cursor donde empezaba lo nuevo. Mientras el teclado todavía está armando una letra, la app cuenta pero espera a que termine para filtrar. Archivos: `src/inputFilter.ts`, `src/main.ts`, `src/inputFilter.test.ts`.
+
+### P-8 — Largo máximo de 100
+La app mide el largo como lo ve una persona: un emoji de familia ocupa 1, y los espacios, tabulaciones y saltos de línea también ocupan lugar. De lo nuevo ya filtrado, agrega un carácter a la vez y para en el primero que haría pasar el texto de 100. Por eso, al pegar de más entra el comienzo, y al pegar en medio no se pierde el final que ya estaba. Lo que el filtro rechazó no ocupa lugar. Archivos: `src/inputFilter.ts`, `src/inputFilter.test.ts`.
+
+**Para probar en la app:** escribir "ç" (no pasa nada), pegar "façade" (queda "faade") y, con la frase de 100 caracteres, intentar escribir una letra más (no entra).
+
+## Estado de las pruebas
+Cierre del lote, corrido después de `eaa6459`:
+| Suite | Comando | Resultado |
+|---|---|---|
+| Revisión estática (tipos y lint) | `npm run check` | ok |
+| Unitarias | `npm run test:unit` | **115/115** en 3 archivos: 50 en `src/inputFilter.test.ts`, 40 en `src/counting.test.ts` y 25 en `tests/unit/counting.test.ts` |
+| E2E del lote | `npx playwright test tests/e2e/foreign-letters.spec.ts tests/e2e/max-length.spec.ts --project=iphone` | **52/52** (32 + 20) |
+| E2E afectadas | `npx playwright test tests/e2e/screen.spec.ts tests/e2e/typing.spec.ts --project=iphone` | **17/17** (10 + 7) |
+| Capturas | `npx playwright test --project=captures --output=_project/slices/VS-001/evidence/capturas/lote-4` | **12/12** |
+
+A los comandos de Playwright les agregué `--reporter=list`. No corrí la E2E completa, `skeleton.spec.ts` ni `published.spec.ts`: el paquete no los pidió. No subí la rama.
+
+## Líneas de app agregadas
+**102 agregadas y 2 quitadas** (`git diff --numstat 3782e9d HEAD`, sin contar las 170 de `inputFilter.test.ts`). El plan estimaba ~90 y el límite es ~200.
+| Archivo | Agregadas | Quitadas |
+|---|---|---|
+| `src/inputFilter.ts` | 78 | 0 |
+| `src/main.ts` | 24 | 2 |
+
+## Capturas
+Carpeta: `_project/slices/VS-001/evidence/capturas/lote-4/`, con 12 imágenes (cada una en su subcarpeta) y el `.last-run.json` de Playwright.
+- Como autorrevisión abrí 2: estado 4 claro (frase de 100 caracteres en 4 líneas, 35/40/3/3, sin aviso) y estado 3 oscuro (2/2/4/4). **Las otras 10 no las abrí.** No reemplaza la revisión del designer.
+- Son capturas simuladas en Windows: lo que cabe en cada renglón se confirma en el iPhone real (L-010).
+
+Las capturas y este reporte quedan **sin commit**, para que el Manager decida qué incluir.
+
+## Variables de entorno nuevas
+- Ninguna.
+
+## Desviaciones del plan
+- Ninguna. Los commits no llevan `Co-Authored-By` (L-008).
+
+## Lo que no queda verificado y bordes para el Manager
+Los puntos 2 a 4 los deduzco de leer el código; no tienen prueba.
+1. **Teclado "componiendo" (R-3):** ninguna prueba automática pasa por `isComposing` ni por `compositionend`. Falta comprobarlo en el iPhone real (lista manual de P-10, punto 2); conviene escribir tildes también en esta preview.
+2. **Reemplazar una selección por algo que empieza igual:** con "casa", seleccionar "as" y pegar "aç" dejaría "casa" (cursor después de "ca") y no "caa". `applyInput` recibe solo el texto de antes, el de ahora y el cursor (§5.2): no sabe qué estaba seleccionado, toma esa "a" como si no hubiera cambiado y, como lo demás se rechaza, devuelve el texto anterior (regla 5).
+3. **Regla 3 aplicada al pie de la letra, dos huecos posibles:** (a) cualquier carácter que contenga `U+20E3` entra completo, así que una "ç" con ese signo pegado entraría; (b) un espacio y una tilde combinable pegados **juntos** forman un solo carácter que no *empieza* por el signo, así que entraría, aunque C-015 dice que un signo de tilde suelto no entra. No los cambié: si deben rechazarse, hace falta ajustar el plan.
+4. **Supuesto del plan (§5.2, paso 1):** lo nuevo termina en el cursor. No probé cambios que podrían no cumplirlo (deshacer, arrastrar texto, un corrector que cambie texto después del cursor). Sirve como idea de ataque para los breakers.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Ampliar L-009 al código de la app: la herramienta de escritura convirtió `⃣` en el carácter invisible dentro de `src/inputFilter.ts`. Usar la forma `\u{20E3}` (quedó escrita como código) y buscar `\p{Mn}`, `\p{Me}` y `\p{Cf}` después de escribir — un invisible en una expresión regular no se puede revisar a simple vista.
+
+STATUS: DONE
