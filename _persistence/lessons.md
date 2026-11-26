@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-26
-**Último ID usado:** L-017
+**Último ID usado:** L-020
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -19,6 +19,7 @@
 
 ### Producto y estructura
 - L-013 — En las maquetas toda medida va con token o con una medida fija aprobada (D-014), nunca un número suelto
+- L-020 — Para probar un tope de alto en una captura, medir el alto en el límite y pasado el límite, y comprobar que hay texto escondido → VEGU
 
 ### Herramienta
 - L-002 — Ediciones masivas con tildes, emojis y comillas: escribir un script en el scratchpad, no un heredoc en Bash
@@ -29,6 +30,8 @@
 - L-010 — Las capturas simuladas (Windows) no usan SF Pro: lo que cabe se confirma en el iPhone real
 - L-011 — La guarda de Bash del coder bloquea `;` en los mensajes de commit → VEGU
 - L-015 — El espacio con el teclado abierto en el iPhone se mide restando también las barras de Safari (dirección y "⌃ ⌄ Listo"), no solo el teclado
+- L-018 — Caracteres especiales en el código de la app (no solo en pruebas): escribirlos como `\u{...}` y buscar `\p{Mn}`, `\p{Me}`, `\p{Cf}` después (repite L-009)
+- L-019 — Una corrida con muchos rojos se corta en la terminal del agente: correr por grupos con `--grep` para leer la razón de cada fallo → VEGU
 
 ### Datos y supuestos
 
@@ -212,3 +215,33 @@
 - **Cómo aplicarla:** en el mensaje de "ya puede probar la preview", incluir la lista y pedir una foto. → VEGU
 - **Estado:** Vigente
 - **Relacionada con:** L-010, propuesta del designer (trabajo C, lote 3)
+
+### L-018 — 2026-11-26 — Caracteres especiales también en el código de la app
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** en el lote 4 la herramienta de escritura del coder convirtió el signo de tecla (`U+20E3`) en el carácter real dentro de una expresión regular de `src/inputFilter.ts`. El coder lo vio y lo dejó como `\u{20E3}`. Es el mismo fallo de L-009, ahora en código de la app.
+- **Lección:** todo carácter invisible o combinable en el código (app o pruebas) se escribe con su código (`\u{...}`), y después de escribir se busca `\p{Mn}`, `\p{Me}` y `\p{Cf}` en los archivos tocados.
+- **Por qué importa:** un invisible dentro de una regla de filtro no se ve al revisar; la regla haría otra cosa sin que nadie lo note.
+- **Cómo aplicarla:** como el fallo se repitió, se propone atajarlo en el origen con una regla automática (lint o una prueba que busque esos caracteres en `src/` y `tests/`); queda como decisión pendiente del usuario.
+- **Estado:** Vigente
+- **Relacionada con:** L-009, L-002, `src/inputFilter.ts`
+
+### L-019 — 2026-11-26 — Leer la razón de cada rojo cuando la salida se corta
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** en el trabajo A del lote 4 el tester tenía 43 rojos y la salida completa de Playwright se cortaba en su terminal.
+- **Lección:** repetir la corrida por grupos con `--grep` (sin `|`, que la guarda bloquea) para leer la razón de cada fallo.
+- **Por qué importa:** un rojo solo vale si falla por la razón esperada; una razón que no se vio no se da por buena.
+- **Cómo aplicarla:** el tester lo hace cuando la salida se corta; el Manager confirma el total con `--reporter=dot`. → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** PI-5, propuesta del tester (lote 4)
+
+### L-020 — 2026-11-26 — Cómo probar un tope de alto en una captura
+- **Categoría:** Producto y estructura
+- **Etapa:** Construcción
+- **Qué pasó:** en el lote 2 el designer no podía distinguir, con una sola captura, si el campo se había detenido en 5 líneas o todavía no llegaba a su tope. En el lote 4 la prueba midió el alto con 5 y con 8 líneas y comprobó que había texto escondido, y el hallazgo se cerró.
+- **Lección:** una captura de un tope mide el alto en el límite, lo vuelve a medir pasado el límite y comprueba que hay contenido escondido.
+- **Por qué importa:** una captura de un campo alto sola no prueba que se detuvo.
+- **Cómo aplicarla:** el tester lo aplica en toda captura de un límite de tamaño. → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** `tests/e2e/captures.spec.ts`, propuesta del designer (lote 4)

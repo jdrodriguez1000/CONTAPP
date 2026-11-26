@@ -4,28 +4,28 @@
 > **Reglas del archivo:** gerencial, no acumulativo: se **reemplaza** en cada cierre (historial en git). Máx. **50 líneas**. Estructura fija: Última actualización · Dónde estamos · Última sesión · En curso · Próximos pasos (desde `tasks.md`) · Bloqueos / pendientes del usuario.
 
 ## Dónde estamos
-- **Fase actual:** VS-001 — Contar en el celular (walking skeleton). **Lotes 1, 2 y 3 de 5 terminados** (P-1 a P-6): al escribir, las 4 fichas cambian con cada letra. Sigue el lote 4 (P-7 letras de otros idiomas no entran · P-8 tope de 100).
-- **Rama:** `feature/VS-001-contar-en-el-celular` en `../CONTAPP-VS-001` (worktree), subida a GitHub; último commit `47cbf06`. `main` solo tiene de más este cierre de sesión.
-- **Preview de la rama (estable, D-013):** `https://contapp-git-feature-vs-00-588149-jdrodriguez1000-8207s-projects.vercel.app` (ya cuenta los 4 grupos) · Producción: `https://contapp-tawny.vercel.app` (vacía hasta fusionar).
+- **Fase actual:** VS-001 — Contar en el celular (walking skeleton). **Lotes 1 a 4 de 5 terminados** (P-1 a P-8): cuenta mientras se escribe, las letras de otros idiomas no entran y el carácter 101 se ignora, sin avisos. Sigue el lote 5 (P-9 CI · P-10 punta a punta).
+- **Rama:** `feature/VS-001-contar-en-el-celular` en `../CONTAPP-VS-001` (worktree), subida a GitHub; último commit `6f14c54`. `main` solo tiene de más este cierre de sesión.
+- **Preview de la rama (estable, D-013):** `https://contapp-git-feature-vs-00-588149-jdrodriguez1000-8207s-projects.vercel.app` (código del commit `975b26d`; lo posterior es solo documentos) · Producción: `https://contapp-tawny.vercel.app` (vacía hasta fusionar).
 
 ## Última sesión
-- **2026-11-26 (3.ª):** `main` traído a la rama (`e763f80`; conflicto en `designer.md` resuelto conservando las dos secciones).
-- Tester A: `typing.spec.ts` (7: 4 rojas, 3 de control) + estados 2 y 3 en `captures.spec.ts`; quitó los `@ts-ignore`. Manager corrió `check` (L-012) → commit en rojo `854bb27`.
-- Coder: P-5 (`test` `5662fdb` → `feat` `0249f80`, conteo por grafema de números, otros y sin espacios) y P-6 (`feat` `a8132ab`, el campo llama a `showCounts`). 29 líneas de app.
-- Manager verificó: `check` ok, unitarias 65/65, E2E 18/18, gitleaks limpio, preview publicada y `test:published` 1/1.
-- Designer C (lote 3): sin bloqueantes, 2 menores que solo el iPhone confirma. El usuario probó: conteo bien; **con el teclado abierto la 2.ª fila de fichas queda cortada** (foto en `evidence/lote3-iphone-estado2-teclado.jpg`); foco visible en modo claro.
-- Usuario decidió dejar el teclado para VS-002 (D-015); designer corrigió F-001 §5.5 en la rama.
-- Lecciones L-015 a L-017.
+- **2026-11-26 (4.ª):** usuario confirmó el foco amarillo en modo oscuro (pendiente cerrado).
+- Tester A: `foreign-letters.spec.ts` (32), `max-length.spec.ts` (20), `field-helpers.ts`, `captures.spec.ts` (+ estado 4 y tope de 5 líneas). Manager: `check` ok, 43 rojas / 9 control → commit en rojo `8c63602`.
+- Usuario decidió: un rechazo sobre una selección deja el cursor donde empezaba lo nuevo, sin selección (plan §5.1, `3782e9d`).
+- Coder: P-7 (`b897eff` → `0552e17`) y P-8 (`4e94643` → `eaa6459`); 102 líneas de app (`src/inputFilter.ts`, `src/main.ts`).
+- Manager verificó: `check` ok, unitarias 115/115, E2E 70/70, gitleaks limpio, preview publicada con el código nuevo y `test:published` 1/1.
+- Designer C (lote 4): sin bloqueantes; cerró el hallazgo 3 del lote 2 (tope de 5 líneas). Usuario probó en el iPhone toda la lista: funciona (sin fotos, `evidence/lote4-iphone.md`).
+- Lecciones L-018 a L-020.
 
 ## En curso
 - Nada. Ningún agente abierto.
 
 ## Próximos pasos (desde tasks.md)
-1. **Lote 4:** tester A con `foreign-letters.spec.ts`, `max-length.spec.ts` y `captures.spec.ts` (+ estado 4, con la captura del tope de 5 líneas que pidió el designer en el lote 2). El Manager corre `npm run check` antes del commit en rojo (L-012). Luego coder con P-7 (filtro) y P-8 (tope de 100); E2E afectadas: `screen.spec.ts` y `typing.spec.ts`.
-2. Al cerrar el lote 4: Manager corre `check`, `test:unit`, `test:e2e`, sube y prueba la preview; capturas `lote-4/` → designer C. Pedir al usuario en una sola lista (L-017) lo que solo el iPhone confirma.
-3. Lote 5 (P-9 CI, P-10 punta a punta) y luego revisiones de cierre de la slice (riesgo alto).
+1. **Lote 5:** P-9 (CI en GitHub Actions, criterio escrito antes en plan §P-9: hoy `gh run list` no muestra corridas) y P-10 (`published.spec.ts` contra la preview del lote 1 debe fallar y contra la del commit a aceptar, pasar). Riesgo alto (cadena de entrega).
+2. Revisiones de cierre de la slice según el nivel (alto): breaker-user ∥ breaker-code → clasificación 9c → reviewer (con mutación) ∥ security → designer C solo lo cambiado → verificación del Manager → aceptación del usuario en la preview → PR y fusión.
+3. **Ideas de ataque ya conocidas para los breakers** (del coder, lote 4): pegar sobre una selección algo que empieza igual ("casa", seleccionar "as", pegar "aç" deja "casa"); una letra ajena con `U+20E3` pegado entra; espacio + tilde combinable juntos entran; cambios que no terminan en el cursor (deshacer, arrastrar).
 - Agentes sobre documentos de la slice: lanzarlos en la carpeta de la rama (L-016).
 
 ## Bloqueos / pendientes del usuario
-- Ninguno que bloquee. Pendiente menor: ver en el iPhone el anillo de foco en **modo oscuro** (debe ser amarillo).
-- Para decidir cuando convenga: agregar `npm run check` a la guarda del tester (L-012, riesgo alto) y si el ícono de inicio (VS-006) se adelanta en el roadmap (se ve al cerrar VS-001).
+- Ninguno que bloquee.
+- Para decidir cuando convenga: (a) agregar `npm run check` a la guarda del tester (L-012, riesgo alto); (b) regla automática contra caracteres invisibles en `src/` y `tests/`, porque L-009 se repitió (L-018); (c) si el ícono de inicio (VS-006) se adelanta en el roadmap (se ve al cerrar VS-001).
