@@ -95,6 +95,27 @@ describe("applyInput: letters are compared exactly (P-7, round 1)", () => {
   });
 });
 
+describe("applyInput: marks on something that is not a letter are dropped (P-7, D-018)", () => {
+  test.each([
+    { name: "TC-048: a space + grave", added: ` ${GRAVE}`, kept: " " },
+    {
+      name: "TC-048: a non breaking space + cedilla",
+      added: String.fromCharCode(0x00a0) + CEDILLA,
+      kept: String.fromCharCode(0x00a0),
+    },
+    { name: "TC-049: a digit + acute", added: `1${ACUTE}`, kept: "1" },
+    { name: "TC-049: a sign + 2000 acutes", added: `?${ACUTE.repeat(2_000)}`, kept: "?" },
+  ])("$name keeps only the base", ({ added, kept }) => {
+    expect(insert("casa", added)).toEqual(accepted(`casa${kept}`));
+  });
+
+  test("TC-049: a foreign digit with a mark still does not get in", () => {
+    const arabicThree = String.fromCharCode(0x0663);
+
+    expect(insert("casa", arabicThree + ACUTE)).toEqual(accepted("casa"));
+  });
+});
+
 describe("applyInput: the cursor and what was already written (P-7)", () => {
   test("P-7: rejected input keeps the cursor where it was", () => {
     expect(insert("casa", "ç", 2)).toEqual(accepted("casa", 2));
