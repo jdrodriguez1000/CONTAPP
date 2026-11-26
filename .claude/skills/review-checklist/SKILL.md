@@ -17,12 +17,12 @@ description: How the reviewer runs each check of its table — read-only command
 ## 2. Comandos (uno por vez, desde la carpeta del código)
 | Revisión | Comando | Notas |
 |---|---|---|
-| Duplicación | COMPLETAR AL DECIDIR: p. ej. `npx jscpd <codigo> --min-lines 10` | Reporte en consola. La duplicación en pruebas pesa menos que en el código. Si **una** de las copias está en el diff, el hallazgo es **del cambio**; si ninguna, **preexistente**. |
+| Duplicación | `npx jscpd src tests --min-lines 10` (jscpd 5.4.3, D-020) | Reporte en consola. La duplicación en pruebas pesa menos que en el código. Si **una** de las copias está en el diff, el hallazgo es **del cambio**; si ninguna, **preexistente**. |
 | Complejidad | `npx eslint .` (regla `complexity: ["error", { max: 10 }]` en `eslint.config.js`, activa desde P-1) | La regla debe estar activa desde la walking skeleton. Si no está, es un hallazgo: "revisión de complejidad incompleta". |
-| Código sin uso | COMPLETAR AL DECIDIR: p. ej. `npx knip` | Si la herramienta distingue lo que llega a producción, córrela también así. |
+| Código sin uso | `npx knip` (knip 6.45.1, D-020; sin archivo de configuración: si le falta entender una pieza del proyecto, anótalo como revisión incompleta) | Si la herramienta distingue lo que llega a producción, córrela también así. |
 | Tipos | `npx tsc --noEmit` | Si el lenguaje no tiene tipos, la fila no aplica. |
 | Pruebas | `npm run test:unit` (no hay pruebas de integración: sin base ni servidor) | Confirma que están en verde antes de opinar sobre ellas. |
-| Mutación | COMPLETAR AL DECIDIR: herramienta de mutación (sección 10) | |
+| Mutación | `npx stryker run` (Stryker 10.1.1 + vitest-runner, D-020; sección 10) | |
 
 **Prohibido**, porque modifica archivos o escribe reportes: opciones como `--fix`, `--write`, `--output` / `-o`, `--output-file`, `--reporters`, `--config` / `-c`, y cualquier modo que "arregla" o "genera". El hook lo bloquea. Si una herramienta no corre, **no la reemplaces por tu opinión**: anótalo como revisión incompleta.
 
@@ -58,7 +58,7 @@ Para cada paso `P-X` del plan, en `git log --oneline`:
 - Un `refactor(P-X)` no agrega comportamiento ni pruebas nuevas.
 
 ## 6. Reglas del proyecto (project-context)
-- **Reglas técnicas y restricciones duras:** recórrelas una por una contra el diff. COMPLETAR AL DECIDIR: las señales de alerta de cada regla en este stack (p. ej. "dinero en enteros: buscar conversiones a decimal sobre montos y columnas con decimales").
+- **Reglas técnicas y restricciones duras:** recórrelas una por una contra el diff. Señales en este proyecto: el texto se recorre por grafemas (`Intl.Segmenter`) y en NFC, nunca por `.length` ni por índices sueltos (C-014, A-001); expresiones regulares de letras sin la bandera `i` (plegar mayúsculas deja pasar letras ajenas, BRK-C-4); todo "pase completo" del filtro definido de forma exacta, con su ejemplo negativo (L-023); nada se guarda ni sale del celular: buscar `localStorage`, `sessionStorage`, `indexedDB`, `fetch`, `XMLHttpRequest`, `sendBeacon` (C-010); nada de `innerHTML` con lo escrito; ningún texto que la app agregue por su cuenta (C-009).
 - **Nombres:** identificadores en el idioma del código y **con los nombres del glosario**. Un sinónimo del glosario es un hallazgo. Textos de pantalla iguales al diseño.
 - **Quién ve qué:** si el proyecto separa datos por usuario, toda consulta y acción de servidor filtra por el usuario de la sesión. Si falta el filtro, menciónalo y avisa al security.
 - **Valores del dominio:** un número fijo en el código que corresponde a un `A-XXX` es un hallazgo: los supuestos cambian y no deben quedar enterrados en el código.
@@ -92,7 +92,7 @@ Sin hallazgos vagos ("mejorar el código") ni de gusto personal. **Desde la rond
 ## 10. Pruebas de mutación (solo informe)
 **Cómo se corren** (uno por vez):
 1. `git diff --name-only main...HEAD` filtrado a los archivos de **lógica** del cambio (sin pruebas). Si no hay, no corras la herramienta: anota "sin lógica en el cambio".
-2. COMPLETAR AL DECIDIR: comando de la herramienta de mutación limitado a esos archivos, con su configuración propia y **solo pruebas unitarias** (nunca toca una base de datos). Lee el resultado de la salida en texto; sus reportes y copias temporales no se versionan.
+2. `npx stryker run`: su configuración propia (`stryker.config.json`) ya limita la mutación a `src/counting.ts` y `src/inputFilter.ts` y usa **solo pruebas unitarias** (`vitest.config.ts`); no hay base de datos. Si el diff no toca esos archivos, no lo corras. La carpeta temporal `.stryker-tmp` no se versiona. Lee el resultado de la salida en texto; sus reportes y copias temporales no se versionan.
 3. Si la herramienta aborta porque una prueba ya falla antes de mutar, no es un sobreviviente: anótalo como hallazgo (revisión incompleta) con el nombre de la prueba.
 
 **Qué no haces:** no cambias la configuración de la herramienta ni pasas opciones que la reemplacen; no agregas pruebas para matar sobrevivientes (eso es del coder).

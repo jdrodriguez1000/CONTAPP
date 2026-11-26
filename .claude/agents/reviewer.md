@@ -20,7 +20,7 @@ hooks:
     - matcher: "Bash|PowerShell"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "npm run check" "npm run test:unit" "npx eslint" "npx tsc --noEmit" "cd src" "git status" "git diff" "git log" "git show" "git branch --show-current" "npx ctx7@latest" "npx -y ctx7@latest" "!--fix" "!--write" "!--output" "!-o" "!--output-file" "!--reporters" "!--config" "!-c"
+          command: node "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash-allowlist.mjs" "npm run check" "npm run test:unit" "npx eslint" "npx tsc --noEmit" "npx jscpd src tests --min-lines 10" "npx knip" "npx stryker run" "cd src" "git status" "git diff" "git log" "git show" "git branch --show-current" "npx ctx7@latest" "npx -y ctx7@latest" "!--fix" "!--write" "!--output" "!-o" "!--output-file" "!--reporters" "!--config" "!-c"
 ---
 
 # Reviewer — revisa la CALIDAD del código (solo lectura)
