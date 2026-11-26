@@ -70,14 +70,14 @@ test("bash allowlist: allows a listed prefix, blocks others, chaining and forbid
   assert.match(option.stderr, /prohibida/);
 });
 
-// Reads the real arguments that an agent's definition passes to a guard hook (T-005, L-012).
+// Reads the REAL arguments that an agent's definition passes to a guard hook, not a hand-written
+// copy: if the agent's .md changes, these tests notice (T-005, L-012).
 function agentGuardArgs(agent, hook) {
   const definition = readFileSync(path.join(PROJECT, ".claude", "agents", `${agent}.md`), "utf8");
   const line = definition.split(/\r?\n/).find((l) => l.includes(hook));
   assert.ok(line, `${agent}.md no usa ${hook}`);
-  // Skip the hook's name and the quote that closes its path, so the pairs of quotes line up.
-  const afterHook = line.slice(line.indexOf(hook) + hook.length + 1);
-  return [...afterHook.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+  // Every quoted text on the line; the first one is the hook's own path, so it is dropped.
+  return [...line.matchAll(/"([^"]*)"/g)].map((m) => m[1]).slice(1);
 }
 
 test("tester bash guard: may run npm run check, but not with --fix nor chained", () => {
