@@ -118,3 +118,70 @@ Escribí el sistema de diseño a partir de C2 "Pizarra con fichas" (D-010), con 
 - **Para el coder, cuando se decida el stack:** los tokens se definen una sola vez y el modo se elige con la preferencia del sistema (en CSS, `prefers-color-scheme`). La maqueta los fuerza con clases solo para mostrarlos lado a lado.
 
 STATUS: DONE
+
+# Trabajo C — Lote 2 — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Revisión visual (lote 2, P-3: estado 1 y crecimiento del campo) · **Commit revisado:** `4ad30e5`
+
+## Resumen
+Revisé las 6 capturas del lote 2 contra `design-system.md`, la sección 5 de F-001 y la maqueta. También leí `index.html`, `src/styles.css` y `src/main.ts` para confirmar los tokens. **No hay hallazgos bloqueantes.** La estructura, el orden, los textos exactos, los colores en los dos modos, los espacios y el ancho de 320 px coinciden con lo aprobado. Las 4 desviaciones que anotó el coder no son defectos del código. Dejan 4 hallazgos menores: 2 de documentación, 1 de evidencia pendiente y 1 de verificación en el iPhone real.
+
+## Archivos creados o modificados
+- `_project/slices/VS-001/reports/designer.md` — esta sección, agregada al final. No edité nada más; `design-system.md` se corrige en `main` (ver propuestas).
+
+## Cómo revisar
+- Abre las 6 capturas en `_project/slices/VS-001/evidence/capturas/lote-2/` y, al lado, `_project/design/F-001/mockup.html` (estados 1 y 5).
+- **Ojo con las capturas de crecimiento:** tienen texto, pero las fichas siguen en 0. Es lo esperado: en este lote la pantalla todavía no está conectada a la función que cuenta (eso es P-6, lote 3). En esas capturas solo se revisa el campo.
+
+## Revisión fila por fila (skill design-system, sección 9)
+| # | Qué se compara | Resultado |
+|---|---|---|
+| 1 | Estructura y orden | ✓ Título → etiqueta → campo → fichas. Fichas 2 × 2 en el orden Vocales, Consonantes / Números, Otros. En el HTML cada ficha va primero con el nombre (`dt`) y después con el número (`dd`), y se ve con el número arriba, como pide 5.6 |
+| 2 | Textos exactos | ✓ "Contapp", "Escribe una palabra o frase", "Vocales", "Consonantes", "Números" (con tilde), "Otros". El campo no tiene texto de ejemplo. Pestaña "Contapp", `lang="es-CO"` |
+| 3 | Estados de este lote | ✓ Estado 1 (vacío) en claro y oscuro, a 390 y a 320 px. Crecimiento del campo, de 2 líneas (≈ 90 px) a 4 con la frase de 100 caracteres. Los estados 2 y 3 son del lote 3 y el 4 completo del lote 4 |
+| 4 | Valores del dominio | ✓ El 0 se muestra como "0", con cifras simples |
+| 5 | Tokens | ✓ Los 10 colores coinciden con `design-system.md` §2 en los dos modos, y los tamaños y pesos de letra con §3. La regla de menos de 360 px (18 y 44 px) se aplica en las capturas de 320. Espacios medidos en la captura de 390: 16 px a los lados, 8 px de la etiqueta al campo, ≈ 20 px del campo a las fichas y 12 px entre fichas. Ver hallazgos 1 y 2 |
+| 6 | Accesibilidad | ✓ Los contrastes son los de la tabla aprobada. La etiqueta está unida al campo (`for`). El campo mide más de 44 px de alto. Cada ficha lleva su nombre escrito. No se bloquea el zoom. El foco no se puede revisar todavía: no hay captura del campo activo hasta el lote 3 |
+| 7 | Anchos | ✓ A 320 px no se corta nada: "Consonantes" cabe con margen en su ficha (≈ 107 de ≈ 118 px útiles, con la letra de la captura). No hay desplazamiento horizontal en ningún ancho |
+| 8 | Detalles finos | Ver hallazgos 1 a 4 |
+
+## Las 4 desviaciones del coder: qué documento manda
+1. **Relleno lateral del campo: 12 px (`--space-3`) contra 14 px en la maqueta.** **Manda `design-system.md`.** Su §4 dice que `--space-3` es el relleno del campo, y el skill prohíbe medidas escritas a mano. El error está en la maqueta: escribí `14px` en vez del token. El coder hizo bien. La diferencia de 2 px no cambia el uso. → Hallazgo 1 (documentación, no código).
+2. **Medidas sin token (104 px, anillo de 3 y 2 px, 2 px entre número y nombre, 480 px, altos de línea).** **No es un hallazgo del código.** Todas esas medidas están escritas en `design-system.md` (§3 altos de línea, §4 anillo y ancho máximo, §5 alto mínimo de la ficha) o en F-001 §5.1, y el CSS usa exactamente esos valores. La fila 5 prohíbe medidas **fuera del sistema**, y estas están dentro, aunque sin nombre. Lo que falta es en el documento: decir cómo se escriben. Además, §4 tiene una inconsistencia: pone "separación número–nombre (2 px dentro de la ficha)" en la fila de `--space-1`, que vale 4 px. → Hallazgo 2 (documentación).
+3. **La frase de 100 caracteres ocupa 4 líneas, no 5.** **Mandan F-001 §5.3 y `design-system.md` §5** ("crece con el texto hasta 5"). Con 4 líneas es el comportamiento correcto: el campo mide lo que el texto necesita (≈ 152 px = 4 líneas + relleno + borde). El `rows="5"` de la maqueta fija una caja para mostrar el estado. No dice que esa frase deba ocupar 5 líneas. No es un hallazgo. Lo que todavía **no se ve** en una captura es el tope: que el campo se quede en 5 líneas y se desplace por dentro. → Hallazgo 3 (evidencia pendiente).
+4. **La letra no es SF Pro.** **Manda `design-system.md` §3, y el CSS la cumple.** La lista de letras (`--font-family-base`) es exactamente la aprobada. El navegador simulado corre en Windows y no tiene SF Pro, así que usa Segoe UI, que está en la misma lista. Esto es un límite de la evidencia, no un defecto. Consecuencia: en el iPhone los renglones pueden partirse distinto, y la palabra "Consonantes" a 320 px podría quedar más justa. → Hallazgo 4 (verificar en el iPhone real).
+
+## Hallazgos
+| # | Pantalla | Hallazgo | Severidad |
+|---|---|---|---|
+| 1 | Maqueta F-001, campo | `mockup.html` usa `padding: var(--space-3) 14px`: los 14 px están escritos a mano y contradicen `design-system.md` §4. Hay que cambiarlo por `padding: var(--space-3)` en la maqueta. El código no se toca | **Menor** — es un error de la maqueta, no de la app. Son 2 px y no cambian el uso |
+| 2 | `design-system.md` §3–§4 | Algunas medidas aprobadas no tienen nombre de token ni una regla que diga cómo escribirlas. Además, el "2 px" de la separación número–nombre aparece en la fila de `--space-1` (4 px). Propuesta abajo | **Menor** — el código usa los valores aprobados. Solo falta que el documento sea explícito |
+| 3 | Campo, más de 5 líneas | No hay captura del tope de 5 líneas con desplazamiento por dentro, por ejemplo con 7 saltos de línea. Hoy lo comprueba solo `screen.spec.ts`. Pido esa captura (claro y oscuro, 390 × 844) en el lote 4, junto al estado 4 | **Menor** — no bloquea este lote: el estado 4 completo es del lote 4. Si en el lote 4 sigue faltando, termino BLOCKED |
+| 4 | Toda la pantalla, en el iPhone | Las capturas usan Segoe UI y no SF Pro. Recomiendo que la verificación del Manager en la preview (iPhone real con Safari, D-009) incluya una foto del estado 4 con la frase de 100 caracteres, para confirmar que cabe en 5 líneas o menos y que nada se corta | **Menor** — el CSS es correcto. Es un riesgo de evidencia, no un defecto |
+
+**Bloqueantes: ninguno.** El lote 2 puede seguir.
+
+## Propuesta: columnas `COMPLETAR AL DECIDIR` de `design-system.md` §5 (D-011, sin librería)
+Esto es solo una propuesta; no edité `design-system.md`. Recomiendo cambiar el nombre de la columna "Base en la librería" a **"Base en el código (D-011: HTML + clase en `src/styles.css`)"** y llenarla así:
+
+| Componente (código) | Base en el código | Variantes | Cuándo se usa |
+|---|---|---|---|
+| `AppTitle` | `<h1 class="app-title">` en `index.html` · clase `.app-title` | — | (sin cambio) |
+| `TextField` | `<label class="field-label" for="text-field">` + `<textarea class="field" rows="2">` con `autocomplete`, `autocorrect`, `autocapitalize` en `off` y `spellcheck="false"` · clases `.field-label`, `.field`, `.field:focus-visible` · el crecimiento de 2 a 5 líneas está en `src/main.ts` (`fitHeightToText`) | reposo · activo (`:focus-visible`) | (sin cambio) |
+| `CountGrid` | `<dl class="counts">` · clase `.counts` | — | (sin cambio) |
+| `CountCard` | `<div class="count"><dt>Nombre</dt><dd>número</dd></div>` · clases `.count`, `.count dt`, `.count dd` | — (en VS-002: una por `characterGroup`) | (sin cambio) |
+
+Otros ajustes de `design-system.md` que conviene hacer en el mismo cambio, en `main`:
+- **Línea 6:** la nota "El stack todavía no está decidido…" ya no es cierta. Propongo: "Stack decidido en D-011: sin librería de componentes; cada componente es HTML más una clase CSS en `src/styles.css`, y los tokens se definen una sola vez en `:root` de ese archivo (el modo oscuro, con `@media (prefers-color-scheme: dark)`)."
+- **Historial (§10):** una fila nueva con la fecha, "Base en el código de los 4 componentes y medidas fijas", motivo D-011 y la revisión del lote 2.
+- **Para el Manager:** con D-011 también se puede llenar el `COMPLETAR AL DECIDIR` de la sección 2 del skill design-system (`.claude/skills/design-system/SKILL.md`). Ejemplo de una línea: `:root { --color-primary: #1f6b33; }` en `src/styles.css`, que se usa como `color: var(--color-primary);`. En la sección 3 del skill: "sin librería (D-011)". Ese archivo no es de mi zona.
+
+## Preguntas para el usuario
+- **¿Cómo dejamos las medidas fijas (hallazgo 2)?** Recomiendo **(A)**: agregar a `design-system.md` §4 una lista corta de "medidas fijas aprobadas" (104 px de alto mínimo de la ficha, anillo de 3 px separado 2 px, 2 px entre número y nombre, 480 px de ancho máximo, altos de línea 1,1 / 1,2 / 1,3). El código no cambia. Cada medida se vuelve token cuando se use en un segundo lugar (VS-002). Contra: la regla "todo con token" deja de ser absoluta. **(B)**: crear ya 8 tokens nuevos (`--size-card-min`, `--focus-ring-width`, `--focus-ring-offset`, `--content-max-width`, `--line-height-*`…). Contra: más nombres para medidas que hoy se usan una sola vez, y cambiar el CSS en un lote que ya está en verde.
+- **¿Corrijo la maqueta (hallazgo 1)?** Recomiendo que sí: es un cambio de una línea en `_project/design/F-001/mockup.html` (de `14px` a `var(--space-3)`), con una nota en el Historial. Lo hago cuando el Manager lo indique.
+
+## Decisiones o lecciones propuestas
+- **Lección (diseño):** en las maquetas, toda medida va con su token o como un valor que ya está en `design-system.md`. Nunca con un número suelto. Por qué: el `14px` de la maqueta obligó al coder a elegir entre dos documentos.
+- **Lección (evidencia):** las capturas de un navegador simulado en Windows no usan la letra del iPhone. Los saltos de renglón y lo que cabe a 320 px se confirman en la preview con el iPhone real (D-009). Por qué: SF Pro y Segoe UI no tienen el mismo ancho.
+- **Decisión propuesta:** en `design-system.md` §5, la columna "Base en la librería" pasa a ser "Base en el código", como en la tabla de arriba. Por qué: D-011 no usa librería de componentes.
+
+STATUS: DONE
