@@ -1,5 +1,5 @@
 # Plan de trabajo — VS-001 "Contar en el celular" (walking skeleton)
-**Aprobación del plan:** Pendiente
+**Aprobación del plan:** Aprobado por el usuario — 2026-11-26
 
 **Fecha:** 2026-11-26 · **Autor:** planner · **Feature:** F-001 (aprobada, con diseño) · **Esbozo:** `_project/slices/VS-001.md` §7 (aprobado 2026-11-25) · **Stack:** D-011
 

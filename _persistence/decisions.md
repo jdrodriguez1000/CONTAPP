@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-25
-**Último ID usado:** D-011
+**Último ID usado:** D-012
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -20,6 +20,7 @@
 - D-008 — La app se publica como dirección web que se abre en el navegador del celular (sin tienda de apps)
 - D-009 — Dispositivo de las pruebas de punta a punta: iPhone con Safari; en el campo se apagan corrector y sugerencias del teclado
 - D-011 — Stack: TypeScript + Vite (sin framework), Vitest, Playwright (WebKit), GitHub Actions, Vercel (preview por rama), ESLint, gitleaks; código en `src/`; rama por slice y PR con commit de fusión
+- D-012 — Plan de VS-001 aprobado (5 lotes); herramientas de calidad (duplicación, sin uso, mutación) se deciden al llegar a la etapa 10
 - D-010 — Estilo visual: propuesta C2 "Pizarra con fichas" (claro y oscuro, sigue el modo del celular); nombre "Contapp"; mayúscula automática apagada
 
 ## Registro completo (memoria fría — consultar por demanda)
@@ -100,3 +101,10 @@
 - **Alternativas descartadas:** React u otro framework (complejidad innecesaria); GitHub Pages (sin preview por rama).
 - **Estado:** Vigente
 - **Relacionada con:** D-004, D-008, D-009, C-010
+
+### D-012 — 2026-11-26 — Plan de VS-001 y herramientas de calidad
+- **Decisión:** se aprueba `_project/slices/VS-001/plan.md` (10 pasos en 5 lotes, versiones verificadas por el planner). Las herramientas de duplicación, código sin uso y mutación del reviewer se deciden al llegar a la etapa 10. El usuario ya tiene cuenta en Vercel.
+- **Razón:** aprobación del usuario; las herramientas de calidad no hacen falta para construir.
+- **Alternativas descartadas:** decidir ahora jscpd, knip y Stryker.
+- **Estado:** Vigente
+- **Relacionada con:** D-011, VS-001

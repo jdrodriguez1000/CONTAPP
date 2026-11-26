@@ -13,9 +13,9 @@
 ## Índice (tareas abiertas, por prioridad)
 | ID | Tarea | Prioridad | Estado | Depende de |
 |---|---|---|---|---|
-| T-002 | Primera vertical slice: la walking skeleton | Alta | Backlog | T-001 |
+| T-002 | Primera vertical slice: la walking skeleton | Alta | In Progress | T-001 |
 
 ## Detalle
 | ID | Tarea | Prioridad | Estado | Depende de | Nota |
 |---|---|---|---|---|---|
-| T-002 | Primera vertical slice: la walking skeleton | Alta | Backlog | T-001 | VS-001 — Contar en el celular (F-001), definida en `_project/roadmap.md`. Lo mínimo corriendo de punta a punta, de verdad (PI-4), siguiendo el flujo de `orchestrator-playbook`. T-001 ya está completada (2026-11-25) |
+| T-002 | Primera vertical slice: la walking skeleton | Alta | In Progress | T-001 | Definición, diseño y plan aprobados (2026-11-26); sigue el lote 1. VS-001 — Contar en el celular (F-001), definida en `_project/roadmap.md`. Lo mínimo corriendo de punta a punta, de verdad (PI-4), siguiendo el flujo de `orchestrator-playbook`. T-001 ya está completada (2026-11-25) |

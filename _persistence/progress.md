@@ -1,22 +1,24 @@
 # Progreso del proyecto
-**Última actualización:** 2026-11-25 · **Versión del producto:** 0.002.000
+**Última actualización:** 2026-11-26 · **Versión del producto:** 0.002.000
 
 > **Reglas del archivo:** gerencial, no acumulativo: se **reemplaza** en cada cierre (historial en git). Máx. **50 líneas**. Estructura fija: Última actualización · Dónde estamos · Última sesión · En curso · Próximos pasos (desde `tasks.md`) · Bloqueos / pendientes del usuario.
 
 ## Dónde estamos
-- **Fase actual:** Fase 0 terminada. Sigue la **VS-001 — Contar en el celular** (walking skeleton). Todavía no hay código.
+- **Fase actual:** VS-001 — Contar en el celular (walking skeleton). Definición, diseño y plan **aprobados**. Todavía no hay código ni rama.
 
 ## Última sesión
-- **2026-11-25:** T-001 completada con el usuario: producto, perfil del usuario, reglas de conteo C-001 a C-013, supuesto A-001 (100 caracteres), catálogo GRP-001 a GRP-004 y roadmap VS-001 a VS-006 (features F-001 a F-009).
-- Repositorio git creado y conectado a GitHub (`jdrodriguez1000/CONTAPP`, rama `main`).
+- **2026-11-25/26:** architect definió VS-001 y F-001 (42 TC, esbozo de 10 pasos aprobado). Designer: propuestas A, B, C y C2; el usuario eligió **C2 "Pizarra con fichas"** (D-010) y aprobó el diseño de F-001 y `_project/design-system.md`. Stack D-011 (TypeScript + Vite, Vitest, Playwright WebKit, GitHub Actions, Vercel). Planner: plan en 5 lotes, aprobado (D-012).
+- Decisiones D-006 a D-012; reglas C-014 a C-016; A-001 ampliado; F-005 retirada.
+- Guardas de los agentes (`.claude/agents/*.md`) llenadas con carpetas y comandos del plan §8.3 (commit propio, entrega de riesgo Alto (7) que el usuario debe aprobar).
 
 ## En curso
-- Nada.
+- Nada. Ningún agente abierto.
 
 ## Próximos pasos (desde tasks.md)
-1. **Antes de la próxima sesión (usuario):** renombrar la carpeta `PRUEBAPP` → `CONTAPP` con Claude Code y Herdr cerrados, y abrir la sesión en la carpeta nueva. Conviene hacerlo antes de crear ramas en otras carpetas (worktrees).
-2. **T-002 — VS-001:** el Manager lee `orchestrator-playbook` y lanza al **architect** para definir la VS-001 (F-001). El usuario pidió explícitamente no lanzarlo sin su visto bueno.
-3. Al decidir el stack en la VS-001: agregar `.gitattributes` para fijar los finales de línea (git avisa LF → CRLF en Windows).
+1. **Usuario:** aprobar el cambio de las guardas de los agentes (commit "chore: guardas de agentes…").
+2. **Usuario:** responder si las previews de Vercel piden iniciar sesión (recomendado: apagar la protección; plan, pregunta 1). Se necesita en el lote 1 (P-2).
+3. **Manager (etapa 6):** crear la rama `feature/VS-001-contar-en-el-celular` en `../CONTAPP-VS-001` (worktree) y lanzar al **tester** (trabajo A del lote 1), luego al coder.
+4. Llenar los `COMPLETAR AL DECIDIR` restantes del playbook y de project-context con el plan §8 (comandos, rutas por riesgo, preview, PR).
 
 ## Bloqueos / pendientes del usuario
-- Preguntas abiertas para el diseño (en `edge-cases` §2): qué pasa al intentar el carácter 101, y si al pegar un texto con letras de otro idioma se rechaza todo o solo esa letra.
+- Pregunta 1 del plan: protección de las previews de Vercel.
