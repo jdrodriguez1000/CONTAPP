@@ -30,10 +30,10 @@
 ## Bloque A — Contar y mostrar
 | Slice | Nombre | Qué puede hacer el usuario al terminarla | Fuera a propósito | Reglas | Depende de | Estado |
 |---|---|---|---|---|---|---|
-| VS-001 | Contar en el celular (**walking skeleton**) · **F-001** Escribir una palabra o frase y ver los 4 conteos | Abrir la app publicada desde el celular, escribir y ver los 4 conteos en texto sencillo | Imágenes y diseño didáctico (VS-002); avisos (VS-004): una letra de otro idioma simplemente no entra, sin aviso | C-001 a C-013 | — | Por definir |
+| VS-001 | Contar en el celular (**walking skeleton**) · **F-001** Escribir una palabra o frase y ver los 4 conteos | Abrir la app publicada desde el celular, escribir y ver los 4 conteos en texto sencillo | Imágenes y diseño didáctico (VS-002); avisos (VS-004): una letra de otro idioma simplemente no entra, sin aviso. El carácter 101 no entra y nunca muestra aviso (D-007) | C-001 a C-013 | — | Por definir |
 | VS-002 | Imágenes y diseño para niños · **F-002** Una imagen y un color por grupo · **F-003** Pantalla didáctica (letra y botones grandes, poco texto) | Usarla con los niños: cada grupo se reconoce por su imagen sin leer | Colorear cada letra (VS-003) | C-001 a C-013 | VS-001 | Por definir |
 | VS-003 | Ver cada letra en su grupo · **F-004** El texto escrito se muestra con cada carácter del color de su grupo | Ver **cuáles** caracteres son vocales, consonantes, números u otros, no solo cuántos | Avisos (VS-004) | C-001 a C-013 | VS-002 | Por definir |
-| VS-004 | Avisos amables · **F-005** Aviso al llegar al largo máximo · **F-006** Aviso al intentar una letra de otro idioma | Entender por qué no entró lo que se escribió | — | A-001, C-011 | VS-002 | Por definir |
+| VS-004 | Aviso amable · **F-006** Aviso al intentar una letra de otro idioma: mensaje lindo para el niño y se borra todo el texto para escribirlo de nuevo (D-006) | Entender por qué se borró lo que se escribió | F-005 (aviso de largo máximo), retirada el 2026-11-25 (D-007): el carácter 101 se ignora en silencio | C-011 | VS-002 | Por definir |
 | VS-005 | Borrar y empezar de nuevo · **F-007** Botón grande para borrar todo | Pasar de una palabra a otra sin borrar letra por letra | — | C-012 | VS-002 | Por definir |
 | VS-006 | Instalar en el celular y usar sin internet · **F-008** Ícono en la pantalla de inicio · **F-009** Funciona sin conexión | Abrirla como cualquier app, también sin wifi | — | C-010 | VS-001 | Por definir |
 

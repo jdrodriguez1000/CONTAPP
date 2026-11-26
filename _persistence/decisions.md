@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-25
-**Último ID usado:** D-005
+**Último ID usado:** D-007
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -15,6 +15,8 @@
 - D-003 — Se usan todos los agentes de VEGU, lanzados en panes de Herdr
 - D-004 — Repositorio en GitHub `jdrodriguez1000/CONTAPP`, rama principal `main`
 - D-005 — En VS-001 una letra de otro idioma simplemente no entra al texto, sin aviso; el aviso llega en VS-004 (F-006)
+- D-006 — Desde VS-004, una letra de otro idioma muestra un mensaje lindo al niño y borra todo el texto para escribirlo de nuevo
+- D-007 — El carácter 101 se ignora en silencio, sin aviso; se retira F-005 del roadmap (ajusta D-002)
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -52,3 +54,17 @@
 - **Alternativas descartadas:** construir el aviso ya en VS-001 (agranda la walking skeleton).
 - **Estado:** Vigente
 - **Relacionada con:** C-011, VS-004
+
+### D-006 — 2026-11-25 — Qué pasa con una letra de otro idioma desde VS-004
+- **Decisión:** desde VS-004 (F-006), al escribir o pegar una letra de otro idioma se muestra un mensaje muy lindo para el niño, que le dice que esa letra es de otro idioma y que vuelva a escribir la palabra o frase. Se borra **todo** el texto y los conteos vuelven a 0, también al pegar un texto mezclado ("façade"). Antes de VS-004 sigue D-005 (no entra, sin aviso).
+- **Razón:** el usuario quiere que el niño entienda qué pasó y empiece de nuevo; el mensaje necesita el diseño didáctico de VS-002.
+- **Alternativas descartadas:** mostrar el mensaje ya en VS-001 (agranda la walking skeleton); conservar lo escrito y quitar solo la letra.
+- **Estado:** Vigente
+- **Relacionada con:** C-011, D-005, VS-004
+
+### D-007 — 2026-11-25 — El carácter 101 se ignora en silencio
+- **Decisión:** al intentar escribir o pegar más de 100 caracteres (A-001), lo que sobra no entra, el conteo no cambia y no se muestra ningún aviso, ni ahora ni después. Se retira **F-005** (aviso al llegar al largo máximo) de VS-004; su ID no se reutiliza. Ajusta D-002 solo en ese punto.
+- **Razón:** decisión del usuario, experto del dominio.
+- **Alternativas descartadas:** un aviso amable en VS-004.
+- **Estado:** Vigente
+- **Relacionada con:** A-001, D-002, VS-004

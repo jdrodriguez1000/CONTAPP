@@ -18,8 +18,7 @@ description: Shared catalog of the project's edge cases — boundary-value and e
 ## 2. Bordes con regla aún sin definir (preguntar antes de probar)
 | Borde | Por qué es un problema |
 |---|---|
-| Intentar escribir el carácter 101 (A-001): ¿se bloquea la escritura o se muestra un aviso, y con qué texto? | Cada agente lo resolvería distinto; se decide en el diseño de la slice que lo construya |
-| Intentar escribir o pegar una letra de otro idioma (C-011): ¿se ignora en silencio o se muestra un aviso, y con qué texto? Si se pega un texto mezclado ("façade"), ¿se rechaza todo o solo la letra no permitida? | Igual que el anterior: se decide en el diseño |
+| Ninguno por ahora | — |
 
 > Cuando el usuario define una regla, se registra en la memoria y la fila sale de esta tabla hacia la sección que corresponda.
 
@@ -29,7 +28,7 @@ description: Shared catalog of the project's edge cases — boundary-value and e
 - **Exactitud:** si una regla pide valores exactos, ninguna operación produce decimales sueltos y **la suma de las partes es igual al total**. Un reparto con residuo necesita una regla de redondeo decidida.
 - **Entrada del usuario:** con y sin separadores de miles, con símbolo, con espacios, con el separador decimal de su región y el de otra, letras, vacío y solo espacios.
 - **Salida:** el formato de la región del usuario, incluidos cero y negativos; ojo con los espacios que no se parten que ponen las funciones estándar de formato.
-- **Largo del texto** (A-001): 99, 100 y 101 caracteres; vacío y solo espacios (C-008, C-012).
+- **Largo del texto** (A-001): 99, 100 y 101 caracteres; vacío y solo espacios (C-008, C-012). El carácter 101 (escrito o pegado) no entra, el conteo no cambia y **no se muestra ningún aviso** (D-007).
 - **Emojis y caracteres compuestos:** un emoji (incluso los de varias partes, como una familia o una bandera) cuenta como **1** otro, no como varias posiciones.
 - **La suma cuadra:** vocales + consonantes + números + otros = total de caracteres sin espacios.
 
@@ -53,7 +52,7 @@ description: Shared catalog of the project's edge cases — boundary-value and e
 | C-006 Dígitos | "0", "2026", números pegados a letras ("a1b2") |
 | C-007 Otros | ¿ ? ¡ ! , . @ # y emojis |
 | C-008 Espacios | espacios al inicio, al final y dobles; tabulación; salto de línea |
-| C-011 Letras de otros idiomas | à â ö ç ß y letras de otros alfabetos (α, ж): no entran al texto ni cambian el conteo; también al pegarlas |
+| C-011 Letras de otros idiomas | à â ö ç ß y letras de otros alfabetos (α, ж): no entran al texto ni cambian el conteo; también al pegarlas. **VS-001 a VS-003:** sin aviso (D-005). **Desde VS-004:** mensaje lindo para el niño y se borra **todo** el texto (conteos en 0), también al pegar un texto mezclado como "façade" (D-006) |
 | C-012 Texto vacío | vacío y solo espacios: los 4 grupos en 0 |
 
 ## 6. Catálogo y datos
