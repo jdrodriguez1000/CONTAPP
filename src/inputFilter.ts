@@ -8,7 +8,8 @@ const EMOJI = /\p{Extended_Pictographic}|\p{Regional_Indicator}|\u{20E3}/u;
 const INVISIBLE = /(?![\t\n\r])(?:\p{Cc}|\p{Cf}|[\u{FE00}-\u{FE0F}])/gu;
 const LETTER = /\p{L}/u;
 // One letter and nothing else: a Spanish letter with an extra mark is a foreign one (C-011).
-const SPANISH_LETTER = /^[a-zñáéíóúüªº]$/iu;
+// Capitals are listed one by one: ignoring case would also let in the long s (it folds to "s").
+const SPANISH_LETTER = /^[a-zA-ZñÑáéíóúüÁÉÍÓÚÜªº]$/u;
 const STARTS_WITH_MARK = /^\p{M}/u;
 const FOREIGN_DIGIT = /(?![0-9])\p{Nd}/u; // C-015
 
