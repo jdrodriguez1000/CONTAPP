@@ -11,6 +11,7 @@ const LETTER = /\p{L}/u;
 // Capitals are listed one by one: ignoring case would also let in the long s (it folds to "s").
 const SPANISH_LETTER = /^[a-zA-ZñÑáéíóúüÁÉÍÓÚÜªº]$/u;
 const STARTS_WITH_MARK = /^\p{M}/u;
+const MARKS = /\p{M}/gu;
 const FOREIGN_DIGIT = /(?![0-9])\p{Nd}/u; // C-015
 
 // A grapheme is one character as a person sees it: a whole family emoji is one.
@@ -25,17 +26,19 @@ export function textLength(text: string): number {
   return splitGraphemes(text.normalize("NFC")).length;
 }
 
-function isAllowed(character: string): boolean {
-  if (LETTER.test(character)) return SPANISH_LETTER.test(character);
-  return !STARTS_WITH_MARK.test(character) && !FOREIGN_DIGIT.test(character);
+// A letter gets in only if it is exactly a Spanish one. On anything else, the combining
+// marks are dropped and the base stays (D-018).
+function keepAllowed(character: string): string {
+  if (LETTER.test(character)) return SPANISH_LETTER.test(character) ? character : "";
+  if (STARTS_WITH_MARK.test(character) || FOREIGN_DIGIT.test(character)) return "";
+  return character.replace(MARKS, "");
 }
 
 // What gets in from one character: all of it, a clean version or nothing ("").
 function filterGrapheme(grapheme: string): string {
   if (EMOJI.test(grapheme)) return grapheme;
   // NFC again: without the invisible, a letter and its mark can join (C-014).
-  const visible = grapheme.replace(INVISIBLE, "").normalize("NFC");
-  return isAllowed(visible) ? visible : "";
+  return keepAllowed(grapheme.replace(INVISIBLE, "").normalize("NFC"));
 }
 
 // Where the new part starts: what did not change before the cursor, moved back to the
