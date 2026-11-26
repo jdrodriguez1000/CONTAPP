@@ -246,7 +246,7 @@ En cada ficha el `<dt>` va **antes** que el `<dd>` en el HTML (se lee "Vocales, 
 - **Valor de un conteo:** solo cifras, de `0` a `100`, sin espacios, separadores ni ceros a la izquierda. El 0 se ve `0`.
 - **Al instante:** los conteos ya están actualizados cuando termina el evento del cambio; no hay demora, botón ni animación.
 - **Texto del campo:** después de cualquier cambio, el valor queda en **forma NFC** (una letra con su tilde es una sola pieza: `"ñ"` pegada queda `"ñ"`).
-- **Rechazo silencioso** (letra de otro idioma, número de otro alfabeto, invisible suelto, carácter 101): el valor del campo **no cambia**, el cursor (`selectionStart` y `selectionEnd`) queda **donde estaba antes del intento**, y los 4 conteos no cambian.
+- **Rechazo silencioso** (letra de otro idioma, número de otro alfabeto, invisible suelto, carácter 101): el valor del campo **no cambia**, el cursor (`selectionStart` y `selectionEnd`) queda **donde estaba antes del intento**, y los 4 conteos no cambian. Si había una parte seleccionada, la selección se quita y el cursor queda donde empezaba lo nuevo (§5.2, paso 5; decisión del usuario 2026-11-26).
 - **Pegar en medio:** lo aceptado entra en la posición del cursor; el cursor queda justo después de lo que entró.
 - **Ningún aviso, nunca:** no hay elementos con `role="alert"`, `role="status"`, `role="dialog"` ni `aria-live`; no se abre `alert`, `confirm` ni `prompt`; el texto visible de la página es solo el título, la etiqueta, los 4 nombres, los 4 números y lo escrito.
 - **Nada sale de la página:** después de cargar, escribir no genera ninguna petición de red.
