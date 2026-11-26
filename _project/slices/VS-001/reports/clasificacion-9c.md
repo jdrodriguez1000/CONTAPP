@@ -22,3 +22,9 @@ Reproducidos por el Manager el 2026-11-26: 14/14 de breaker-code (Vitest) y 14/1
 **Bordes que esperan** (a `VS-001.md` §6): composición del teclado del iPhone a medio escribir (R-3) y arrastrar y soltar desde otra app — no se pueden probar en el simulador; se comprueban a mano en una slice futura.
 
 **Antes del coder (próxima sesión):** actualizar F-001 (CA-7 incluye "volver atrás"; regla de D-018 en C-015) y el plan §5.2 (sin pase libre por U+20E3/emoji), y pasar las reproducciones de los reportes `breaker-user.md` y `breaker-code.md` como pruebas en rojo.
+
+## Etapa 10 — reviewer ∥ security (HEAD `dc7b495`)
+Aprobado por el usuario el 2026-11-26. **Sin ronda 2.**
+- **Security:** 0 Críticas, 0 Altas. 4 hallazgos del cambio (1 Media, 3 Bajas) → DT-004 a DT-007.
+- **Reviewer:** 0 Bloqueantes. Hallazgos 1 y 2 → DT-008 y DT-009; hallazgo 3 (espera fija de TC-043) → excepción anotada en el plan (P-6).
+- **Mutación:** 93,13 % (122 muertos, 9 sobrevivientes: 3 equivalentes, 4 bordes de `countCharacters` → DT-010, 2 "Sería bloqueante" → DT-011). El Manager comprobó que en esos 2 la app ya se porta bien (no entra nada ajeno ni invisible): falta la prueba, no hay defecto. Se atienden en VS-004, que vuelve a cambiar el filtro.

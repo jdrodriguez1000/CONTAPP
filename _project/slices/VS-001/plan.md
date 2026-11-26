@@ -159,7 +159,7 @@ No hay archivo `.env` ni ningún secreto en esta slice (si el usuario elige la o
 - **Qué es, en sencillo:** se conecta el campo con la función de conteo: con cada letra que entra o se borra, las 4 fichas se actualizan en el mismo instante. Al recargar, todo vuelve a 0 porque nada se guarda.
 - **Archivos:** modificar `src/main.ts` (escucha cada cambio del campo y escribe los 4 números en sus fichas, sin demora ni animación).
 - **Prueba que va primero:** la de aceptación del tester, `tests/e2e/typing.spec.ts`: TC-002 ("casa" letra por letra: tras "c" → 0/1/0/0; tras "casa" → 2/2/0/0), TC-003 (borrar → 1/2; borrar todo → 0), TC-024 (recargar → vacío y 0), TC-025 (ninguna petición que sale de la página lleva "casa"), TC-027 (escribir "cas", esperar 2 s y el texto sigue "cas"). Rojo: TC-002 y TC-003 fallan porque los conteos se quedan en 0. TC-024, TC-025 y TC-027 son *control*. El tester amplía `captures.spec.ts` con los estados 2 ("pingüino", con foco) y 3 ("¡Hola, 2026! 😀").
-- **Lecciones:** ninguna registrada aplica. TC-027 usa una espera fija de 2 s: es la única espera fija permitida en la slice.
+- **Lecciones:** ninguna registrada aplica. TC-027 usa una espera fija de 2 s: es la única espera fija permitida en la slice. **Excepción (ronda 1, 2026-11-26):** TC-043 espera 1 s después de "atrás", porque comprobar que el navegador **no** repone el texto exige esperar un tiempo (hallazgo 3 del reviewer; cambiarla por una espera a `pageshow` más una ventana corta cuando se toque TC-043).
 - **Terminado cuando:** `typing.spec.ts` y `screen.spec.ts` en verde; capturas del lote 3.
 
 ### P-7 — Letras de otros idiomas no entran
