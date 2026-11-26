@@ -26,21 +26,34 @@ function refreshScreen() {
 // The last text that went through the filter: what is new is compared against it.
 let acceptedText = textField.value;
 
+// Once the app has rewritten the field, the browser's undo history no longer matches it:
+// replaying it repeats text.
+let isHistoryStale = false;
+
 function filterChange() {
   const { text, cursor } = applyInput(acceptedText, textField.value, textField.selectionEnd);
   // The field is only rewritten when something did not get in, so the cursor is not moved.
   if (text !== textField.value) {
     textField.value = text;
     textField.setSelectionRange(cursor, cursor);
+    isHistoryStale = true;
   }
   acceptedText = text;
   refreshScreen();
 }
 
+// Undo and redo ("historyUndo", "historyRedo") of a stale history change nothing.
+function undoStaleHistory() {
+  textField.value = acceptedText;
+  refreshScreen();
+}
+
 // "input" fires on every change: typing, pasting and deleting.
 textField.addEventListener("input", (event) => {
+  const { isComposing, inputType } = event as InputEvent;
+  if (isHistoryStale && inputType.startsWith("history")) undoStaleHistory();
   // While the keyboard is still composing a letter, filtering would cut it in half.
-  if ((event as InputEvent).isComposing) refreshScreen();
+  else if (isComposing) refreshScreen();
   else filterChange();
 });
 textField.addEventListener("compositionend", filterChange);
