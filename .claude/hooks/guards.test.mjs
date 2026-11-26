@@ -6,6 +6,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -67,6 +68,53 @@ test("bash allowlist: allows a listed prefix, blocks others, chaining and forbid
   const option = run("guard-bash-allowlist.mjs", rules, bash("npx eslint --fix src"));
   assert.equal(option.code, 2);
   assert.match(option.stderr, /prohibida/);
+});
+
+// Reads the REAL arguments that an agent's definition passes to a guard hook, not a hand-written
+// copy: if the agent's .md changes, these tests notice (T-005, L-012).
+function agentGuardArgs(agent, hook) {
+  const definition = readFileSync(path.join(PROJECT, ".claude", "agents", `${agent}.md`), "utf8");
+  const line = definition.split(/\r?\n/).find((l) => l.includes(hook));
+  assert.ok(line, `${agent}.md no usa ${hook}`);
+  // Every quoted text on the line; the first one is the hook's own path, so it is dropped.
+  return [...line.matchAll(/"([^"]*)"/g)].map((m) => m[1]).slice(1);
+}
+
+test("tester bash guard: may run npm run check, but not with --fix nor chained", () => {
+  const rules = agentGuardArgs("tester", "guard-bash-allowlist.mjs");
+  assert.equal(run("guard-bash-allowlist.mjs", rules, bash("npm run check")).code, 0);
+  const fix = run("guard-bash-allowlist.mjs", rules, bash("npm run check -- --fix"));
+  assert.equal(fix.code, 2);
+  assert.match(fix.stderr, /prohibida/);
+  assert.equal(run("guard-bash-allowlist.mjs", rules, bash("npm run check && rm -rf src")).code, 2);
+  // What it could already run must still be allowed.
+  assert.equal(run("guard-bash-allowlist.mjs", rules, bash("npm run test:unit")).code, 0);
+  assert.equal(
+    run("guard-bash-allowlist.mjs", rules, bash("npx playwright test tests/e2e/typing.spec.ts --project=iphone")).code,
+    0
+  );
+});
+
+test("tester bash guard: options that write files, load code or switch project are blocked (MANT-001 S1)", () => {
+  const rules = agentGuardArgs("tester", "guard-bash-allowlist.mjs");
+  const attempts = [
+    "npm run check -- -- --fix", // a second "--" really reaches eslint
+    "npm run check -- -- --fix=true",
+    "npm run check -- -- -o tests/report.txt", // writes a file anywhere
+    "npm run check -- -- --output-file=src/x.ts",
+    "npm run check -- -- -c tests/evil.config.js", // loads and runs a JS file
+    "npm run check -- -- --config tests/evil.config.js",
+    "npm run check -- -- --cache",
+    "npm run check -- -- --cache-location src/x",
+    "npm run check -- -- -f json", // json prints the source of src/
+    "npm run check -- -- --format json",
+    "npm run check --prefix tests", // runs another package.json's "check"
+  ];
+  for (const command of attempts) {
+    const result = run("guard-bash-allowlist.mjs", rules, bash(command));
+    assert.equal(result.code, 2, command);
+    assert.match(result.stderr, /prohibida/, command);
+  }
 });
 
 test("every guard fails closed on unreadable input", () => {
