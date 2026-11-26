@@ -3,6 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 const localUrl = "http://localhost:4173";
 const publishedUrl = process.env.E2E_BASE_URL;
 const publishedSpec = /published\.spec\.ts/;
+const capturesSpec = /captures\.spec\.ts/;
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -14,7 +15,12 @@ export default defineConfig({
   projects: [
     {
       name: "iphone",
-      testIgnore: publishedSpec,
+      testIgnore: [publishedSpec, capturesSpec],
+      use: { ...devices["iPhone 13"], baseURL: localUrl },
+    },
+    {
+      name: "captures",
+      testMatch: capturesSpec,
       use: { ...devices["iPhone 13"], baseURL: localUrl },
     },
     {
