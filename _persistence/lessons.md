@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-26
-**Último ID usado:** L-005
+**Último ID usado:** L-008
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -22,12 +22,15 @@
 ### Herramienta
 - L-002 — Ediciones masivas con tildes, emojis y comillas: escribir un script en el scratchpad, no un heredoc en Bash
 - L-004 — Las maquetas HTML se verifican con capturas de Edge sin ventana (`msedge --headless --screenshot`), porque el designer no puede abrir un navegador
+- L-006 — Si la preview de Vercel "falla", mirar primero `curl -sI`: un 302 a `vercel.com/sso-api` es la protección encendida, no la app
+- L-007 — La dirección de la preview de rama no sale por `gh` (apunta al panel privado): pedirla una vez al usuario; es estable para toda la rama
 
 ### Datos y supuestos
 
 ### Proceso y memoria
 - L-003 — Todo mensaje al usuario va en español de Colombia, también los que siguen a un reporte de agente en otro idioma → VEGU
 - L-005 — Para elegir el sistema de diseño, pedir varias propuestas (claro y oscuro) y dejar que el usuario combine: salió C2 de C + B → VEGU
+- L-008 — La guarda de Bash de los agentes bloquea `<` y `>`: sus commits salen sin `Co-Authored-By` → VEGU
 
 ## Registro completo
 
@@ -80,3 +83,33 @@
 - **Cómo aplicarla:** en la primera slice con pantallas, pedir al designer 2–3 propuestas con los mismos tokens y ambos modos antes de escribir `design-system.md`.
 - **Estado:** Vigente
 - **Relacionada con:** D-010
+
+### L-006 — 2026-11-26 — Distinguir la protección de Vercel de un fallo de la app
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** `test:published` contra la preview falló; `curl -sI` mostró `302` a `vercel.com/sso-api`: "Vercel Authentication" seguía encendida (viene encendida por defecto). Al apagarla, la prueba pasó.
+- **Lección:** antes de clasificar un fallo de la prueba publicada, mirar la respuesta cruda de la dirección.
+- **Por qué importa:** evita mandar al coder un "defecto" que es configuración de la plataforma.
+- **Cómo aplicarla:** `curl -sI <dirección> | head -3` antes de `test:published`; `200` = sirve la app, `302` a `sso-api` = protección, `404` = no hay publicación.
+- **Estado:** Vigente
+- **Relacionada con:** D-013
+
+### L-007 — 2026-11-26 — Cómo obtener la dirección de la preview y su rojo
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** el estado "Vercel" del commit en GitHub solo trae el enlace al panel privado; la dirección pública de la rama se trunca con un código (`contapp-git-feature-vs-00-588149-…`) y no se puede adivinar. Acierto: el rojo de P-2 se corrió contra producción recién importada (404), y el último commit se guardó sin subir para disparar la preview después.
+- **Lección:** la dirección de la preview de rama se pide al usuario (panel → *Domains*) una vez; es la misma para todos los push de esa rama.
+- **Por qué importa:** ahorra intentos y permite correr `test:published` en cada lote sin volver a preguntar.
+- **Cómo aplicarla:** anotarla en la decisión o en `progress.md` al obtenerla; para un rojo "publicado" usar una dirección que aún no tenga la app.
+- **Estado:** Vigente
+- **Relacionada con:** D-013, plan VS-001 P-2
+
+### L-008 — 2026-11-26 — Commits de los agentes sin `Co-Authored-By`
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el coder no pudo poner la línea `Co-Authored-By: … <correo>` porque la guarda de Bash prohíbe `<` y `>`; lo reportó y no intentó esquivarla.
+- **Lección:** la guarda y la regla de atribución chocan; hoy los commits de agentes salen sin la línea (los del Manager sí la llevan).
+- **Por qué importa:** la atribución queda dispareja; no afecta a la app.
+- **Cómo aplicarla:** al revisar VEGU, decidir si los agentes llevan la línea (y permitirla en la guarda, p. ej. con `git commit -F <archivo>`) o si basta con la del Manager. → VEGU
+- **Estado:** Vigente
+- **Relacionada con:** `.claude/agents/coder.md`, reporte del coder lote 1

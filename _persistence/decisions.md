@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-26
-**Último ID usado:** D-012
+**Último ID usado:** D-013
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -22,6 +22,7 @@
 - D-011 — Stack: TypeScript + Vite (sin framework), Vitest, Playwright (WebKit), GitHub Actions, Vercel (preview por rama), ESLint, gitleaks; código en `src/`; rama por slice y PR con commit de fusión
 - D-012 — Plan de VS-001 aprobado (5 lotes); herramientas de calidad (duplicación, sin uso, mutación) se deciden al llegar a la etapa 10
 - D-010 — Estilo visual: propuesta C2 "Pizarra con fichas" (claro y oscuro, sigue el modo del celular); nombre "Contapp"; mayúscula automática apagada
+- D-013 — Previews de Vercel sin protección (abren sin iniciar sesión); producción en `contapp-tawny.vercel.app`
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -108,3 +109,10 @@
 - **Alternativas descartadas:** decidir ahora jscpd, knip y Stryker.
 - **Estado:** Vigente
 - **Relacionada con:** D-011, VS-001
+
+### D-013 — 2026-11-26 — Previews de Vercel sin protección
+- **Decisión:** se apaga "Vercel Authentication" (*Settings → Deployment Protection*) en el proyecto `contapp`: las previews por rama abren sin iniciar sesión (opción B de la pregunta 1 del plan). Producción: `https://contapp-tawny.vercel.app`. Preview de VS-001 (estable para toda la rama): `https://contapp-git-feature-vs-00-588149-jdrodriguez1000-8207s-projects.vercel.app`.
+- **Razón:** el usuario abre la preview en su iPhone sin cuenta y `test:published` corre sin secretos; la app no guarda datos (C-010), así que un enlace abierto no expone nada.
+- **Alternativas descartadas:** opción A (dejar la protección y usar `VERCEL_AUTOMATION_BYPASS_SECRET`): agrega un secreto y obliga a iniciar sesión en el iPhone.
+- **Estado:** Vigente
+- **Relacionada con:** D-008, D-011, C-010, plan VS-001 R-1
