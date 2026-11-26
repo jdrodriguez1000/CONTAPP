@@ -214,3 +214,49 @@ Hice los tres cambios que aprobó el usuario. Son solo de documentación; el có
 - Siguen vigentes las dos lecciones que propuse en la revisión del lote 2: en las maquetas no van números sueltos, y la letra se verifica en el iPhone real. Las registra el Manager.
 
 STATUS: DONE
+
+# Trabajo C — Lote 3 — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Revisión visual (lote 3, P-5 y P-6: estados 2 y 3) · **Commit revisado:** `a2de990`
+
+## Resumen
+Revisé las 4 capturas nuevas del lote 3 (estado 2 "pingüino" con foco y estado 3 "¡Hola, 2026! 😀", en claro y oscuro, a 390 × 844). Las comparé con F-001 §5.3, `design-system.md` y la maqueta. Para confirmar el foco y los colores leí también `src/styles.css`, `src/main.ts` y `tests/e2e/captures.spec.ts`. **No hay hallazgos bloqueantes.** Los conteos, el foco, los colores y los espacios coinciden con lo aprobado. Quedan 2 hallazgos menores, y los dos se confirman en el iPhone real. El estado 1 no cambió. Las capturas de crecimiento ahora muestran los conteos de verdad (35 / 40 / 3 / 3), lo que se esperaba al conectar el conteo (P-6).
+
+## Archivos creados o modificados
+- `_project/slices/VS-001/reports/designer.md` — esta sección, agregada al final. No edité nada más.
+
+## Cómo revisar
+- Abre las 4 capturas `estado-2-escribiendo-…` y `estado-3-con-texto-…` de `_project/slices/VS-001/evidence/capturas/lote-3/`. Al lado, abre `_project/design/F-001/mockup.html` en los estados 2 y 3.
+- En el estado 2, mira el **doble borde** del campo: el borde del campo y, separado por una franja fina del color del fondo, el anillo de foco. Es verde en claro y amarillo en oscuro. Es la señal de "aquí estás escribiendo".
+- En el estado 3, el campo vuelve a su borde normal, gris verdoso y más delgado, porque ya no tiene el foco.
+
+## Revisión fila por fila (skill design-system, sección 9)
+| # | Qué se compara | Resultado |
+|---|---|---|
+| 1 | Estructura y orden | ✓ Igual que en el lote 2: título → etiqueta → campo → fichas 2 × 2, en el orden Vocales, Consonantes / Números, Otros. Las fichas en 0 siguen en su lugar (estado 2: Números 0, Otros 0) |
+| 2 | Textos exactos | ✓ Los 6 textos de §5.4 sin cambios. No apareció ningún texto nuevo: ni aviso ni sugerencia (lo comprueba también TC-027) |
+| 3 | Estados de este lote | ✓ **Estado 2:** "pingüino" en el campo, con foco, y conteos **4 / 4 / 0 / 0**, como en la maqueta. ✓ **Estado 3:** "¡Hola, 2026! 😀" sin foco, y conteos **2 / 2 / 4 / 4**, como en la maqueta. Los dos están en claro y oscuro. Lo de "al instante, sin animación" no se ve en una captura, pero lo prueba `typing.spec.ts` (TC-002 registra el conteo al terminar cada evento) y el CSS no tiene transiciones |
+| 4 | Valores del dominio | ✓ Cifras simples: "0", "2", "4". Las cifras son del mismo ancho (`tabular-nums`), así que las fichas no se mueven |
+| 5 | Tokens | ✓ El foco usa `--color-focus` (`#1F6B33` / `#FFDD55`) en el borde y en el anillo. En reposo, el borde usa `--color-input-border`. Los números van en `--color-primary`, los nombres en `--color-text` y el texto escrito en `--color-text` sobre `--color-input-bg`, en los dos modos. Los espacios no cambiaron respecto al lote 2 |
+| 6 | Accesibilidad | ✓ **Foco visible**, que el lote 2 no podía revisar: anillo de 3 px separado 2 px (`outline: 3px` + `outline-offset: 2px`), con contraste 6,5:1 / 12,6:1. Se distingue bien del borde en reposo por color y por grosor, no solo por color. Cada ficha conserva su nombre escrito |
+| 7 | Anchos | ✓ Los estados 2 y 3 se piden a 390 px (§5.7). En el estado 1 a 320 px no cambió nada respecto al lote 2 |
+| 8 | Detalles finos | El emoji sale en color, con la letra de emojis de Windows. En el iPhone se verá el de Apple. Es lo esperado: un emoji no toma el color del texto. Ver hallazgos 1 y 2 |
+
+## Lo que ya se revisó en el lote 2
+- **Estado 1** (390 y 320, claro y oscuro): sin cambios.
+- **Crecimiento** (frase de 100 caracteres): el campo sigue en 4 líneas, igual que en el lote 2. Lo único que cambió son las fichas, que ahora muestran **35 / 40 / 3 / 3**, los mismos valores del estado 4 de la maqueta. Es lo esperado al conectar el conteo. Siguen abiertos el hallazgo 3 del lote 2 (captura del tope de 5 líneas, que es del lote 4) y el hallazgo 4 (letra en el iPhone).
+
+## Hallazgos
+| # | Pantalla | Hallazgo | Severidad |
+|---|---|---|---|
+| 1 | Estado 2, con el teclado abierto | La captura simulada no dibuja el teclado del celular (`captures.spec.ts` lo dice). Por eso no se puede comprobar con ella lo que promete §5.5: que con el campo en 2 líneas las 4 fichas quedan completas por encima del teclado (≈ 433 de ≈ 457 px). Pido que la verificación del Manager en la preview (iPhone con Safari, D-009) incluya **una foto del estado 2 con el teclado abierto**, escribiendo "pingüino", donde se vea si la fila Números / Otros queda completa | **Menor** — el diseño y el CSS dejan las medidas previstas. Es evidencia que solo puede dar el iPhone real |
+| 2 | Estado 2, foco en el iPhone | El anillo de foco usa `:focus-visible`. Los navegadores lo muestran siempre en un campo de texto, también al tocarlo con el dedo, pero las capturas lo activaron con el teclado del computador. En la misma foto del hallazgo 1, conviene confirmar que el anillo aparece al tocar el campo en Safari | **Menor** — es el comportamiento estándar, pero falta verlo en el iPhone (L-010) |
+
+**Bloqueantes: ninguno.** El lote 3 puede seguir.
+
+## Preguntas para el usuario
+- Ninguna.
+
+## Decisiones o lecciones propuestas
+- **Propuesta para la verificación en la preview (VS-001):** juntar en una sola lista las fotos que solo el iPhone puede dar: estado 2 con el teclado abierto y el anillo de foco (hallazgos 1 y 2 de este lote), y estado 4 con la frase de 100 caracteres (hallazgo 4 del lote 2). Por qué: así el Manager las toma en una sola pasada y ningún pendiente de L-010 se pierde entre lotes.
+
+STATUS: DONE
