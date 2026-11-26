@@ -1,6 +1,6 @@
 # Lecciones aprendidas
-**Última actualización:** 2026-11-25
-**Último ID usado:** L-002
+**Última actualización:** 2026-11-26
+**Último ID usado:** L-005
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -21,10 +21,13 @@
 
 ### Herramienta
 - L-002 — Ediciones masivas con tildes, emojis y comillas: escribir un script en el scratchpad, no un heredoc en Bash
+- L-004 — Las maquetas HTML se verifican con capturas de Edge sin ventana (`msedge --headless --screenshot`), porque el designer no puede abrir un navegador
 
 ### Datos y supuestos
 
 ### Proceso y memoria
+- L-003 — Todo mensaje al usuario va en español de Colombia, también los que siguen a un reporte de agente en otro idioma → VEGU
+- L-005 — Para elegir el sistema de diseño, pedir varias propuestas (claro y oscuro) y dejar que el usuario combine: salió C2 de C + B → VEGU
 
 ## Registro completo
 
@@ -47,3 +50,33 @@
 - **Cómo aplicarla:** script en el scratchpad con reemplazos que verifican que el texto original exista (`assert`) antes de reemplazar.
 - **Estado:** Vigente
 - **Relacionada con:** —
+
+### L-003 — 2026-11-26 — Hablar siempre en español
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el Manager presentó el resultado del architect y sus preguntas en inglés; el usuario tuvo que pedir "dime lo que debo confirmar en español".
+- **Lección:** el idioma del usuario (AGENTS.md: español de Colombia) aplica a todo mensaje, aunque el contexto técnico venga en otro idioma.
+- **Por qué importa:** el usuario tiene poca experiencia técnica; un mensaje en otro idioma frena sus aprobaciones.
+- **Cómo aplicarla:** antes de enviar un resumen o una pregunta, comprobar que está en español y sin jerga sin explicar.
+- **Estado:** Vigente
+- **Relacionada con:** AGENTS.md §1
+
+### L-004 — 2026-11-26 — Verificar maquetas con capturas sin ventana
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** el designer no puede abrir navegadores y pidió al Manager confirmar que nada se cortaba. Con `msedge --headless=new --screenshot` y un recorte con PIL, el Manager revisó los estados en claro y oscuro.
+- **Lección:** Edge sin ventana da capturas fiables de un HTML local en Windows, sin instalar nada.
+- **Por qué importa:** la verificación independiente del Manager no depende de que el usuario abra cada archivo.
+- **Cómo aplicarla:** `msedge --headless=new --disable-gpu --hide-scrollbars --window-size=1000,<alto> --screenshot=<png> file:///<ruta>`; recortar por partes si la página es larga.
+- **Estado:** Vigente
+- **Relacionada con:** VS-001 (diseño)
+
+### L-005 — 2026-11-26 — Varias propuestas para el primer diseño
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el usuario pidió tres propuestas con modo claro y oscuro; eligió la C y pidió combinarla con la disposición de la B (C2), que aprobó.
+- **Lección:** para el sistema de diseño inicial, comparar propuestas concretas lado a lado lleva a una decisión rápida y propia del usuario.
+- **Por qué importa:** el sistema de diseño marca todas las slices siguientes.
+- **Cómo aplicarla:** en la primera slice con pantallas, pedir al designer 2–3 propuestas con los mismos tokens y ambos modos antes de escribir `design-system.md`.
+- **Estado:** Vigente
+- **Relacionada con:** D-010

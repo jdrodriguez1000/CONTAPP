@@ -1,5 +1,5 @@
 # Supuestos del proyecto
-**Última actualización:** 2026-11-25
+**Última actualización:** 2026-11-26
 **Último ID usado:** A-001
 
 > **Reglas del archivo:**

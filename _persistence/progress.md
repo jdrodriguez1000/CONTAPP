@@ -1,5 +1,5 @@
 # Progreso del proyecto
-**Última actualización:** 2026-11-26 · **Versión del producto:** 0.002.000
+**Última actualización:** 2026-11-26 · **Versión del producto:** 0.003.000
 
 > **Reglas del archivo:** gerencial, no acumulativo: se **reemplaza** en cada cierre (historial en git). Máx. **50 líneas**. Estructura fija: Última actualización · Dónde estamos · Última sesión · En curso · Próximos pasos (desde `tasks.md`) · Bloqueos / pendientes del usuario.
 

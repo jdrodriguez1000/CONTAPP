@@ -1,5 +1,5 @@
 # Decisiones del proyecto
-**Última actualización:** 2026-11-25
+**Última actualización:** 2026-11-26
 **Último ID usado:** D-012
 
 > **Reglas del archivo:**
