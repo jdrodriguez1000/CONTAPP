@@ -6,6 +6,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -67,6 +68,25 @@ test("bash allowlist: allows a listed prefix, blocks others, chaining and forbid
   const option = run("guard-bash-allowlist.mjs", rules, bash("npx eslint --fix src"));
   assert.equal(option.code, 2);
   assert.match(option.stderr, /prohibida/);
+});
+
+// Reads the real arguments that an agent's definition passes to a guard hook (T-005, L-012).
+function agentGuardArgs(agent, hook) {
+  const definition = readFileSync(path.join(PROJECT, ".claude", "agents", `${agent}.md`), "utf8");
+  const line = definition.split(/\r?\n/).find((l) => l.includes(hook));
+  assert.ok(line, `${agent}.md no usa ${hook}`);
+  const afterHook = line.slice(line.indexOf(hook) + hook.length);
+  return [...afterHook.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+}
+
+test("tester bash guard: may run npm run check, but not with --fix nor chained", () => {
+  const rules = agentGuardArgs("tester", "guard-bash-allowlist.mjs");
+  assert.equal(run("guard-bash-allowlist.mjs", rules, bash("npm run check")).code, 0);
+  const fix = run("guard-bash-allowlist.mjs", rules, bash("npm run check -- --fix"));
+  assert.equal(fix.code, 2);
+  assert.match(fix.stderr, /prohibida/);
+  assert.equal(run("guard-bash-allowlist.mjs", rules, bash("npm run check && rm -rf src")).code, 2);
+  assert.equal(run("guard-bash-allowlist.mjs", rules, bash("npm run test:unit")).code, 0);
 });
 
 test("every guard fails closed on unreadable input", () => {
