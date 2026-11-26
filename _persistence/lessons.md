@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-26
-**Último ID usado:** L-034
+**Último ID usado:** L-039
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -38,10 +38,15 @@
 - L-024 — No usar la bandera `i` con `u` en una lista cerrada de letras: acepta letras que se pliegan ("ſ" → "s")
 - L-026 — La dirección única de la preview de un commit sale con `vercel ls contapp -m githubCommitSha=<sha completo>`
 - L-019 — Una corrida con muchos rojos se corta en la terminal del agente: correr por grupos con `--grep` para leer la razón de cada fallo → VEGU
+- L-039 — Desde ESLint 10, una carpeta donde un agente escribe puede traer su propio `eslint.config.*`: la configuración se fija con `-c` en el script (DT-015) → VEGU
 
 ### Datos y supuestos
 
 ### Proceso y memoria
+- L-035 — El rojo se comprueba leyendo la aserción exacta que falla, no el "fail 1": una prueba propia puede fallar por su propio error → VEGU
+- L-036 — Al permitirle un comando a un agente, se permite el texto exacto: una lista de opciones prohibidas no cierra un comando que pasa opciones a dos programas (npm acepta abreviaturas) → VEGU
+- L-037 — Las guardas de Bash son barandas contra errores, no una jaula: un agente que ejecuta código propio las rodea; se dice como riesgo aceptado → VEGU
+- L-038 — Una prueba de guarda lee los argumentos reales de la definición del agente y comprueba también que sus comandos de trabajo siguen pasando → VEGU
 - L-028 — Antes de encargar un archivo nuevo a un agente, comprobar que está en su zona de escritura → VEGU
 - L-032 — Una dependencia nueva se registra como decisión antes de instalarla, y se corre `npm audit` antes y después → VEGU
 - L-033 — Ante un mutante "sería bloqueante", reproducir el comportamiento actual antes de abrir ronda: puede faltar una prueba sin que haya defecto → VEGU
@@ -52,7 +57,6 @@
 - L-003 — Todo mensaje al usuario va en español de Colombia, también los que siguen a un reporte de agente en otro idioma → VEGU
 - L-005 — Para elegir el sistema de diseño, pedir varias propuestas (claro y oscuro) y dejar que el usuario combine: salió C2 de C + B → VEGU
 - L-008 — La guarda de Bash de los agentes bloquea `<` y `>`: sus commits salen sin `Co-Authored-By` → VEGU
-- L-012 — El tester no puede correr `npm run check`: el Manager lo corre antes del commit en rojo → VEGU
 - L-014 — Leer la fila de un supuesto en `assumptions.md` antes de citarlo al usuario → VEGU
 - L-016 — Durante una slice, los reportes y documentos de la slice se editan solo en su rama: editarlos también en `main` choca al traer `main` → VEGU
 - L-017 — Al cerrar cada lote, juntar en una sola lista lo que solo el dispositivo real puede confirmar y pedírselo al usuario en una pasada → VEGU
@@ -177,7 +181,7 @@
 - **Lección:** antes del commit en rojo del tester, el Manager corre `npm run check` en la carpeta de la slice.
 - **Por qué importa:** un rojo con tipos o lint rotos dejaría al coder con una revisión estática fallando que no puede arreglar (no toca `tests/`).
 - **Cómo aplicarla:** hasta decidir si se agrega `npm run check` a la guarda del tester (cambio de riesgo alto, lo aprueba el usuario), es paso fijo del Manager. → VEGU
-- **Estado:** Vigente
+- **Estado:** Promovida a la guarda del tester (`.claude/agents/tester.md`, T-005 / MANT-001, PR #2, 2026-11-26)
 - **Relacionada con:** `.claude/agents/tester.md`, reporte del tester lote 2
 
 ### L-013 — 2026-11-26 — En las maquetas no van números sueltos
@@ -399,3 +403,53 @@
 - **Cómo aplicarla:** el tester corre cada variante y anota cuáles no reproducen.
 - **Estado:** Vigente
 - **Relacionada con:** BRK-U-2, TC-044 → VEGU
+
+### L-035 — 2026-11-26 — El rojo se comprueba en la aserción exacta
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** en MANT-001 el primer rojo de `guards.test.mjs` fallaba porque la función de la prueba leía las comillas corridas un lugar, no porque la guarda bloqueara `npm run check`. Con la guarda nueva siguió fallando y así se descubrió.
+- **Lección:** el rojo se comprueba leyendo la aserción y el valor exactos que fallan; además, el rojo se vuelve a correr contra la versión vieja después de corregir la prueba, y se prueba quitar la pieza nueva para ver que la prueba lo nota.
+- **Por qué importa:** un rojo por la razón equivocada hace pasar por buena una prueba que no prueba nada (PI-5).
+- **Cómo aplicarla:** el Manager y el tester citan en el reporte la línea y el mensaje del rojo (p. ej. `npm run check -- -- -o … (0 !== 2)`).
+- **Estado:** Vigente
+- **Relacionada con:** MANT-001, commits 7ebfe6d y bf9b4b1 → VEGU
+
+### L-036 — 2026-11-26 — Un comando permitido se permite exacto
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** al dar `npm run check` al tester se prohibió `--fix`; security encontró en dos rondas más opciones que escriben archivos o ejecutan código (`-o`, `-c`, `--prefix`, `--script-shell`, `--node-options`…) y que npm acepta abreviaturas (`--prefi`).
+- **Lección:** al permitirle un comando nuevo a un agente se pregunta si alguna opción (de npm y de lo que npm llama, después de `--`) escribe, carga configuración o ejecuta código; si el agente no necesita variantes, se permite el texto exacto.
+- **Por qué importa:** una lista de prohibidos siempre deja otra salida.
+- **Cómo aplicarla:** marca de comando exacto en la guarda (DT-012) y revisar las opciones antes de proponer el cambio.
+- **Estado:** Vigente
+- **Relacionada con:** DT-012, MANT-001 → VEGU
+
+### L-037 — 2026-11-26 — Las guardas son barandas, no una jaula
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** security mostró que el tester ya ejecuta código propio con vitest y playwright, así que puede rodear sus tres guardas si lo intenta a propósito.
+- **Lección:** las guardas de Bash detienen errores, no a un agente que desobedece; donde un agente ejecuta código que escribe, se dice como riesgo aceptado en lugar de suponer que la guarda lo cubre.
+- **Por qué importa:** evita confiar en una protección que no existe.
+- **Cómo aplicarla:** registrar el riesgo (DT-014) y revisar en cada diff de `tests/` los imports de `node:fs` y `node:child_process`.
+- **Estado:** Vigente
+- **Relacionada con:** DT-014 → VEGU
+
+### L-038 — 2026-11-26 — Probar la guarda real y lo que debe seguir pasando (acierto)
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** `guards.test.mjs` lee los argumentos reales de `tester.md` (`agentGuardArgs`) en vez de una copia, y comprueba que `npm run test:unit` y `npx playwright test … --project=iphone` siguen permitidos.
+- **Lección:** la prueba de una guarda usa la definición real del agente y prueba tanto lo bloqueado como los comandos de trabajo del agente, sobre todo los que se parecen a lo prohibido (`--output=` frente a `-o`).
+- **Por qué importa:** un cambio en el `.md` rompe la prueba; una guarda demasiado estricta no falla en la revisión sino a mitad de una slice.
+- **Cómo aplicarla:** reusar `agentGuardArgs` para coder, reviewer y security; DT-018 agrega el comando de capturas.
+- **Estado:** Vigente
+- **Relacionada con:** MANT-001, DT-018 → VEGU
+
+### L-039 — 2026-11-26 — ESLint 10 carga configuración por carpeta
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** security verificó en la documentación de ESLint 10 que la configuración se busca desde la carpeta de cada archivo: un `tests/eslint.config.js` se cargaría y ejecutaría con `eslint .`, también en la CI.
+- **Lección:** la configuración de ESLint se fija con `-c eslint.config.js` en el script y se comprueba que no haya otra fuera de la raíz.
+- **Por qué importa:** un agente con zona de escritura podría apagar el lint de esa zona sin que nadie lo note.
+- **Cómo aplicarla:** DT-015.
+- **Estado:** Vigente
+- **Relacionada con:** DT-015 → VEGU
