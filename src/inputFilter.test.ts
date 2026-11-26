@@ -116,6 +116,42 @@ describe("applyInput: marks on something that is not a letter are dropped (P-7, 
   });
 });
 
+describe("applyInput: only an exact number key or an emoji passes whole (P-7, round 1)", () => {
+  const KEYCAP_SIGN = String.fromCharCode(0x20e3);
+  const DOT_REPH = String.fromCharCode(0x0d4e); // a prepend letter of another script
+  const ARABIC_NUMBER_SIGN = String.fromCharCode(0x0600); // a prepend invisible
+  const HALFWIDTH_VOICED_MARK = String.fromCharCode(0xff9e); // a letter that sticks behind
+  const THAI_SARA_AM = String.fromCharCode(0x0e33); // another one
+  const SMILE = String.fromCodePoint(0x1f600);
+  const SKIN_TONE_THUMB = THUMB_UP + String.fromCodePoint(0x1f3fd);
+
+  test.each(["ç", "α", "ж", "٣", "a"])("TC-045: %s + keycap sign does not get in", (base) => {
+    expect(insert("casa", base + KEYCAP_SIGN)).toEqual(accepted("casa"));
+    expect(insert("casa", base + VARIATION_SELECTOR + KEYCAP_SIGN)).toEqual(accepted("casa"));
+  });
+
+  test.each([
+    { written: "c", pasted: CEDILLA + KEYCAP_SIGN },
+    { written: "1", pasted: KEYCAP_SIGN },
+    { written: "1", pasted: VARIATION_SELECTOR + KEYCAP_SIGN },
+  ])("TC-045: what is pasted never changes a written $written", ({ written, pasted }) => {
+    expect(insert(written, pasted)).toEqual(accepted(written));
+  });
+
+  test.each([
+    { name: "TC-045: a prepend letter before an emoji", added: DOT_REPH + SMILE, kept: SMILE },
+    { name: "TC-045: a prepend invisible before a flag", added: ARABIC_NUMBER_SIGN + FLAG, kept: FLAG },
+    { name: "TC-045: a key with 2000 accents", added: KEYCAP_ONE + ACUTE.repeat(2_000), kept: KEYCAP_ONE },
+    { name: "TC-045: a key with a second keycap sign", added: KEYCAP_ONE + KEYCAP_SIGN, kept: KEYCAP_ONE },
+    { name: "TC-049: a family with an accent", added: FAMILY + ACUTE, kept: FAMILY },
+    { name: "TC-049: a thumb with skin tone and the keycap sign", added: SKIN_TONE_THUMB + KEYCAP_SIGN, kept: SKIN_TONE_THUMB },
+    { name: "P-7: a face with a Japanese letter stuck behind", added: SMILE + HALFWIDTH_VOICED_MARK, kept: SMILE },
+    { name: "P-7: a face with a Thai letter stuck behind", added: SMILE + THAI_SARA_AM, kept: SMILE },
+  ])("$name keeps only what is allowed", ({ added, kept }) => {
+    expect(insert("", added)).toEqual(accepted(kept));
+  });
+});
+
 describe("applyInput: the cursor and what was already written (P-7)", () => {
   test("P-7: rejected input keeps the cursor where it was", () => {
     expect(insert("casa", "ç", 2)).toEqual(accepted("casa", 2));
