@@ -119,6 +119,72 @@ Escribí el sistema de diseño a partir de C2 "Pizarra con fichas" (D-010), con 
 
 STATUS: DONE
 
+# Trabajo C — Lote 2 — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Revisión visual (lote 2, P-3: estado 1 y crecimiento del campo) · **Commit revisado:** `4ad30e5`
+
+## Resumen
+Revisé las 6 capturas del lote 2 contra `design-system.md`, la sección 5 de F-001 y la maqueta. También leí `index.html`, `src/styles.css` y `src/main.ts` para confirmar los tokens. **No hay hallazgos bloqueantes.** La estructura, el orden, los textos exactos, los colores en los dos modos, los espacios y el ancho de 320 px coinciden con lo aprobado. Las 4 desviaciones que anotó el coder no son defectos del código. Dejan 4 hallazgos menores: 2 de documentación, 1 de evidencia pendiente y 1 de verificación en el iPhone real.
+
+## Archivos creados o modificados
+- `_project/slices/VS-001/reports/designer.md` — esta sección, agregada al final. No edité nada más; `design-system.md` se corrige en `main` (ver propuestas).
+
+## Cómo revisar
+- Abre las 6 capturas en `_project/slices/VS-001/evidence/capturas/lote-2/` y, al lado, `_project/design/F-001/mockup.html` (estados 1 y 5).
+- **Ojo con las capturas de crecimiento:** tienen texto, pero las fichas siguen en 0. Es lo esperado: en este lote la pantalla todavía no está conectada a la función que cuenta (eso es P-6, lote 3). En esas capturas solo se revisa el campo.
+
+## Revisión fila por fila (skill design-system, sección 9)
+| # | Qué se compara | Resultado |
+|---|---|---|
+| 1 | Estructura y orden | ✓ Título → etiqueta → campo → fichas. Fichas 2 × 2 en el orden Vocales, Consonantes / Números, Otros. En el HTML cada ficha va primero con el nombre (`dt`) y después con el número (`dd`), y se ve con el número arriba, como pide 5.6 |
+| 2 | Textos exactos | ✓ "Contapp", "Escribe una palabra o frase", "Vocales", "Consonantes", "Números" (con tilde), "Otros". El campo no tiene texto de ejemplo. Pestaña "Contapp", `lang="es-CO"` |
+| 3 | Estados de este lote | ✓ Estado 1 (vacío) en claro y oscuro, a 390 y a 320 px. Crecimiento del campo, de 2 líneas (≈ 90 px) a 4 con la frase de 100 caracteres. Los estados 2 y 3 son del lote 3 y el 4 completo del lote 4 |
+| 4 | Valores del dominio | ✓ El 0 se muestra como "0", con cifras simples |
+| 5 | Tokens | ✓ Los 10 colores coinciden con `design-system.md` §2 en los dos modos, y los tamaños y pesos de letra con §3. La regla de menos de 360 px (18 y 44 px) se aplica en las capturas de 320. Espacios medidos en la captura de 390: 16 px a los lados, 8 px de la etiqueta al campo, ≈ 20 px del campo a las fichas y 12 px entre fichas. Ver hallazgos 1 y 2 |
+| 6 | Accesibilidad | ✓ Los contrastes son los de la tabla aprobada. La etiqueta está unida al campo (`for`). El campo mide más de 44 px de alto. Cada ficha lleva su nombre escrito. No se bloquea el zoom. El foco no se puede revisar todavía: no hay captura del campo activo hasta el lote 3 |
+| 7 | Anchos | ✓ A 320 px no se corta nada: "Consonantes" cabe con margen en su ficha (≈ 107 de ≈ 118 px útiles, con la letra de la captura). No hay desplazamiento horizontal en ningún ancho |
+| 8 | Detalles finos | Ver hallazgos 1 a 4 |
+
+## Las 4 desviaciones del coder: qué documento manda
+1. **Relleno lateral del campo: 12 px (`--space-3`) contra 14 px en la maqueta.** **Manda `design-system.md`.** Su §4 dice que `--space-3` es el relleno del campo, y el skill prohíbe medidas escritas a mano. El error está en la maqueta: escribí `14px` en vez del token. El coder hizo bien. La diferencia de 2 px no cambia el uso. → Hallazgo 1 (documentación, no código).
+2. **Medidas sin token (104 px, anillo de 3 y 2 px, 2 px entre número y nombre, 480 px, altos de línea).** **No es un hallazgo del código.** Todas esas medidas están escritas en `design-system.md` (§3 altos de línea, §4 anillo y ancho máximo, §5 alto mínimo de la ficha) o en F-001 §5.1, y el CSS usa exactamente esos valores. La fila 5 prohíbe medidas **fuera del sistema**, y estas están dentro, aunque sin nombre. Lo que falta es en el documento: decir cómo se escriben. Además, §4 tiene una inconsistencia: pone "separación número–nombre (2 px dentro de la ficha)" en la fila de `--space-1`, que vale 4 px. → Hallazgo 2 (documentación).
+3. **La frase de 100 caracteres ocupa 4 líneas, no 5.** **Mandan F-001 §5.3 y `design-system.md` §5** ("crece con el texto hasta 5"). Con 4 líneas es el comportamiento correcto: el campo mide lo que el texto necesita (≈ 152 px = 4 líneas + relleno + borde). El `rows="5"` de la maqueta fija una caja para mostrar el estado. No dice que esa frase deba ocupar 5 líneas. No es un hallazgo. Lo que todavía **no se ve** en una captura es el tope: que el campo se quede en 5 líneas y se desplace por dentro. → Hallazgo 3 (evidencia pendiente).
+4. **La letra no es SF Pro.** **Manda `design-system.md` §3, y el CSS la cumple.** La lista de letras (`--font-family-base`) es exactamente la aprobada. El navegador simulado corre en Windows y no tiene SF Pro, así que usa Segoe UI, que está en la misma lista. Esto es un límite de la evidencia, no un defecto. Consecuencia: en el iPhone los renglones pueden partirse distinto, y la palabra "Consonantes" a 320 px podría quedar más justa. → Hallazgo 4 (verificar en el iPhone real).
+
+## Hallazgos
+| # | Pantalla | Hallazgo | Severidad |
+|---|---|---|---|
+| 1 | Maqueta F-001, campo | `mockup.html` usa `padding: var(--space-3) 14px`: los 14 px están escritos a mano y contradicen `design-system.md` §4. Hay que cambiarlo por `padding: var(--space-3)` en la maqueta. El código no se toca | **Menor** — es un error de la maqueta, no de la app. Son 2 px y no cambian el uso |
+| 2 | `design-system.md` §3–§4 | Algunas medidas aprobadas no tienen nombre de token ni una regla que diga cómo escribirlas. Además, el "2 px" de la separación número–nombre aparece en la fila de `--space-1` (4 px). Propuesta abajo | **Menor** — el código usa los valores aprobados. Solo falta que el documento sea explícito |
+| 3 | Campo, más de 5 líneas | No hay captura del tope de 5 líneas con desplazamiento por dentro, por ejemplo con 7 saltos de línea. Hoy lo comprueba solo `screen.spec.ts`. Pido esa captura (claro y oscuro, 390 × 844) en el lote 4, junto al estado 4 | **Menor** — no bloquea este lote: el estado 4 completo es del lote 4. Si en el lote 4 sigue faltando, termino BLOCKED |
+| 4 | Toda la pantalla, en el iPhone | Las capturas usan Segoe UI y no SF Pro. Recomiendo que la verificación del Manager en la preview (iPhone real con Safari, D-009) incluya una foto del estado 4 con la frase de 100 caracteres, para confirmar que cabe en 5 líneas o menos y que nada se corta | **Menor** — el CSS es correcto. Es un riesgo de evidencia, no un defecto |
+
+**Bloqueantes: ninguno.** El lote 2 puede seguir.
+
+## Propuesta: columnas `COMPLETAR AL DECIDIR` de `design-system.md` §5 (D-011, sin librería)
+Esto es solo una propuesta; no edité `design-system.md`. Recomiendo cambiar el nombre de la columna "Base en la librería" a **"Base en el código (D-011: HTML + clase en `src/styles.css`)"** y llenarla así:
+
+| Componente (código) | Base en el código | Variantes | Cuándo se usa |
+|---|---|---|---|
+| `AppTitle` | `<h1 class="app-title">` en `index.html` · clase `.app-title` | — | (sin cambio) |
+| `TextField` | `<label class="field-label" for="text-field">` + `<textarea class="field" rows="2">` con `autocomplete`, `autocorrect`, `autocapitalize` en `off` y `spellcheck="false"` · clases `.field-label`, `.field`, `.field:focus-visible` · el crecimiento de 2 a 5 líneas está en `src/main.ts` (`fitHeightToText`) | reposo · activo (`:focus-visible`) | (sin cambio) |
+| `CountGrid` | `<dl class="counts">` · clase `.counts` | — | (sin cambio) |
+| `CountCard` | `<div class="count"><dt>Nombre</dt><dd>número</dd></div>` · clases `.count`, `.count dt`, `.count dd` | — (en VS-002: una por `characterGroup`) | (sin cambio) |
+
+Otros ajustes de `design-system.md` que conviene hacer en el mismo cambio, en `main`:
+- **Línea 6:** la nota "El stack todavía no está decidido…" ya no es cierta. Propongo: "Stack decidido en D-011: sin librería de componentes; cada componente es HTML más una clase CSS en `src/styles.css`, y los tokens se definen una sola vez en `:root` de ese archivo (el modo oscuro, con `@media (prefers-color-scheme: dark)`)."
+- **Historial (§10):** una fila nueva con la fecha, "Base en el código de los 4 componentes y medidas fijas", motivo D-011 y la revisión del lote 2.
+- **Para el Manager:** con D-011 también se puede llenar el `COMPLETAR AL DECIDIR` de la sección 2 del skill design-system (`.claude/skills/design-system/SKILL.md`). Ejemplo de una línea: `:root { --color-primary: #1f6b33; }` en `src/styles.css`, que se usa como `color: var(--color-primary);`. En la sección 3 del skill: "sin librería (D-011)". Ese archivo no es de mi zona.
+
+## Preguntas para el usuario
+- **¿Cómo dejamos las medidas fijas (hallazgo 2)?** Recomiendo **(A)**: agregar a `design-system.md` §4 una lista corta de "medidas fijas aprobadas" (104 px de alto mínimo de la ficha, anillo de 3 px separado 2 px, 2 px entre número y nombre, 480 px de ancho máximo, altos de línea 1,1 / 1,2 / 1,3). El código no cambia. Cada medida se vuelve token cuando se use en un segundo lugar (VS-002). Contra: la regla "todo con token" deja de ser absoluta. **(B)**: crear ya 8 tokens nuevos (`--size-card-min`, `--focus-ring-width`, `--focus-ring-offset`, `--content-max-width`, `--line-height-*`…). Contra: más nombres para medidas que hoy se usan una sola vez, y cambiar el CSS en un lote que ya está en verde.
+- **¿Corrijo la maqueta (hallazgo 1)?** Recomiendo que sí: es un cambio de una línea en `_project/design/F-001/mockup.html` (de `14px` a `var(--space-3)`), con una nota en el Historial. Lo hago cuando el Manager lo indique.
+
+## Decisiones o lecciones propuestas
+- **Lección (diseño):** en las maquetas, toda medida va con su token o como un valor que ya está en `design-system.md`. Nunca con un número suelto. Por qué: el `14px` de la maqueta obligó al coder a elegir entre dos documentos.
+- **Lección (evidencia):** las capturas de un navegador simulado en Windows no usan la letra del iPhone. Los saltos de renglón y lo que cabe a 320 px se confirman en la preview con el iPhone real (D-009). Por qué: SF Pro y Segoe UI no tienen el mismo ancho.
+- **Decisión propuesta:** en `design-system.md` §5, la columna "Base en la librería" pasa a ser "Base en el código", como en la tabla de arriba. Por qué: D-011 no usa librería de componentes.
+STATUS: DONE
+
 # Trabajo A — Ajustes del lote 2 — VS-001
 **Fecha:** 2026-11-26 · **Trabajo:** Sistema de diseño (ajuste) · **Origen:** revisión visual del lote 2 (hallazgos 1 y 2), aprobada por el usuario el 2026-11-26
 
@@ -146,5 +212,145 @@ Hice los tres cambios que aprobó el usuario. Son solo de documentación; el có
 
 ## Decisiones o lecciones propuestas
 - Siguen vigentes las dos lecciones que propuse en la revisión del lote 2: en las maquetas no van números sueltos, y la letra se verifica en el iPhone real. Las registra el Manager.
+
+STATUS: DONE
+
+# Trabajo C — Lote 3 — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Revisión visual (lote 3, P-5 y P-6: estados 2 y 3) · **Commit revisado:** `a2de990`
+
+## Resumen
+Revisé las 4 capturas nuevas del lote 3 (estado 2 "pingüino" con foco y estado 3 "¡Hola, 2026! 😀", en claro y oscuro, a 390 × 844). Las comparé con F-001 §5.3, `design-system.md` y la maqueta. Para confirmar el foco y los colores leí también `src/styles.css`, `src/main.ts` y `tests/e2e/captures.spec.ts`. **No hay hallazgos bloqueantes.** Los conteos, el foco, los colores y los espacios coinciden con lo aprobado. Quedan 2 hallazgos menores, y los dos se confirman en el iPhone real. El estado 1 no cambió. Las capturas de crecimiento ahora muestran los conteos de verdad (35 / 40 / 3 / 3), lo que se esperaba al conectar el conteo (P-6).
+
+## Archivos creados o modificados
+- `_project/slices/VS-001/reports/designer.md` — esta sección, agregada al final. No edité nada más.
+
+## Cómo revisar
+- Abre las 4 capturas `estado-2-escribiendo-…` y `estado-3-con-texto-…` de `_project/slices/VS-001/evidence/capturas/lote-3/`. Al lado, abre `_project/design/F-001/mockup.html` en los estados 2 y 3.
+- En el estado 2, mira el **doble borde** del campo: el borde del campo y, separado por una franja fina del color del fondo, el anillo de foco. Es verde en claro y amarillo en oscuro. Es la señal de "aquí estás escribiendo".
+- En el estado 3, el campo vuelve a su borde normal, gris verdoso y más delgado, porque ya no tiene el foco.
+
+## Revisión fila por fila (skill design-system, sección 9)
+| # | Qué se compara | Resultado |
+|---|---|---|
+| 1 | Estructura y orden | ✓ Igual que en el lote 2: título → etiqueta → campo → fichas 2 × 2, en el orden Vocales, Consonantes / Números, Otros. Las fichas en 0 siguen en su lugar (estado 2: Números 0, Otros 0) |
+| 2 | Textos exactos | ✓ Los 6 textos de §5.4 sin cambios. No apareció ningún texto nuevo: ni aviso ni sugerencia (lo comprueba también TC-027) |
+| 3 | Estados de este lote | ✓ **Estado 2:** "pingüino" en el campo, con foco, y conteos **4 / 4 / 0 / 0**, como en la maqueta. ✓ **Estado 3:** "¡Hola, 2026! 😀" sin foco, y conteos **2 / 2 / 4 / 4**, como en la maqueta. Los dos están en claro y oscuro. Lo de "al instante, sin animación" no se ve en una captura, pero lo prueba `typing.spec.ts` (TC-002 registra el conteo al terminar cada evento) y el CSS no tiene transiciones |
+| 4 | Valores del dominio | ✓ Cifras simples: "0", "2", "4". Las cifras son del mismo ancho (`tabular-nums`), así que las fichas no se mueven |
+| 5 | Tokens | ✓ El foco usa `--color-focus` (`#1F6B33` / `#FFDD55`) en el borde y en el anillo. En reposo, el borde usa `--color-input-border`. Los números van en `--color-primary`, los nombres en `--color-text` y el texto escrito en `--color-text` sobre `--color-input-bg`, en los dos modos. Los espacios no cambiaron respecto al lote 2 |
+| 6 | Accesibilidad | ✓ **Foco visible**, que el lote 2 no podía revisar: anillo de 3 px separado 2 px (`outline: 3px` + `outline-offset: 2px`), con contraste 6,5:1 / 12,6:1. Se distingue bien del borde en reposo por color y por grosor, no solo por color. Cada ficha conserva su nombre escrito |
+| 7 | Anchos | ✓ Los estados 2 y 3 se piden a 390 px (§5.7). En el estado 1 a 320 px no cambió nada respecto al lote 2 |
+| 8 | Detalles finos | El emoji sale en color, con la letra de emojis de Windows. En el iPhone se verá el de Apple. Es lo esperado: un emoji no toma el color del texto. Ver hallazgos 1 y 2 |
+
+## Lo que ya se revisó en el lote 2
+- **Estado 1** (390 y 320, claro y oscuro): sin cambios.
+- **Crecimiento** (frase de 100 caracteres): el campo sigue en 4 líneas, igual que en el lote 2. Lo único que cambió son las fichas, que ahora muestran **35 / 40 / 3 / 3**, los mismos valores del estado 4 de la maqueta. Es lo esperado al conectar el conteo. Siguen abiertos el hallazgo 3 del lote 2 (captura del tope de 5 líneas, que es del lote 4) y el hallazgo 4 (letra en el iPhone).
+
+## Hallazgos
+| # | Pantalla | Hallazgo | Severidad |
+|---|---|---|---|
+| 1 | Estado 2, con el teclado abierto | La captura simulada no dibuja el teclado del celular (`captures.spec.ts` lo dice). Por eso no se puede comprobar con ella lo que promete §5.5: que con el campo en 2 líneas las 4 fichas quedan completas por encima del teclado (≈ 433 de ≈ 457 px). Pido que la verificación del Manager en la preview (iPhone con Safari, D-009) incluya **una foto del estado 2 con el teclado abierto**, escribiendo "pingüino", donde se vea si la fila Números / Otros queda completa | **Menor** — el diseño y el CSS dejan las medidas previstas. Es evidencia que solo puede dar el iPhone real |
+| 2 | Estado 2, foco en el iPhone | El anillo de foco usa `:focus-visible`. Los navegadores lo muestran siempre en un campo de texto, también al tocarlo con el dedo, pero las capturas lo activaron con el teclado del computador. En la misma foto del hallazgo 1, conviene confirmar que el anillo aparece al tocar el campo en Safari | **Menor** — es el comportamiento estándar, pero falta verlo en el iPhone (L-010) |
+
+**Bloqueantes: ninguno.** El lote 3 puede seguir.
+
+## Preguntas para el usuario
+- Ninguna.
+
+## Decisiones o lecciones propuestas
+- **Propuesta para la verificación en la preview (VS-001):** juntar en una sola lista las fotos que solo el iPhone puede dar: estado 2 con el teclado abierto y el anillo de foco (hallazgos 1 y 2 de este lote), y estado 4 con la frase de 100 caracteres (hallazgo 4 del lote 2). Por qué: así el Manager las toma en una sola pasada y ningún pendiente de L-010 se pierde entre lotes.
+
+STATUS: DONE
+
+# Trabajo B — Ajuste teclado — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Diseño de feature (ajuste del documento) · **Commit base:** `907ee77`
+
+## Resumen
+Miré la foto del iPhone real (`_project/slices/VS-001/evidence/lote3-iphone-estado2-teclado.jpg`). Confirma lo que me pasaron: con "pingüino" y el teclado abierto en Safari, la fila Vocales / Consonantes se ve completa. De la fila Números / Otros se ven los "0", pero los nombres quedan cortados por la barra de la dirección de Safari, que va encima de la barra "⌃ ⌄ Listo" y del teclado. Mi cálculo de §5.5 (≈ 433 de ≈ 457 px) no contó esas dos barras de Safari. Como decidió el usuario, **solo corregí el documento**: la pantalla no cambia en VS-001 y el problema queda en el borde de VS-002. Esto cierra el hallazgo 1 del lote 3. El hallazgo 2 queda confirmado en modo claro: el anillo de foco se ve al tocar el campo con el dedo (en la foto se ve el doble borde verde). Falta probarlo en modo oscuro.
+
+## Archivos creados o modificados
+- `_project/features/F-001.md` — solo la viñeta de §5.5 sobre el teclado abierto (línea 128).
+- `_project/slices/VS-001/reports/designer.md` — esta sección, agregada al final.
+
+## Líneas cambiadas
+**F-001 §5.5, línea 128 — antes:**
+> - **Con el teclado abierto** (≈ 340 px) y el campo en 2 líneas, las 4 fichas se ven completas (≈ 433 de ≈ 457 px visibles). **Límite conocido:** si el campo crece a 3 o más líneas con el teclado abierto, la segunda fila de fichas queda detrás del teclado. Es el borde "Teclado abierto tapando los conteos", que espera en VS-002.
+
+**Después:**
+> - **Con el teclado abierto**, medido en el iPhone real con Safari (2026-11-26, foto `_project/slices/VS-001/evidence/lote3-iphone-estado2-teclado.jpg`): aun con el campo en 2 líneas, la primera fila (Vocales, Consonantes) se ve completa, pero de la segunda fila solo se ven los números; los nombres "Números" y "Otros" quedan cortados. Causa: además del teclado, Safari pone encima la barra de la dirección y la barra "⌃ ⌄ Listo". Al tocar "Listo" se cierra el teclado y se ven las 4 fichas. **Límite conocido** (decisión del usuario, 2026-11-26: no se cambia en VS-001): es el borde "Teclado abierto tapando los conteos", que se resuelve en VS-002.
+
+**Otras frases revisadas, sin cambios:**
+- §5 (línea 66, "Los 4 conteos deben verse… borde que espera, VS-002"): ya remite a VS-002 y no promete nada sobre lo que se ve. La dejé igual. Además, esa parte es del architect.
+- §5.3, fila del estado 2: describe el foco y que los conteos cambian al instante. No dice nada sobre las fichas por encima del teclado, así que la dejé igual.
+- F-001 no tiene sección de historial, así que no agregué nota. El cambio queda en este reporte y en git.
+
+## Cómo revisar
+- Abre `_project/features/F-001.md` §5.5 y compara la viñeta del teclado con la foto.
+
+## Preguntas para el usuario
+- Ninguna.
+
+## Decisiones o lecciones propuestas
+- **Lección propuesta (diseño para el celular):** cuando se calcula el espacio libre con el teclado abierto en Safari del iPhone, hay que restar también la barra de la dirección y la barra "⌃ ⌄ Listo", no solo el teclado. Mejor aún: medirlo en el iPhone real antes de prometerlo en la feature (refuerza L-010). Por qué: mi cálculo de §5.5 no las contó y prometió algo que el iPhone no cumple. Sirve como dato de partida para VS-002.
+
+STATUS: DONE
+
+# Lote 4 — trabajo C — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Revisión visual (lote 4, P-7 y P-8: estado 4 y tope del campo) · **Commit revisado:** `975b26d` (corrida de capturas en verde, `.last-run.json`: `passed`)
+
+## Resumen
+Revisé las 12 capturas del lote 4 y las comparé con F-001 §5, `design-system.md` y la maqueta. Me fijé sobre todo en lo nuevo: el **estado 4** (la frase de 100 caracteres, que da 35 / 40 / 3 / 3) y el **tope del campo en 5 líneas con desplazamiento por dentro**. Para confirmar qué texto y qué medidas usa cada captura, leí también `tests/e2e/captures.spec.ts` y la regla del campo en `src/styles.css`. **No hay hallazgos bloqueantes.** Con estas capturas **cierro el hallazgo 3 del lote 2**. Las 8 capturas repetidas (estados 1, 2 y 3) se ven igual que en el lote 3. Quedan 3 hallazgos menores, y todos se confirman solo en el iPhone real.
+
+## Archivos creados o modificados
+- `_project/slices/VS-001/reports/designer.md` — esta sección, agregada al final. No edité nada más.
+
+## Cómo revisar
+- Abre en `_project/slices/VS-001/evidence/capturas/lote-4/` las 4 capturas nuevas: `estado-4-limite-100-…` y `estado-4-tope-5-lineas-…`, en claro y oscuro. Al lado, abre `_project/design/F-001/mockup.html` en el estado 4.
+- En el **tope de 5 líneas**, el campo tiene 8 renglones ("uno" a "ocho"). Se ven 5 completos y, abajo, asoma el borde superior del sexto ("seis"). Esa línea cortada es lo esperado: indica que hay más texto y que el campo se desplaza por dentro. Las fichas quedan en su sitio, sin moverse hacia abajo.
+
+## Revisión fila por fila (skill design-system, sección 9)
+| # | Qué se compara | Resultado |
+|---|---|---|
+| 1 | Estructura y orden | ✓ Sigue igual: título → etiqueta → campo → fichas 2 × 2 en el orden Vocales, Consonantes / Números, Otros. Con el campo en su tope, las fichas bajan solo lo que creció el campo, y nada más se mueve |
+| 2 | Textos exactos | ✓ Los 6 textos de §5.4 sin cambios. En el estado 4 **no aparece ningún aviso, contador de caracteres, color ni marca de límite** (§5.3, D-007) |
+| 3 | Estados de este lote | ✓ **Estado 4:** la frase "El niño Mateo tiene 7 años y lee cuentos largos con su abuela. ¡Hoy contó 25 ovejas antes de dormir!" se ve **completa en 4 líneas**, sin foco, con **35 / 40 / 3 / 3**, como en la maqueta. La prueba comprueba que no queda nada escondido dentro del campo. ✓ **Tope:** con 8 líneas el campo mide lo mismo que con 5 (≈ 182 px, que es 5 renglones de 24 px × 1,3 más el relleno y el borde, como dice el CSS). Esconde el resto y se desplaza por dentro (`overflow-y: auto`). Los conteos son 16 / 18 / 0 / 0, correctos para "uno"… "ocho", porque los saltos de línea no cuentan. Los dos están en claro y oscuro. El estado 5 (rechazo silencioso) no tiene dibujo propio: se ve igual que el estado anterior, y lo prueban `max-length.spec.ts` y `foreign-letters.spec.ts` |
+| 4 | Valores del dominio | ✓ Cifras simples de dos dígitos ("35", "40", "16", "18"), sin separadores. Las cifras tienen el mismo ancho, así que las fichas no cambian de tamaño |
+| 5 | Tokens | ✓ Son los mismos colores, letra y espacios del lote 3. El tope del campo se calcula con tokens (`--space-3`, `--border-width-input`) y con el alto de línea aprobado (1,3). No hay medidas nuevas escritas a mano |
+| 6 | Accesibilidad | ✓ Los contrastes no cambiaron. La letra del campo sigue en 24 px. El campo se desplaza por dentro y la página no se bloquea. Cada ficha conserva su nombre escrito |
+| 7 | Anchos | ✓ A 390 px no hay desplazamiento horizontal en ningún estado. La frase de 100 parte bien sus renglones, sin cortar palabras. A 320 px (estado 1) nada cambió respecto al lote 3 |
+| 8 | Detalles finos | Asoma el sexto renglón en el relleno inferior del campo. No lo cuento como hallazgo: ayuda a ver que hay más texto, y en el iPhone la barra de desplazamiento solo aparece mientras se desliza. Las capturas no muestran barra de desplazamiento, porque el navegador de pruebas las oculta |
+
+## Cambios frente al lote 3
+- **Estados 1, 2 y 3** (8 capturas): se ven igual que en el lote 3 en posición, colores, foco y conteos. P-7 y P-8 cambian lo que entra al campo, no cómo se ve.
+- **Crecimiento → estado 4:** la captura `estado-4-crecimiento-…` del lote 3 pasa a llamarse `estado-4-limite-100-…`. Se ve igual (4 líneas, 35 / 40 / 3 / 3). La diferencia es que ahora la prueba comprueba que la frase tiene exactamente 100 caracteres, que el campo no tiene foco y que no queda texto escondido.
+- **Nuevo:** las capturas del tope de 5 líneas.
+
+## Hallazgos anteriores
+- **Hallazgo 3 del lote 2 (captura del tope de 5 líneas): CERRADO.** Las capturas `estado-4-tope-5-lineas-390x844-claro/oscuro` muestran el campo detenido en 5 líneas y desplazándose por dentro. La prueba comprueba además que el alto con 8 líneas es igual al alto con 5 y que hay texto escondido.
+- **Hallazgo 4 del lote 2 (letra del iPhone en el estado 4):** sigue abierto como hallazgo 2 de abajo.
+- **Hallazgo 1 del lote 3 (teclado):** cerrado en el ajuste del teclado. Por D-015, la segunda fila detrás del teclado no es hallazgo de este lote: se resuelve en VS-002.
+- **Hallazgo 2 del lote 3 (anillo de foco en el iPhone):** ya está confirmado en modo claro. Falta el oscuro (hallazgo 3 de abajo).
+
+## Hallazgos
+| # | Pantalla | Hallazgo | Severidad |
+|---|---|---|---|
+| 1 | Tope de 5 líneas, en el iPhone | Las capturas prueban el tope y el desplazamiento por dentro en el navegador de pruebas, pero no que en Safari del iPhone **se pueda deslizar con el dedo dentro del campo** sin que se mueva la página, con el teclado abierto y con el teclado cerrado. Pido una prueba manual en la preview: pegar "uno"… "ocho" en 8 líneas y deslizar dentro del campo hasta ver "ocho" | **Menor** — el CSS es el estándar (`overflow-y: auto`). Falta verlo con el dedo (L-010) |
+| 2 | Estado 4, en el iPhone | Sigue el hallazgo 4 del lote 2. Con SF Pro, la frase de 100 caracteres puede partirse distinto que con Segoe UI. Pido una foto del estado 4 con el teclado cerrado, para confirmar que la frase cabe en 5 líneas o menos sin desplazamiento por dentro y que "Consonantes" no se corta | **Menor** — es un riesgo de la evidencia, no un defecto |
+| 3 | Estado 2, modo oscuro, en el iPhone | Sigue el hallazgo 2 del lote 3, ya confirmado en claro. Falta confirmar en modo oscuro que el anillo amarillo (`--color-focus`) aparece al tocar el campo con el dedo | **Menor** — es el comportamiento estándar |
+
+**Bloqueantes: ninguno.** El lote 4 puede seguir.
+
+## Lo que solo el iPhone confirma (lista única para la verificación en la preview)
+Todo se hace en el iPhone con Safari (D-009), con la URL de la preview:
+1. **Estado 4, teclado cerrado:** pegar la frase de 100 caracteres, tocar "Listo" y tomar una foto. Debe verse completa en 5 líneas o menos, con 35 / 40 / 3 / 3, sin aviso ni marca, y con "Consonantes" entero (hallazgo 2).
+2. **Tope de 5 líneas:** pegar "uno"… "ocho" (8 líneas) y comprobar que el campo se queda en 5 líneas y que, al deslizar el dedo dentro del campo, aparece "ocho" sin que la página salte (hallazgo 1). Conviene también una foto.
+3. **Foco en modo oscuro:** con el iPhone en modo oscuro, tocar el campo y tomar una foto. Debe verse el doble borde amarillo (hallazgo 3). En la misma pasada se puede tomar la foto del estado 1 en oscuro.
+4. **Carácter 101 en el teclado real:** con la frase de 100 escrita, tocar una tecla más. No debe pasar nada en la pantalla: ni destello, ni vibración, ni que se mueva el cursor (estado 5, D-007). Las pruebas automáticas usan el teclado del computador, no el del iPhone.
+- **No entra en esta lista** el teclado tapando la segunda fila de fichas: por D-015 se resuelve en VS-002.
+
+## Preguntas para el usuario
+- Ninguna.
+
+## Decisiones o lecciones propuestas
+- **Lección (evidencia):** para probar un tope de alto en una captura, la prueba debe medir el alto en el límite (5 líneas) y volver a medirlo pasado el límite (8 líneas), y comprobar que hay texto escondido, como hace `captures.spec.ts`. Por qué: si la captura solo muestra un campo alto, no se distingue entre un campo que se detuvo y uno que todavía no llegó a su tope.
 
 STATUS: DONE

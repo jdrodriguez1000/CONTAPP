@@ -159,7 +159,7 @@ No hay archivo `.env` ni ningún secreto en esta slice (si el usuario elige la o
 - **Qué es, en sencillo:** se conecta el campo con la función de conteo: con cada letra que entra o se borra, las 4 fichas se actualizan en el mismo instante. Al recargar, todo vuelve a 0 porque nada se guarda.
 - **Archivos:** modificar `src/main.ts` (escucha cada cambio del campo y escribe los 4 números en sus fichas, sin demora ni animación).
 - **Prueba que va primero:** la de aceptación del tester, `tests/e2e/typing.spec.ts`: TC-002 ("casa" letra por letra: tras "c" → 0/1/0/0; tras "casa" → 2/2/0/0), TC-003 (borrar → 1/2; borrar todo → 0), TC-024 (recargar → vacío y 0), TC-025 (ninguna petición que sale de la página lleva "casa"), TC-027 (escribir "cas", esperar 2 s y el texto sigue "cas"). Rojo: TC-002 y TC-003 fallan porque los conteos se quedan en 0. TC-024, TC-025 y TC-027 son *control*. El tester amplía `captures.spec.ts` con los estados 2 ("pingüino", con foco) y 3 ("¡Hola, 2026! 😀").
-- **Lecciones:** ninguna registrada aplica. TC-027 usa una espera fija de 2 s: es la única espera fija permitida en la slice.
+- **Lecciones:** ninguna registrada aplica. TC-027 usa una espera fija de 2 s: es la única espera fija permitida en la slice. **Excepción (ronda 1, 2026-11-26):** TC-043 espera 1 s después de "atrás", porque comprobar que el navegador **no** repone el texto exige esperar un tiempo (hallazgo 3 del reviewer; cambiarla por una espera a `pageshow` más una ventana corta cuando se toque TC-043).
 - **Terminado cuando:** `typing.spec.ts` y `screen.spec.ts` en verde; capturas del lote 3.
 
 ### P-7 — Letras de otros idiomas no entran
@@ -202,7 +202,7 @@ No hay archivo `.env` ni ningún secreto en esta slice (si el usuario elige la o
 - **Capa:** prueba de punta a punta.
 - **Qué es, en sencillo:** se repite el recorrido completo, pero sobre la dirección publicada de verdad: abrir, escribir "casa", ver los conteos, recargar y volver a 0. Se guardan capturas como evidencia, y el usuario hace una comprobación corta con su propio iPhone y su teclado real.
 - **Archivos:** el tester amplía `tests/e2e/published.spec.ts` con TC-001, TC-002 y TC-024, y guarda capturas en `_project/slices/VS-001/evidence/published/`. **No hay código de la app** en este paso (el coder no participa).
-- **Prueba que va primero:** el Manager corre `published.spec.ts` contra la dirección **única de la preview del lote 1** (que no cuenta): TC-002 debe **fallar**. Así se demuestra que la prueba detecta una app que no cuenta. Después la corre contra la preview del **commit que se va a aceptar**: verde.
+- **Prueba que va primero:** el Manager corre `published.spec.ts` contra la dirección **única de la preview del lote 2** (commit `bc098a3`: pantalla completa que no cuenta; corregido el 2026-11-26, porque la del lote 1 no tiene campo y el rojo no demostraría lo que se busca): TC-002 debe **fallar en el conteo** (`counts after "c"`). Así se demuestra que la prueba detecta una app que no cuenta. Después la corre contra la preview del **commit que se va a aceptar**: verde.
 - **Comprobación manual en el iPhone** (el usuario; el Manager la anota en `evidence/iphone-manual.md` con sus capturas): (1) escribir "cas" + espacio con el teclado real: el texto sigue "cas " y el teclado no propone ni cambia palabras (TC-031); (2) escribir "canción" y "niño" con el teclado real (manteniendo presionada la letra para la tilde): 3/4/0/0 y 2/2/0/0; (3) escribir un emoji desde el teclado: Otros 1; (4) la primera letra no se pone sola en mayúscula; (5) modo oscuro del iPhone: la app cambia sola.
 - **Lecciones:** ninguna registrada aplica.
 - **Terminado cuando:** `published.spec.ts` en verde sobre la preview del commit a aceptar, capturas en `evidence/published/` y la lista manual completa.
@@ -246,8 +246,10 @@ En cada ficha el `<dt>` va **antes** que el `<dd>` en el HTML (se lee "Vocales, 
 - **Valor de un conteo:** solo cifras, de `0` a `100`, sin espacios, separadores ni ceros a la izquierda. El 0 se ve `0`.
 - **Al instante:** los conteos ya están actualizados cuando termina el evento del cambio; no hay demora, botón ni animación.
 - **Texto del campo:** después de cualquier cambio, el valor queda en **forma NFC** (una letra con su tilde es una sola pieza: `"ñ"` pegada queda `"ñ"`).
-- **Rechazo silencioso** (letra de otro idioma, número de otro alfabeto, invisible suelto, carácter 101): el valor del campo **no cambia**, el cursor (`selectionStart` y `selectionEnd`) queda **donde estaba antes del intento**, y los 4 conteos no cambian.
+- **Rechazo silencioso** (letra de otro idioma, número de otro alfabeto, invisible suelto, carácter 101): el valor del campo **no cambia**, el cursor (`selectionStart` y `selectionEnd`) queda **donde estaba antes del intento**, y los 4 conteos no cambian. Si había una parte seleccionada, la selección se quita y el cursor queda donde empezaba lo nuevo (§5.2, paso 5; decisión del usuario 2026-11-26).
 - **Pegar en medio:** lo aceptado entra en la posición del cursor; el cursor queda justo después de lo que entró.
+- **Volver atrás o página restaurada** (`pageshow`): campo vacío y los 4 conteos en 0 (D-017, TC-043).
+- **Deshacer y rehacer:** después de la primera vez que la app reescribe el campo (un rechazo, un filtrado o unir una letra en dos piezas), dejan de cambiar el texto hasta recargar; así nunca meten lo rechazado ni repiten texto (TC-044). Limitación aceptada por el usuario el 2026-11-26 como deuda técnica para una slice futura.
 - **Ningún aviso, nunca:** no hay elementos con `role="alert"`, `role="status"`, `role="dialog"` ni `aria-live`; no se abre `alert`, `confirm` ni `prompt`; el texto visible de la página es solo el título, la etiqueta, los 4 nombres, los 4 números y lo escrito.
 - **Nada sale de la página:** después de cargar, escribir no genera ninguna petición de red.
 - **Al recargar:** campo vacío y los 4 en `0`.
@@ -281,13 +283,19 @@ export type InputResult = { text: string; cursor: number };
 export function applyInput(previousText: string, nextText: string, cursor: number): InputResult; // P-7, P-8
 ```
 - `textLength`: número de grafemas del texto en NFC; **los espacios, tabulaciones y saltos de línea sí cuentan**; un emoji cuenta 1; `"á"` cuenta 1.
-- `applyInput`: `previousText` es el texto que ya estaba aceptado; `nextText` es lo que quedó en el campo después del cambio; `cursor` es la posición del cursor después del cambio (`selectionEnd`, en unidades de JavaScript). Devuelve el texto aceptado y dónde dejar el cursor. Nunca lanza error.
+- `applyInput`: `previousText` es el texto que ya estaba aceptado; **si el cambio reemplazó una selección, la pantalla lo pasa sin la parte seleccionada** (la función no recibe la selección; ronda 1, aprobado por el usuario el 2026-11-26). Si de lo nuevo no entra nada, la pantalla deja el texto como estaba, con la parte que estaba seleccionada todavía ahí; la marca de selección se quita como dice §5.1 (TC-018, TC-047); `nextText` es lo que quedó en el campo después del cambio; `cursor` es la posición del cursor después del cambio (`selectionEnd`, en unidades de JavaScript). Devuelve el texto aceptado y dónde dejar el cursor. Nunca lanza error.
   1. Separa `nextText` en: lo que estaba antes del cambio, **lo nuevo** (lo que se escribió o pegó, que termina en `cursor`) y lo que estaba después. El corte siempre cae en el borde de un grafema completo, nunca en medio de un emoji o de una letra con tilde.
   2. Si no hay nada nuevo (se borró), acepta `nextText` tal cual.
   3. Filtra **solo lo nuevo** (P-7), grafema por grafema, después de pasarlo a NFC:
-     - Un grafema que contiene un **emoji** (propiedad `Extended_Pictographic`, indicador regional de bandera o el signo de tecla `U+20E3` de `1️⃣`) **entra completo**, con sus piezas invisibles.
+     - **Pase completo, exacto (L-023; ronda 1, D-018):** solo dos formas entran completas, con sus piezas invisibles:
+       - **Tecla de número:** exactamente `[0-9#*]` + `U+FE0F` opcional + `U+20E3` (`1️⃣`). En cualquier otro lugar, `U+20E3` es un signo combinable y se trata como tal (abajo).
+       - **Emoji:** el grafema **empieza** por un carácter `Extended_Pictographic` o un indicador regional de bandera (`😀`, `👨‍👩‍👧`, `🇨🇴`). Si delante del emoji vienen caracteres que se anteponen (Prepend), esos se separan y se revisan con las reglas normales; el emoji entra.
+       - **Signos combinables o letras pegados detrás de una tecla o un emoji** (tildes, `U+20E3` de más, letras de otros idiomas que se unen al grafema, p. ej. `U+0E33`, `U+FF9E`): se quitan y la tecla o el emoji entran intactos, con sus piezas propias (`U+200D`, `U+FE0F`, tono de piel): `😀` + 2.000 `U+0301` → `😀`; `1️⃣` + `U+0301` → `1️⃣` (D-018, aprobado por el usuario el 2026-11-26).
+       - Lo pegado **nunca convierte lo ya escrito** en tecla o emoji: con `1` escrito, pegar `U+20E3` o `U+FE0F U+20E3` → sigue `1` (C-015).
+       - **No debe pasar** (ejemplos negativos): `ç⃣`, `α⃣`, `ж⃣`, `٣⃣` → no entran; con `c` escrita, pegar `U+0327 U+20E3` → sigue `c`; con `1` escrito, pegar `U+20E3` → sigue `1`; `U+0D4E 😀` o `U+0600 😀` → entra solo `😀`.
      - En los demás, se quitan los **invisibles** (categoría `Cf`, p. ej. `U+200B`, `U+200D`, `U+2060`, `U+FEFF`, `U+00AD`; caracteres de control salvo tabulación `U+0009`, salto de línea `U+000A` y retorno `U+000D`; selectores de variante `U+FE00`–`U+FE0F`). Si no queda nada, no entra.
-     - **No entra** el grafema que: tiene una letra que no es del alfabeto español (C-011; se permiten `a–z`, `ñ`, `á é í ó ú ü` en mayúscula y minúscula, y `ª º`); empieza por un signo combinable suelto (p. ej. `U+0301` solo); o tiene un dígito que no es `0`–`9` (`٣`, C-015).
+     - **No entra** el grafema que: tiene una letra que no es del alfabeto español (C-011; se permiten `a–z`, `ñ`, `á é í ó ú ü` en mayúscula y minúscula, y `ª º`); empieza por un signo combinable suelto (p. ej. `U+0301` solo); o tiene un dígito que no es `0`–`9` (`٣`, C-015). La comparación de letras es exacta, sin plegar mayúsculas (`ſ` no es `s`).
+     - **Signos combinables (D-018):** tras NFC, si el grafema tiene una **letra** como base y le quedan signos combinables (no forman una letra del español), **no entra nada** (C-014, "à" en dos piezas). Si la base **no es letra** (espacio, dígito, signo, símbolo), se quitan todos los signos combinables y entra la base: espacio + `U+0300` → espacio; `1` + `U+0301` → `1`; `?` + 2.000 `U+0301` → `?`.
      - Todo lo demás entra en el mismo orden (C-016).
   4. Tope (P-8): de lo nuevo ya filtrado entra solo el comienzo, hasta que el texto completo llegue a `MAX_TEXT_LENGTH` grafemas.
   5. `text` = antes + lo nuevo aceptado + después; `cursor` = largo de (antes + lo nuevo aceptado). Si no entró nada, `text` es igual a `previousText` y el cursor queda donde empezaba lo nuevo.
@@ -345,8 +353,15 @@ export function applyInput(previousText: string, nextText: string, cursor: numbe
 | TC-040 | P-7 | E2E | tester |
 | TC-041 | P-7 | E2E + unitaria | tester + coder |
 | TC-042 | P-8 | E2E | tester |
+| TC-043 | P-6 (ronda 1) | E2E | tester |
+| TC-044 | P-7 (ronda 1) | E2E | tester |
+| TC-045 | P-7 (ronda 1) | E2E + unitaria | tester |
+| TC-046 | P-7 (ronda 1) | E2E + unitaria | tester |
+| TC-047 | P-7 (ronda 1) | E2E + unitaria | tester |
+| TC-048 | P-7 (ronda 1) | E2E + unitaria | tester |
+| TC-049 | P-7, P-8 (ronda 1) | Unitaria | tester |
 
-Los 42 casos quedan cubiertos. Cada restricción dura citada por F-001 tiene al menos un caso (trazabilidad del architect). C-013 en el código la revisa el reviewer.
+Los 42 casos quedan cubiertos; TC-043 a TC-049 vienen de la ronda 1 (`reports/clasificacion-9c.md`). Cada restricción dura citada por F-001 tiene al menos un caso (trazabilidad del architect). C-013 en el código la revisa el reviewer.
 
 ---
 

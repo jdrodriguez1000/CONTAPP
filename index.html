@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contapp</title>
+  </head>
+  <body>
+    <main class="app">
+      <h1 class="app-title" data-testid="app-title">Contapp</h1>
+      <label class="field-label" for="text-field">Escribe una palabra o frase</label>
+      <textarea class="field" id="text-field" data-testid="text-field" rows="2" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+      <dl class="counts" data-testid="count-grid">
+        <div class="count" data-testid="count-card-vowel"><dt>Vocales</dt><dd data-testid="count-vowel">0</dd></div>
+        <div class="count" data-testid="count-card-consonant"><dt>Consonantes</dt><dd data-testid="count-consonant">0</dd></div>
+        <div class="count" data-testid="count-card-digit"><dt>Números</dt><dd data-testid="count-digit">0</dd></div>
+        <div class="count" data-testid="count-card-other"><dt>Otros</dt><dd data-testid="count-other">0</dd></div>
+      </dl>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
