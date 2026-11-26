@@ -293,3 +293,64 @@ Miré la foto del iPhone real (`_project/slices/VS-001/evidence/lote3-iphone-est
 - **Lección propuesta (diseño para el celular):** cuando se calcula el espacio libre con el teclado abierto en Safari del iPhone, hay que restar también la barra de la dirección y la barra "⌃ ⌄ Listo", no solo el teclado. Mejor aún: medirlo en el iPhone real antes de prometerlo en la feature (refuerza L-010). Por qué: mi cálculo de §5.5 no las contó y prometió algo que el iPhone no cumple. Sirve como dato de partida para VS-002.
 
 STATUS: DONE
+
+# Lote 4 — trabajo C — VS-001
+**Fecha:** 2026-11-26 · **Trabajo:** Revisión visual (lote 4, P-7 y P-8: estado 4 y tope del campo) · **Commit revisado:** `975b26d` (corrida de capturas en verde, `.last-run.json`: `passed`)
+
+## Resumen
+Revisé las 12 capturas del lote 4 y las comparé con F-001 §5, `design-system.md` y la maqueta. Me fijé sobre todo en lo nuevo: el **estado 4** (la frase de 100 caracteres, que da 35 / 40 / 3 / 3) y el **tope del campo en 5 líneas con desplazamiento por dentro**. Para confirmar qué texto y qué medidas usa cada captura, leí también `tests/e2e/captures.spec.ts` y la regla del campo en `src/styles.css`. **No hay hallazgos bloqueantes.** Con estas capturas **cierro el hallazgo 3 del lote 2**. Las 8 capturas repetidas (estados 1, 2 y 3) se ven igual que en el lote 3. Quedan 3 hallazgos menores, y todos se confirman solo en el iPhone real.
+
+## Archivos creados o modificados
+- `_project/slices/VS-001/reports/designer.md` — esta sección, agregada al final. No edité nada más.
+
+## Cómo revisar
+- Abre en `_project/slices/VS-001/evidence/capturas/lote-4/` las 4 capturas nuevas: `estado-4-limite-100-…` y `estado-4-tope-5-lineas-…`, en claro y oscuro. Al lado, abre `_project/design/F-001/mockup.html` en el estado 4.
+- En el **tope de 5 líneas**, el campo tiene 8 renglones ("uno" a "ocho"). Se ven 5 completos y, abajo, asoma el borde superior del sexto ("seis"). Esa línea cortada es lo esperado: indica que hay más texto y que el campo se desplaza por dentro. Las fichas quedan en su sitio, sin moverse hacia abajo.
+
+## Revisión fila por fila (skill design-system, sección 9)
+| # | Qué se compara | Resultado |
+|---|---|---|
+| 1 | Estructura y orden | ✓ Sigue igual: título → etiqueta → campo → fichas 2 × 2 en el orden Vocales, Consonantes / Números, Otros. Con el campo en su tope, las fichas bajan solo lo que creció el campo, y nada más se mueve |
+| 2 | Textos exactos | ✓ Los 6 textos de §5.4 sin cambios. En el estado 4 **no aparece ningún aviso, contador de caracteres, color ni marca de límite** (§5.3, D-007) |
+| 3 | Estados de este lote | ✓ **Estado 4:** la frase "El niño Mateo tiene 7 años y lee cuentos largos con su abuela. ¡Hoy contó 25 ovejas antes de dormir!" se ve **completa en 4 líneas**, sin foco, con **35 / 40 / 3 / 3**, como en la maqueta. La prueba comprueba que no queda nada escondido dentro del campo. ✓ **Tope:** con 8 líneas el campo mide lo mismo que con 5 (≈ 182 px, que es 5 renglones de 24 px × 1,3 más el relleno y el borde, como dice el CSS). Esconde el resto y se desplaza por dentro (`overflow-y: auto`). Los conteos son 16 / 18 / 0 / 0, correctos para "uno"… "ocho", porque los saltos de línea no cuentan. Los dos están en claro y oscuro. El estado 5 (rechazo silencioso) no tiene dibujo propio: se ve igual que el estado anterior, y lo prueban `max-length.spec.ts` y `foreign-letters.spec.ts` |
+| 4 | Valores del dominio | ✓ Cifras simples de dos dígitos ("35", "40", "16", "18"), sin separadores. Las cifras tienen el mismo ancho, así que las fichas no cambian de tamaño |
+| 5 | Tokens | ✓ Son los mismos colores, letra y espacios del lote 3. El tope del campo se calcula con tokens (`--space-3`, `--border-width-input`) y con el alto de línea aprobado (1,3). No hay medidas nuevas escritas a mano |
+| 6 | Accesibilidad | ✓ Los contrastes no cambiaron. La letra del campo sigue en 24 px. El campo se desplaza por dentro y la página no se bloquea. Cada ficha conserva su nombre escrito |
+| 7 | Anchos | ✓ A 390 px no hay desplazamiento horizontal en ningún estado. La frase de 100 parte bien sus renglones, sin cortar palabras. A 320 px (estado 1) nada cambió respecto al lote 3 |
+| 8 | Detalles finos | Asoma el sexto renglón en el relleno inferior del campo. No lo cuento como hallazgo: ayuda a ver que hay más texto, y en el iPhone la barra de desplazamiento solo aparece mientras se desliza. Las capturas no muestran barra de desplazamiento, porque el navegador de pruebas las oculta |
+
+## Cambios frente al lote 3
+- **Estados 1, 2 y 3** (8 capturas): se ven igual que en el lote 3 en posición, colores, foco y conteos. P-7 y P-8 cambian lo que entra al campo, no cómo se ve.
+- **Crecimiento → estado 4:** la captura `estado-4-crecimiento-…` del lote 3 pasa a llamarse `estado-4-limite-100-…`. Se ve igual (4 líneas, 35 / 40 / 3 / 3). La diferencia es que ahora la prueba comprueba que la frase tiene exactamente 100 caracteres, que el campo no tiene foco y que no queda texto escondido.
+- **Nuevo:** las capturas del tope de 5 líneas.
+
+## Hallazgos anteriores
+- **Hallazgo 3 del lote 2 (captura del tope de 5 líneas): CERRADO.** Las capturas `estado-4-tope-5-lineas-390x844-claro/oscuro` muestran el campo detenido en 5 líneas y desplazándose por dentro. La prueba comprueba además que el alto con 8 líneas es igual al alto con 5 y que hay texto escondido.
+- **Hallazgo 4 del lote 2 (letra del iPhone en el estado 4):** sigue abierto como hallazgo 2 de abajo.
+- **Hallazgo 1 del lote 3 (teclado):** cerrado en el ajuste del teclado. Por D-015, la segunda fila detrás del teclado no es hallazgo de este lote: se resuelve en VS-002.
+- **Hallazgo 2 del lote 3 (anillo de foco en el iPhone):** ya está confirmado en modo claro. Falta el oscuro (hallazgo 3 de abajo).
+
+## Hallazgos
+| # | Pantalla | Hallazgo | Severidad |
+|---|---|---|---|
+| 1 | Tope de 5 líneas, en el iPhone | Las capturas prueban el tope y el desplazamiento por dentro en el navegador de pruebas, pero no que en Safari del iPhone **se pueda deslizar con el dedo dentro del campo** sin que se mueva la página, con el teclado abierto y con el teclado cerrado. Pido una prueba manual en la preview: pegar "uno"… "ocho" en 8 líneas y deslizar dentro del campo hasta ver "ocho" | **Menor** — el CSS es el estándar (`overflow-y: auto`). Falta verlo con el dedo (L-010) |
+| 2 | Estado 4, en el iPhone | Sigue el hallazgo 4 del lote 2. Con SF Pro, la frase de 100 caracteres puede partirse distinto que con Segoe UI. Pido una foto del estado 4 con el teclado cerrado, para confirmar que la frase cabe en 5 líneas o menos sin desplazamiento por dentro y que "Consonantes" no se corta | **Menor** — es un riesgo de la evidencia, no un defecto |
+| 3 | Estado 2, modo oscuro, en el iPhone | Sigue el hallazgo 2 del lote 3, ya confirmado en claro. Falta confirmar en modo oscuro que el anillo amarillo (`--color-focus`) aparece al tocar el campo con el dedo | **Menor** — es el comportamiento estándar |
+
+**Bloqueantes: ninguno.** El lote 4 puede seguir.
+
+## Lo que solo el iPhone confirma (lista única para la verificación en la preview)
+Todo se hace en el iPhone con Safari (D-009), con la URL de la preview:
+1. **Estado 4, teclado cerrado:** pegar la frase de 100 caracteres, tocar "Listo" y tomar una foto. Debe verse completa en 5 líneas o menos, con 35 / 40 / 3 / 3, sin aviso ni marca, y con "Consonantes" entero (hallazgo 2).
+2. **Tope de 5 líneas:** pegar "uno"… "ocho" (8 líneas) y comprobar que el campo se queda en 5 líneas y que, al deslizar el dedo dentro del campo, aparece "ocho" sin que la página salte (hallazgo 1). Conviene también una foto.
+3. **Foco en modo oscuro:** con el iPhone en modo oscuro, tocar el campo y tomar una foto. Debe verse el doble borde amarillo (hallazgo 3). En la misma pasada se puede tomar la foto del estado 1 en oscuro.
+4. **Carácter 101 en el teclado real:** con la frase de 100 escrita, tocar una tecla más. No debe pasar nada en la pantalla: ni destello, ni vibración, ni que se mueva el cursor (estado 5, D-007). Las pruebas automáticas usan el teclado del computador, no el del iPhone.
+- **No entra en esta lista** el teclado tapando la segunda fila de fichas: por D-015 se resuelve en VS-002.
+
+## Preguntas para el usuario
+- Ninguna.
+
+## Decisiones o lecciones propuestas
+- **Lección (evidencia):** para probar un tope de alto en una captura, la prueba debe medir el alto en el límite (5 líneas) y volver a medirlo pasado el límite (8 líneas), y comprobar que hay texto escondido, como hace `captures.spec.ts`. Por qué: si la captura solo muestra un campo alto, no se distingue entre un campo que se detuvo y uno que todavía no llegó a su tope.
+
+STATUS: DONE
