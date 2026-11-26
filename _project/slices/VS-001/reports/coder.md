@@ -588,3 +588,9 @@ Ninguno.
 - En `.gitignore`, una carpeta de la raíz se escribe con barra inicial (`/reports/`) — sin ella también se ignoran carpetas del mismo nombre más adentro.
 
 STATUS: BLOCKED — que el Manager cree `stryker.config.json` (o amplíe la zona de escritura del coder) y que se apruebe `/reports/` en `.gitignore`.
+
+## Mini-lote — cierre
+- Bloqueo resuelto, según el Manager: creó `stryker.config.json` con el contenido de arriba (commit `1b042df`) y aceptó `/reports/` en `.gitignore`.
+- Según el Manager, que corrió jscpd, knip y Stryker, las herramientas funcionan (mutación 93,13 % en 11 s). Yo no las corrí.
+
+STATUS: DONE
