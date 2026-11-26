@@ -28,3 +28,13 @@ Aprobado por el usuario el 2026-11-26. **Sin ronda 2.**
 - **Security:** 0 Críticas, 0 Altas. 4 hallazgos del cambio (1 Media, 3 Bajas) → DT-004 a DT-007.
 - **Reviewer:** 0 Bloqueantes. Hallazgos 1 y 2 → DT-008 y DT-009; hallazgo 3 (espera fija de TC-043) → excepción anotada en el plan (P-6).
 - **Mutación:** 93,13 % (122 muertos, 9 sobrevivientes: 3 equivalentes, 4 bordes de `countCharacters` → DT-010, 2 "Sería bloqueante" → DT-011). El Manager comprobó que en esos 2 la app ya se porta bien (no entra nada ajeno ni invisible): falta la prueba, no hay defecto. Se atienden en VS-004, que vuelve a cambiar el filtro.
+
+## Métricas de la slice
+| Rondas | Nivel por entrega | Breakers (corregidos · bordes · descartados) | Reviewer bloqueantes | Security Crítica/Alta | Designer bloqueantes | Mutación | Debugger |
+|---|---|---|---|---|---|---|---|
+| 1 | Alto · Alto | 7 · 2 (composición del teclado, arrastrar y soltar) · 0 | 0 | 0 / 0 | 0 (lotes 2 a 4) | 93,13 % (9 sobrevivientes: 3 equivalentes, DT-010, DT-011) | Ninguno |
+
+- **Duración:** primer commit de la rama `e83804a` (2026-11-26 08:38) → producción `2f41fb6` (2026-11-26 15:08): unas 6,5 horas de reloj, repartidas en varias sesiones del mismo día.
+- **Tiempo de la suite E2E:** lotes 1 a 4 sin CI (las corrió el Manager en local, sin registro de tiempos); lote 5 → CI con 70 E2E; cierre → CI con 113 E2E en 42,5 s (corrida 45886176342).
+- **Comparación:** es la primera slice; no hay contra qué comparar. Sirve de base para VS-002.
+- **Revisión que el nivel omitió y dejó pasar un defecto:** ninguna.
