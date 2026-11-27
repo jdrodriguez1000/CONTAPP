@@ -157,3 +157,63 @@ Ninguno.
 - Ninguna nueva.
 
 STATUS: DONE
+
+# Ronda 2
+**Fecha:** 2026-11-27 · **Rama:** feature/VS-002-imagenes-ninos · **Hallazgo:** BRK-C-2 (DT-009) · **Nivel:** Alto por archivo (`src/main.ts`)
+
+## Pasos construidos
+| Paso | Commits (test → feat → refactor) | Casos de prueba cubiertos | Razón del rojo |
+|---|---|---|---|
+| P-1 (corrección) | solo `refactor(P-1)` `944c1a2` | Ninguno nuevo; respaldo por criterio escrito antes (PI-5) | No hay rojo posible: no cambia el comportamiento |
+
+## Explicación para el usuario
+### P-1 — Completar el comentario de `filterChange`
+Un comentario es una nota para quien lee el código; la app no lo ejecuta. Esta nota dice cuándo la app vuelve a escribir lo que hay en el campo, y le faltaba un caso. Además de unir una letra que llega en dos piezas, el paso que pone el texto en su forma estándar (NFC) puede cambiar un signo por su letra: el signo Kelvin se convierte en la letra K. Aunque en pantalla se ven iguales, para el computador son dos caracteres distintos, así que el campo se reescribe. Archivo: `src/main.ts`.
+
+## Diff
+`git diff 58dbec1 -- src` (2 líneas agregadas y 1 quitada, todas de comentario):
+
+```diff
+   // The field is rewritten only when the accepted text differs from it: something did not get in,
+-  // or a letter that came in two pieces was joined into one (NFC). That is what makes undo stale (DT-003).
++  // or NFC turned what came in into its standard form (a letter in two pieces joined into one,
++  // a sign like Kelvin into its letter). That is what makes undo stale (DT-003).
+```
+
+`git diff --stat 58dbec1 HEAD` (antes de escribir este reporte): solo `src/main.ts`.
+
+## Estado de las pruebas
+- (a) El diff de `src` muestra solo líneas de comentario de `src/main.ts`: **cumple** (arriba). El texto es el aprobado.
+- (b) Corridas sobre el contenido que quedó en `944c1a2`, justo antes del commit:
+  - `npm run check`: **ok**. Salida completa, sin errores:
+    ```text
+    > check
+    > npm run typecheck && npm run lint
+    > typecheck
+    > tsc --noEmit
+    > lint
+    > eslint .
+    ```
+  - `npm run test:unit`: **207/207**:
+    ```text
+    RUN  v5.0.3 C:/Users/USUARIO/Documents/PERSONAL/CONTAPP-VS-002
+    Test Files  4 passed (4)
+         Tests  207 passed (207)
+    ```
+- No corrí E2E ni capturas: el paquete no los pide para esta ronda. La CI en el commit (criterio d de `clasificacion-9c.md`) queda pendiente hasta que el Manager suba la rama.
+- No volví a correr la reproducción del breaker-code (está en su carpeta). Su aserción compara el texto aceptado con el escrito y el comportamiento no cambió; lo que se corrige es el comentario.
+
+## Variables de entorno nuevas
+- Ninguna.
+
+## Desviaciones del plan
+- El comentario de `filterChange` ya no es el texto que dictó P-1: ahora es el texto aprobado en el paquete de la ronda 2 (3 líneas en lugar de 2).
+- Commit `944c1a2` con mensaje de una línea, sin `Co-Authored-By` (la guarda bloquea `<` y `>`, como en los lotes anteriores). No subí la rama. Este reporte queda sin commit.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Ninguna nueva.
+
+STATUS: DONE
