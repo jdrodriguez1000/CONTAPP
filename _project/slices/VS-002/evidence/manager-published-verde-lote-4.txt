@@ -1,0 +1,21 @@
+Verde de P-6 (lote 4) — Manager — 2026-11-27
+Preview: https://contapp-r2rx70hdp-jdrodriguez1000-8207s-projects.vercel.app (redeploy de la preview de fd57232 tras apagar la barra de Vercel en Pre-Production, Settings > General > Vercel Toolbar)
+Antes del redeploy, la preview vieja seguía cargando vercel.live/_next-live/feedback/feedback.js y TC-055 fallaba (7/8); la nueva no carga el script.
+
+
+> test:published
+> playwright test --project=published
+
+
+Running 8 tests using 1 worker
+
+  ok 1 [published] › tests\e2e\published.spec.ts:24:1 › P-2: la dirección publicada abre con el título Contapp (612ms)
+  ok 2 [published] › tests\e2e\published.spec.ts:93:1 › TC-001 — publicada: campo vacío, los 4 grupos en 0 y sin pantalla de cuenta (C-010, C-012) (864ms)
+  ok 3 [published] › tests\e2e\published.spec.ts:118:1 › TC-002 — publicada: escribir "casa" letra por letra cambia los conteos con cada letra (C-001) (1.1s)
+  ok 4 [published] › tests\e2e\published.spec.ts:146:1 › TC-024 — publicada: escribir "casa" y recargar deja el campo vacío y los 4 en 0, sin guardar nada (C-010) (1.9s)
+  ok 5 [published] › tests\e2e\published.spec.ts:252:3 › TC-050 — publicada, modo claro: las 4 fichas en 0 con su color y su imagen de 44 px pintada junto al número; las 4 imágenes son distintas (2.0s)
+  ok 6 [published] › tests\e2e\published.spec.ts:252:3 › TC-051 — publicada, modo oscuro: las 4 fichas en 0 con su color y su imagen de 44 px pintada junto al número; las 4 imágenes son distintas (1.9s)
+  ok 7 [published] › tests\e2e\published.spec.ts:271:1 › TC-053 — publicada: pegar "¡Hola, 2026! 😀" da 2/2/4/4 con la imagen y el color iguales que vacía, y al borrar todo siguen iguales con los 4 en 0 (C-001, C-006, C-007, C-008, C-012) (2.3s)
+  ok 8 [published] › tests\e2e\published.spec.ts:300:1 › TC-055 — publicada: al abrir, escribir "casa" y recargar, todo se pide a la dirección publicada, nada lleva el texto y nada queda guardado (C-010) (2.0s)
+
+  8 passed (13.2s)
