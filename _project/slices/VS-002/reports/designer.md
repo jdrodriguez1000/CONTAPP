@@ -142,3 +142,51 @@ Las opciones A y C y el juego 2 quedan como **descartados**. Sus maquetas no se 
 - **Catálogo (Manager):** columna "Imagen" de GRP-001 a GRP-004, con los nombres de F-002 §5.1.
 
 STATUS: DONE
+
+# Lote 1 — revisión visual
+**Fecha:** 2026-11-27 · **Trabajo:** Revisión visual · **Commit revisado:** `4e74b73` (rama `feature/VS-002-imagenes-ninos`) · **Alcance:** solo P-2 (un color por grupo en el número y el borde punteado; nombre y fondo de la ficha sin cambio)
+
+## Resumen
+Las 16 capturas muestran lo aprobado para P-2: cada ficha lleva el color de su grupo en el número y en el borde punteado (rojo, azul, naranja, morado; los tonos más claros en modo oscuro), y el nombre y el fondo de la ficha siguen como en VS-001. Se ve igual en los 8 estados y en los dos modos, a 390 y a 320 px, sin desbordes. **No hay bloqueantes.** Lo que todavía no se parece a `mockup-b.html` (la imagen, los espacios más compactos y el ajuste para 320 px) es de los lotes 2 y 3, como dice el plan.
+
+## Archivos creados o modificados
+- `_project/slices/VS-002/reports/designer.md` — esta sección (agregada al final).
+
+## Qué revisé
+- **Capturas** (`_project/slices/VS-002/evidence/capturas/lote-1/`, 16): estado 1 vacío a 390 × 844 y 320 × 568, 2 "pingüino" con foco, 2b frase de 50 con foco, 3 "¡Hola, 2026! 😀", 4 límite de 100, 4 tope de 5 líneas y 5 con 100 "a" a 320 × 568; cada una en claro y oscuro. **Están todos los estados del plan §4 para el lote 1.** Son de Windows (L-010): la letra no es SF Pro, así que no juzgo anchos de texto finos.
+- **Contra:** `mockup-b.html` (líneas 82, 89, 106-114), `design-system.md` §2, F-002/F-003 §5 y el plan (P-2, §4, §5.1).
+- **Código, solo para la fila 5 (tokens):** `src/styles.css` define los 8 valores en `:root` y en `@media (prefers-color-scheme: dark)` (líneas 14-17 y 42-45), iguales a `design-system.md` §2; las 4 clases `.count--<grupo>` solo asignan `--group-color`; el borde (línea 130) y el número (línea 152) usan `var(--group-color)`; ningún color escrito a mano fuera de los tokens. `index.html` agrega solo `count--<grupo>` a cada ficha (mismos `data-testid`, mismo orden `dt` → `dd`). `--color-primary` sigue en el título (línea 75) y `--color-border` queda definido como reservado (§2).
+
+## Revisión fila por fila (skill design-system §9)
+| # | Qué se compara | Resultado |
+|---|---|---|
+| 1 | Estructura y orden | ✓ Título, etiqueta, campo y cuadrícula 2 × 2 en el orden de VS-001: Vocales, Consonantes / Números, Otros. Número arriba, nombre abajo. |
+| 2 | Textos exactos | ✓ `Contapp`, `Escribe una palabra o frase`, `Vocales`, `Consonantes`, `Números` (con tilde), `Otros`. Ningún texto nuevo (F-003 §5.6). |
+| 3 | Estados | ✓ Los 8 estados vigentes del lote 1, en claro y oscuro. En todos, color y borde iguales: no cambian con el conteo (CA-14). |
+| 4 | Valores del dominio | ✓ Conteos correctos en pantalla: 4/4/0/0, 17/20/0/1, 2/2/4/4, 35/40/3/3, 16/18/0/0, 100/0/0/0. |
+| 5 | Tokens | ✓ Colores de las capturas = juego 1 "Salón clásico": claro `#C62828` / `#1565C0` / `#A84B00` / `#7B1FA2`; oscuro `#FF7B72` / `#82B1FF` / `#FFB74D` / `#CE93D8`. Borde punteado de 2 px, el mismo radio de VS-001. Fondo de la ficha `--color-surface` y nombre `--color-text` sin cambio. |
+| 6 | Accesibilidad | ✓ Los 8 colores pasan 4,5:1 sobre la ficha y sobre el campo (`design-system.md` §2; TC-052 lo recalcula). **Nunca solo color:** cada ficha sigue con su nombre escrito; el color ayuda, no reemplaza. El foco del campo (anillo doble en `--color-focus`) se sigue viendo en 2 y 2b. |
+| 7 | Anchos sin desbordes | ✓ A 390 y a 320 px las 4 fichas caben, sin desplazamiento horizontal. A 320 px "Consonantes" y "100" caben completos (todavía sin imagen). |
+| 8 | Detalles finos | Ver hallazgo 1. |
+
+## Hallazgos
+| # | Pantalla / captura | Hallazgo | Severidad |
+|---|---|---|---|
+| 1 | Carpetas `captures-P-3-—-captura-est-…-5-lineas-…` (claro y oscuro) | El nombre de la prueba del tope de 5 líneas empieza por **"P-3"**, que viene del plan de VS-001. En VS-002, P-3 es "Una imagen por grupo", y alguien que lea la carpeta de evidencia puede confundirse. La captura en sí está bien. Propuesta: el tester le cambia el nombre (p. ej. "estado 4b — tope de 5 líneas") cuando toque `captures.spec.ts` en el lote 2. | Pega menor |
+| 2 | Todas | Falta la imagen de cada grupo a la izquierda del número (`GroupImage`, 44 px; 32 px a menos de 360 px). | Para lotes siguientes (lote 2, P-3 y P-4) — no es hallazgo de este lote |
+| 3 | Todas (390 × 844) | Los espacios siguen como en VS-001: título → etiqueta 16 px (maqueta: 8), relleno del campo 12 px (maqueta: 8), campo → fichas 20 px (maqueta: 12), relleno de la ficha 12 px arriba y abajo (maqueta: 8). La 2.ª fila de fichas termina en ≈ 433 px, por encima de los 417 px que pide la aproximación de TC-061. | Para lotes siguientes (lote 3, P-5) — no es hallazgo de este lote |
+| 4 | `estado-5-100-a-320x568-*`, `estado-1-vacio-320x568-*` | A 320 px el relleno de los lados de la ficha sigue en 8 px y "Consonantes" queda a pocos píxeles del borde. Hoy cabe, pero en el lote 2, con la imagen de 32 px al lado de "100", el espacio se aprieta. Por eso P-4 baja el relleno a 4 px. **Para mirar en las capturas del lote 2:** "100" + imagen dentro de la ficha de Vocales, y "Consonantes" sin tocar el borde. Con la letra del iPhone, la última palabra la tiene la foto de P-7 (L-010). | Para lotes siguientes (lote 2, P-4) |
+
+**Observación sin severidad:** en el estado 3, el emoji 😀 sale con el dibujo de Windows (Segoe UI Emoji), que se ve distinto al del iPhone. No es de P-2 ni de la app.
+
+## Cómo revisar
+- Abrir `estado-3-con-texto-390x844-claro.png` y `…-oscuro.png`: es el único estado con los 4 conteos distintos de 0 y se ven los 4 colores a la vez. Compararlo con el estado 3 de `_project/design/F-002/mockup-b.html` sin mirar las imágenes, que llegan en el lote 2: los colores del número y del borde deben ser los mismos.
+- Abrir `estado-5-100-a-320x568-claro.png`: confirma que a 320 px todo cabe antes de que llegue la imagen.
+
+## Preguntas para el usuario
+- Ninguna.
+
+## Decisiones o lecciones propuestas
+- Ninguna nueva. (El hallazgo 1 es un ajuste de nombre para el tester, no una regla.)
+
+STATUS: DONE
