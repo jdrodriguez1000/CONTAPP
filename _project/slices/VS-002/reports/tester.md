@@ -362,3 +362,103 @@ Ninguno.
 - Al fijar una letra en una prueba, fijar también un peso que tengan todas las máquinas y medir en la guarda cada tipo de texto: con peso 800, "Arial" midió los números con otra cara. → VEGU
 
 STATUS: DONE
+
+# Lote 3 — trabajo A — VS-002
+**Fecha:** 2026-11-27 · P-5 · base `c96b277`
+
+## Resumen
+Quedaron escritas las pruebas de P-5: **14 nuevas, las 14 en rojo**, y **1 cambiada** en `screen.spec.ts`, también en rojo. Agregué 4 capturas.
+La E2E pasó de **166/166** a **180: 165 en verde y 15 en rojo**. `npm run check` pasa antes y después. Las razones de los 15 rojos son las esperadas.
+**El plan se confirma:** las medidas verticales no dependen de la familia de letra en lo que prueban estas pruebas, así que no hizo falta fijar la letra. No leí `src/` ni hice commits.
+
+## Archivos tocados
+| Archivo | Cambio |
+|---|---|
+| `tests/e2e/didactic-screen.spec.ts` | +14 pruebas de TC-061 (29 → 43). Comentario inicial al día |
+| `tests/e2e/screen.spec.ts` | Prueba "campo de 2 a 5 líneas": campo vacío de 86–95 a **80–85 px**, y su comentario. El resto no cambia |
+| `tests/e2e/captures.spec.ts` | +4 capturas: estados 2 y 2b a 390 × 427, en claro y oscuro |
+| `evidence/tester-e2e-lote-3.txt` (nuevo) | Notas de las corridas |
+
+## Cobertura
+| Caso | Prueba (cuántas) en `didactic-screen.spec.ts` | Tipo | Restricción | Resultado y razón del rojo |
+|---|---|---|---|---|
+| TC-061 | Aproximación: campo vacío, "pingüino", "la casa⏎el sol" y 2 líneas porque el texto pasa de renglón (4) | E2E | C-012 (vacío) | **Rojo:** Números y Otros terminan en **432,58 px** (≤ 417) |
+| TC-061 | Espacios a 390 y 320: 8 · 8 · 8 · 12 · 12 entre filas y columnas (2) | E2E | — | **Rojo:** arriba 12 (8), título → etiqueta 16 (8), campo → fichas 20 (12) |
+| TC-061 | Campo a 390 y 320: relleno 8 y 12, alto 80–85 (2) | E2E | — | **Rojo:** relleno `12px` arriba y abajo; alto 90 |
+| TC-061 | Tope a 390 y 320: 176 ±1 con 5, 6 y 8 líneas (2) | E2E | A-001 | **Rojo:** con 5 líneas mide 8 px más |
+| TC-061 | Ficha a 390, 320, **359 y 360**: relleno de los 4 lados y alto 104 (4) | E2E | — | **Rojo:** relleno `12px` arriba y abajo; a 390 y 360, además, alto 109 |
+| TC-058 | `screen.spec.ts`, campo de 2 a 5 líneas (1, cambiada) | E2E | — | **Rojo:** el campo vacío mide 90 (≤ 85) |
+| TC-061, TC-062 (criterio) | Fotos del iPhone | Manual | C-012 | Lote 4, P-7. **La aproximación no cumple CA-20** |
+
+### Controles
+- **Ninguna de las 14 nuevas es de control.** Dentro de ellas ya pasan: etiqueta → campo (8), separación entre fichas (12), relleno lateral del campo (12) y de la ficha, alto 104 a 320 y 359, y las posiciones del campo y de la 1.ª fila.
+- **Deben seguir en verde con P-5:** TC-059 (ninguna letra baja), TC-060, TC-063, TC-064, `group-look.spec.ts` y las otras 9 de `screen.spec.ts` (incluye ficha ≥ 104 px).
+- **Las 4 capturas nuevas son de control:** pasan hoy. No exigen que las fichas quepan, para que el designer reciba la captura aunque no quepan.
+- No hay pruebas `*-later`.
+
+## Letra y medidas verticales (lección del lote 2)
+Con el CSS del plan inyectado, medí 7 familias muy distintas (la de la app, Verdana, Georgia, Courier New, Times New Roman, Impact y Segoe Script). "Consonantes" varió de 98 a 144 px de ancho.
+
+| Ancho | Resultado |
+|---|---|
+| 390 px | En las 7: mismas posiciones y altos; la 2.ª fila termina en **394,98 px**. Campo 82 px, fichas 104 |
+| 320 px | Igual en 6. Con Courier New la etiqueta ocupa 2 líneas y el final baja a 418,38. Ninguna prueba exige la posición final a 320: miden separaciones entre elementos |
+
+- **Por eso no usé la letra fijada.** Ninguna medida nueva depende de un ancho de texto, salvo que la etiqueta quepa en 1 línea a 390 (hay 358 px; con Courier New cupo).
+- **El caso "pasa de renglón"** no usa una frase fija. La prueba agrega "sol" hasta que aparece la 3.ª línea y quita el último: la 2.ª queda llena con cualquier letra. Según la letra, el texto puede pasar de 50 caracteres; aquí se prueba el alto del campo, no CA-20. No usa la frase de 50, como pide el plan.
+- **Límite:** en Windows no probé DejaVu, la letra que deduje para la CI. Se confirma con la CI.
+
+## Prueba de las pruebas
+El CSS del plan se agregó desde las pruebas al final del HTML servido, antes de que arrancara la app, y después se retiró.
+
+| Etapa | Resultado |
+|---|---|
+| CSS completo de P-5 | `didactic-screen` + `screen` + `group-look`: **77/77**. Capturas: **20/20** |
+| Daño: sin el `max-height` nuevo | En rojo las 2 del tope y la de `screen.spec.ts`: con 6 líneas crece 8 px de más |
+| Daño: sin el ajuste angosto después de `.count` (L-041) | En rojo la ficha a 320 y 359 (TC-061) y el relleno de TC-064 a 320 y 359 |
+
+- Los dos daños se corrieron juntos: 7 en rojo y 46 en verde; cada falla corresponde a su daño.
+- **Corregí una prueba mía durante el rojo:** la del relleno de la ficha esperaba cada valor por separado y terminaba por tiempo límite (30 s), con la razón mezclada. Ahora lee todo de una vez.
+- **Margen de la aproximación:** entre 395 y 417 hay ≈ 22 px. Un P-5 a medias podría pasarla; para eso están las pruebas de cada medida.
+- Grep de `TEMP` en `tests/`: sin resultados. Las corridas finales son posteriores a la limpieza.
+- Esto prueba que las pruebas **pueden** pasar con el CSS del plan, no que la implementación del coder pase.
+
+## Resultados de la ejecución
+| Corrida (`--workers=2`) | Antes | Después |
+|---|---|---|
+| `npm run check` | pasa | pasa |
+| E2E `iphone` | 166: **166 en verde** | 180: **165 en verde, 15 en rojo** |
+| Capturas (ensayo en `test-results/`) | 16 (lote 2; no las corrí antes del cambio) | **20/20** |
+
+- Cómo conté: la salida de las 180 se corta. `test-results/.last-run.json` lista 15 fallas, los 6 archivos sin rojos dan 127/127 y las razones las leí por grupos.
+- Pruebas del coder: no corrí las unitarias.
+- Regresión: la CI (la verifica el Manager). Con este commit en rojo, se espera la CI en rojo por esas 15.
+- Evidencia: `_project/slices/VS-002/evidence/tester-e2e-lote-3.txt`.
+
+## Capturas
+Están todos los estados del lote 3 (§4), en claro y oscuro, 20 en total. Las nuevas son `estado-2-teclado-390x427-<modo>.png` y `estado-2b-teclado-390x427-<modo>.png`. Muestran solo los 427 px que deja libres el teclado, sin mover la pantalla; no dibujan el teclado ni las barras de Safari. En el ensayo revisé a ojo una (2b, claro, con el CSS del plan): se ven las 4 fichas completas y la frase en 2 líneas con la letra de Windows. No escribí en `evidence/capturas/`.
+
+## E2E que el coder debe correr en su cierre
+Además de `npm run check` y `npm run test:unit`:
+1. Las del plan §4: `npx playwright test tests/e2e/didactic-screen.spec.ts tests/e2e/screen.spec.ts tests/e2e/group-look.spec.ts --project=iphone --workers=2` → **77/77**.
+2. `npx playwright test --project=captures --output=_project/slices/VS-002/evidence/capturas/lote-3` → **20/20**.
+3. Recomiendo además la suite completa, `npm run test:e2e -- --workers=2` → **180/180**.
+
+## Fallos
+| # | Caso | Clasificación | Cómo reproducirlo | Evidencia |
+|---|---|---|---|---|
+| — | Ningún defecto en este trabajo: los 15 rojos son el rojo esperado de P-5 | — | — | `tester-e2e-lote-3.txt` |
+
+## Preguntas para el usuario o el Manager
+Ninguna bloquea.
+- Para el commit: los 3 archivos de `tests/e2e/`, este reporte y `evidence/tester-e2e-lote-3.txt`.
+- El plan (P-5) nombra "cuatro casos" y el cuarto, "el campo en 2 líneas", no dice con qué texto. Lo leí como 2.ª línea por paso de renglón (el salto de línea ya es el tercero). **Recomiendo** dejarlo así.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Para llenar "2 líneas" sin depender de la letra, agregar palabras hasta que aparezca la 3.ª línea y quitar la última, en vez de fijar una frase. → VEGU
+- Varias comprobaciones suaves que esperan (`expect.soft` con `toHaveCSS`) suman sus tiempos y pueden agotar el de la prueba: para valores fijos de estilo, leerlos juntos y compararlos una sola vez. → VEGU
+
+STATUS: DONE

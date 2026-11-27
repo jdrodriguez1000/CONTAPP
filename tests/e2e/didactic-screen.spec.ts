@@ -9,11 +9,14 @@ import {
   type,
 } from "./field-helpers";
 
-// F-003: the screen for children (plan VS-002 P-4 and §5.1; F-003 CA-18, CA-19, CA-21).
+// F-003: the screen for children (plan VS-002 P-4, P-5 and §5.1; F-003 CA-18 to CA-21).
 // Widths and sizes are the ones of F-003 §5.4 and F-002 §5.2. How wide "100" or
 // "Consonantes" come out depends on the font (L-010): what CA-21 asks is checked with the
 // font of the machine, the widths of the design with a font set by the test, and the
 // iPhone has the last word.
+// The vertical measures of P-5 (F-003 §5.3) come from sizes, spaces and line heights
+// written as numbers, so they are checked with the font of the machine. The only text that
+// wraps by itself is built to fill 2 lines with whatever font there is.
 
 const KEYS = ["vowel", "consonant", "digit", "other"];
 const NAMES = ["Vocales", "Consonantes", "Números", "Otros"];
@@ -281,4 +284,188 @@ for (const size of SIZES) {
       await expectDesignWidths(page, size.width);
     });
   }
+}
+
+// P-5: the spaces that get shorter so the 4 groups stay in sight with the keyboard open
+// (plan VS-002 §5.1, "Medidas de la pantalla desde P-5"). No letter gets smaller: TC-059.
+
+// Height of the field with 2 lines (2 × 31.2 + 2 × 8 + 2 × 2 = 82.4) and with its cap of
+// 5 lines (82.4 + 3 × 31.2 = 176).
+const FIELD_2_LINES = { min: 80, max: 85 };
+const FIELD_CAP = 176;
+
+for (const size of SIZES) {
+  test(`TC-061 — a ${size.width} px, los espacios de arriba abajo: 8 sobre el título, 8 hasta la etiqueta, 8 hasta el campo, 12 hasta las fichas y 12 entre fichas (CA-20)`, async ({
+    page,
+  }) => {
+    await openAt(page, size);
+
+    const title = await box(page.getByTestId("app-title"));
+    const label = await box(page.locator('label[for="text-field"]'));
+    const field = await box(page.getByTestId("text-field"));
+    const grid = await box(page.getByTestId("count-grid"));
+    const vowel = await box(page.getByTestId("count-card-vowel"));
+    const consonant = await box(page.getByTestId("count-card-consonant"));
+    const digit = await box(page.getByTestId("count-card-digit"));
+    expect(await page.evaluate(() => window.scrollY), "scroll").toBe(0);
+
+    // Soft: one run shows every space that is wrong.
+    for (const { what, got, expected } of [
+      { what: "above the title", got: title.y, expected: 8 },
+      { what: "title to label", got: label.y - (title.y + title.height), expected: 8 },
+      { what: "label to field", got: field.y - (label.y + label.height), expected: 8 },
+      { what: "field to cards", got: grid.y - (field.y + field.height), expected: 12 },
+      { what: "between rows of cards", got: digit.y - (vowel.y + vowel.height), expected: 12 },
+      { what: "between columns of cards", got: consonant.x - (vowel.x + vowel.width), expected: 12 },
+    ]) {
+      expect
+        .soft(Math.abs(got - expected), `space ${what}: ${got}px, expected ${expected}px`)
+        .toBeLessThanOrEqual(0.5);
+    }
+  });
+
+  test(`TC-061 — a ${size.width} px, el campo deja 8 px arriba y abajo (12 a los lados) y vacío mide entre 80 y 85 px (CA-20)`, async ({
+    page,
+  }) => {
+    await openAt(page, size);
+    const field = page.getByTestId("text-field");
+
+    await expect.soft(field).toHaveCSS("padding-top", "8px");
+    await expect.soft(field).toHaveCSS("padding-bottom", "8px");
+    await expect.soft(field).toHaveCSS("padding-left", "12px");
+    await expect.soft(field).toHaveCSS("padding-right", "12px");
+    const { height } = await box(field);
+    expect(height, "height of the empty field").toBeGreaterThanOrEqual(FIELD_2_LINES.min);
+    expect(height, "height of the empty field").toBeLessThanOrEqual(FIELD_2_LINES.max);
+  });
+
+  // L-020: measured at the cap and past it, with text hidden only past it.
+  test(`TC-061 — a ${size.width} px, el tope del campo sigue en 5 líneas y mide ${FIELD_CAP} px; con 6 y con 8 no crece más`, async ({
+    page,
+  }) => {
+    await openAt(page, size);
+    const field = page.getByTestId("text-field");
+
+    for (const lines of [5, 6, 8]) {
+      await field.fill(Array.from({ length: lines }, () => "a").join("\n"));
+      await expect
+        .poll(async () => Math.abs((await box(field)).height - FIELD_CAP), {
+          message: `distance to ${FIELD_CAP}px of height with ${lines} lines`,
+        })
+        .toBeLessThanOrEqual(1);
+      const hidden = await field.evaluate((el) => el.scrollHeight - el.clientHeight);
+      if (lines === 5) expect(hidden, "hidden pixels with 5 lines").toBeLessThanOrEqual(1);
+      else expect(hidden, `hidden pixels with ${lines} lines`).toBeGreaterThan(0);
+    }
+  });
+}
+
+// At the 4 widths, because below 360 px another rule sets the sides of the card (L-041).
+for (const size of [...SIZES, ...LIMIT]) {
+  test(`TC-061 — a ${size.width} px, la ficha deja 8 px arriba y abajo, conserva ${size.side} px a los lados y mide 104 px de alto (CA-20)`, async ({
+    page,
+  }) => {
+    await openAt(page, size);
+
+    // Read all at once, so a failure shows the 4 cards without waiting for each value.
+    const cards = [];
+    for (const key of KEYS) {
+      const card = page.getByTestId(`count-card-${key}`);
+      cards.push({
+        key,
+        padding: await card.evaluate((el) => {
+          const style = getComputedStyle(el);
+          return [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft].join(
+            " ",
+          );
+        }),
+        // Rounded: the height of the design is the minimum of the card.
+        height: Math.round((await box(card)).height),
+      });
+    }
+
+    expect(cards, "padding (top right bottom left) and height of the cards").toEqual(
+      KEYS.map((key) => ({ key, padding: `8px ${size.side}px 8px ${size.side}px`, height: 104 })),
+    );
+  });
+}
+
+// What the keyboard leaves in sight on the iPhone of the photo is 427 px (F-003 §5.2); the
+// test keeps 10 px for the SF Pro font. It is only an approximation: CA-20 is met by the
+// photos of the iPhone (P-7, L-010, L-015). The phrase of 50 characters is not used here,
+// because where it breaks into lines depends on the font.
+const KEYBOARD_LIMIT = 417;
+
+// 2 lines because the text wraps, with any font: words are added until a third line shows
+// up, and the last one is taken out. One more word adds one line at most, so what is left
+// fills exactly 2 lines.
+async function fillSecondLine(field: Locator, emptyHeight: number) {
+  const words: string[] = [];
+  for (;;) {
+    words.push("sol");
+    const text = words.join(" ");
+    expect(text.length, "no third line within the 100 characters").toBeLessThanOrEqual(100);
+    await field.fill(text);
+    if ((await box(field)).height > emptyHeight + 15) break;
+  }
+  words.pop();
+  await field.fill(words.join(" "));
+  await expect(field).toHaveValue(words.join(" "));
+}
+
+const KEYBOARD_CASES: { what: string; enter: (field: Locator, empty: number) => Promise<void> }[] =
+  [
+    { what: "campo vacío", enter: async () => {} },
+    {
+      what: '"pingüino" (1 línea)',
+      enter: async (field) => {
+        await field.pressSequentially("pingüino");
+        await expect(field).toHaveValue("pingüino");
+      },
+    },
+    {
+      what: '"la casa", salto de línea y "el sol" (2 líneas)',
+      enter: async (field) => {
+        await field.pressSequentially("la casa");
+        await field.press("Enter");
+        await field.pressSequentially("el sol");
+        await expect(field).toHaveValue("la casa\nel sol");
+      },
+    },
+    { what: "el campo en 2 líneas porque el texto pasa de renglón", enter: fillSecondLine },
+  ];
+
+for (const { what, enter } of KEYBOARD_CASES) {
+  test(`TC-061 (aproximación): con el campo activo, las 4 fichas terminan dentro de lo que deja el teclado — ${what}`, async ({
+    page,
+  }) => {
+    await openApp(page);
+    expect(page.viewportSize()?.width, "width of the iphone project").toBe(390);
+    const field = page.getByTestId("text-field");
+    const emptyHeight = (await box(field)).height;
+
+    await enter(field, emptyHeight);
+
+    await expect(field).toBeFocused();
+    // Still the 2 lines of the empty field, with nothing hidden: the line being typed shows.
+    await expect
+      .poll(async () => Math.abs((await box(field)).height - emptyHeight), {
+        message: "the field keeps the height of 2 lines",
+      })
+      .toBeLessThanOrEqual(1);
+    expect(
+      await field.evaluate((el) => el.scrollHeight - el.clientHeight),
+      "hidden pixels of the field",
+    ).toBeLessThanOrEqual(1);
+    // The screen was not moved, so these positions count from the start of the page.
+    expect(await page.evaluate(() => window.scrollY), "scroll").toBe(0);
+
+    for (const id of ["text-field", ...KEYS.map((key) => `count-card-${key}`)]) {
+      const part = await box(page.getByTestId(id));
+      expect(part.y, `top of ${id}`).toBeGreaterThanOrEqual(0);
+      expect
+        .soft(part.y + part.height, `bottom of ${id}, from the start of the page`)
+        .toBeLessThanOrEqual(KEYBOARD_LIMIT);
+    }
+  });
 }

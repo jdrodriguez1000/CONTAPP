@@ -185,9 +185,10 @@ test("P-3 — el campo empieza en 2 líneas, crece hasta 5, luego se desplaza po
   const field = page.getByTestId("text-field");
   await expect(field).toBeVisible();
   const emptyHeight = await fieldHeight(field);
-  // 2 lines of 24px x 1.3, plus 12px padding and 2px border on each side (about 90px).
-  expect(emptyHeight).toBeGreaterThanOrEqual(86);
-  expect(emptyHeight).toBeLessThanOrEqual(95);
+  // 2 lines of 24px x 1.3, plus 8px padding and 2px border on each side (82.4px,
+  // plan VS-002 P-5).
+  expect(emptyHeight).toBeGreaterThanOrEqual(80);
+  expect(emptyHeight).toBeLessThanOrEqual(85);
   const lineHeight = 24 * 1.3;
 
   for (const lines of [1, 2, 3, 4, 5]) {

@@ -1,0 +1,37 @@
+VS-002 · lote 3 (P-5) · tester, trabajo A · 2026-11-27 · base c96b277 · Windows, WebKit (iPhone 13)
+Notas copiadas a mano de las corridas. Todas con 2 procesos o menos.
+
+1. ANTES de cambiar las pruebas
+   npm run check                                          pasa
+   npm run test:e2e -- --workers=2 --reporter=dot         166 passed (1.3m)
+
+2. DESPUÉS (corridas finales, con la inyección temporal ya retirada)
+   npm run check                                          pasa
+   npm run test:e2e -- --workers=2 --reporter=dot         180 tests: 15 en rojo (14 didactic-screen + 1 screen)
+       La salida se corta. El total sale de test-results/.last-run.json (15 failedTests)
+   los otros 6 archivos (foreign-letters, max-length, round1, skeleton, typing, group-look)
+                                                          127 passed
+   capturas, ensayo en test-results/                      20 passed
+
+3. RAZONES DEL ROJO (leídas por grupos con --grep)
+   espacios, 390 y 320 (2)      above the title 12 (esperado 8) · title to label 16 (8) · field to cards 20 (12)
+                                label-field (8) y entre fichas (12) ya pasan
+   campo, 390 y 320 (2)         padding-top y bottom "12px" (esperado "8px") · alto 90 (<= 85). Lados 12px ya pasan
+   tope, 390 y 320 (2)          con 5 líneas: a 8 px de 176 (<= 1)
+   ficha, 390 y 360 (2)         "12px 8px 12px 8px" y alto 109 (esperado "8px 8px 8px 8px" y 104)
+   ficha, 320 y 359 (2)         "12px 4px 12px 4px" (esperado "8px 4px 8px 4px"); el alto 104 ya pasa
+   aproximación (4)             digit y other terminan en 432.578125 (<= 417); vowel, consonant y campo ya pasan
+   screen.spec "campo 2 a 5"    alto del campo vacío 90 (<= 85)
+
+4. PRUEBA DE LAS PRUEBAS (CSS del plan P-5 agregado al final del HTML servido, desde las pruebas)
+   a) Posiciones con 7 familias (app, Verdana, Georgia, Courier New, Times New Roman, Impact, Segoe Script):
+      390 px: en las 7, título y=8 · etiqueta 49.59, alto 23.39 · campo 80.98, alto 82 · fichas 174.98 ·
+              fin de la 2.ª fila 394.98
+      320 px: 394.98 en 6; con Courier New la etiqueta ocupa 2 líneas (alto 46.78) y el fin pasa a 418.38
+      Alto de la ficha: 104 en las 14 medidas
+      "Consonantes" cambia de ancho (98 a 144 px): la letra sí se aplicó
+   b) CSS completo: didactic-screen + screen + group-look 77 passed; capturas 20 passed
+   c) Daño: sin max-height nuevo y sin el @media angosto después de .count -> 7 en rojo, 46 en verde
+      - tope (390 y 320) y screen.spec: con 6 líneas, 8 px de más
+      - ficha a 320 y 359 (TC-061) y relleno TC-064 a 320 y 359: lados "8px" en vez de "4px"
+   d) Retirado todo: Grep "TEMP" en tests/ sin resultados; field-helpers.ts y group-look.spec.ts sin diferencias.

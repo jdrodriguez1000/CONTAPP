@@ -7,6 +7,9 @@ import { test, expect, type Locator, type Page, type TestInfo } from "@playwrigh
 
 const IPHONE = { width: 390, height: 844 };
 const NARROW = { width: 320, height: 568 };
+// What the page keeps in sight with the keyboard open on that iPhone (F-003 §5.2). The
+// keyboard and the bars of Safari are not drawn: it is an approximation (plan VS-002 §4).
+const ABOVE_KEYBOARD = { width: 390, height: 427 };
 const SCHEMES = [
   { scheme: "light", name: "claro" },
   { scheme: "dark", name: "oscuro" },
@@ -85,6 +88,28 @@ for (const { scheme, name } of SCHEMES) {
     await expectCounts(page, [17, 20, 0, 1]);
     await capture(page, testInfo, fiftyFile);
   });
+
+  // States 2 and 2b again, cut at what the keyboard leaves in sight, with the screen not
+  // moved. Whether the cards fit is not asserted here: that is TC-061 in
+  // didactic-screen.spec.ts, so the designer also gets the screenshot when they do not.
+  for (const { state, text, counts } of [
+    { state: "2", text: "pingüino", counts: [4, 4, 0, 0] },
+    { state: "2b", text: FIFTY_PHRASE, counts: [17, 20, 0, 1] },
+  ]) {
+    const { width, height } = ABOVE_KEYBOARD;
+    const keyboardFile = `estado-${state}-teclado-${width}x${height}-${name}.png`;
+
+    test(`TC-061 — captura ${keyboardFile}`, async ({ page }, testInfo) => {
+      await open(page, ABOVE_KEYBOARD, scheme);
+      const field = page.getByTestId("text-field");
+      await field.pressSequentially(text);
+      await expect(field).toHaveValue(text);
+      await expect(field).toBeFocused();
+      await expectCounts(page, counts);
+      expect(await page.evaluate(() => window.scrollY), "scroll").toBe(0);
+      await capture(page, testInfo, keyboardFile);
+    });
+  }
 
   // State 5: the narrowest width with "100" in Vowels, without focus.
   const narrowFile = `estado-5-100-a-${NARROW.width}x${NARROW.height}-${name}.png`;
