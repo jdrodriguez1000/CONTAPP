@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-27
-**Último ID usado:** L-043
+**Último ID usado:** L-047
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -20,6 +20,7 @@
 - L-001 — Una regla dicha en negativo ("nada de X") se confirma: ¿X no se permite o solo no cuenta en su grupo?
 
 ### Producto y estructura
+- L-047 — Un ajuste por ancho se calcula en el ancho más angosto de cada tramo (360, no solo 320 y 390) → VEGU
 - L-031 — Si la app reescribe un campo, el plan decide antes qué pasa con deshacer/rehacer y con la selección: una función sin la selección no distingue pegar sobre una selección de escribir
 - L-013 — En las maquetas toda medida va con token o con una medida fija aprobada (D-014), nunca un número suelto
 - L-040 — El espacio con el teclado se mide en la foto convertida a píxeles de la página y se calibra con lo ya construido (SF Pro suma ≈ 10 px)
@@ -42,10 +43,13 @@
 - L-039 — Desde ESLint 10, una carpeta donde un agente escribe puede traer su propio `eslint.config.*`: la configuración se fija con `-c` en el script (DT-015) → VEGU
 - L-041 — En CSS, el ajuste de un componente para pantalla angosta va en un `@media` después del componente: con igual peso gana la regla que va después
 - L-043 — Las maquetas que el designer no puede abrir se verifican con `npx playwright screenshot --browser webkit --full-page` (WebKit, como el iPhone) → VEGU
+- L-044 — Una prueba de ancho tomada del diseño fija su letra (con guarda y un peso que tengan todas las máquinas); "nada se corta" se prueba aparte con la letra de la máquina, y se corre en la CI antes de dar por bueno el rojo y el verde → VEGU
+- L-046 — La guarda de Bash de los agentes no deja escribir la línea `Co-Authored-By` (bloquea `<`, `>` y saltos de línea): sus commits quedan sin atribución → VEGU
 
 ### Datos y supuestos
 
 ### Proceso y memoria
+- L-045 — El tester prueba sus pruebas antes del coder: inyecta y retira el CSS del plan (deben pasar) y lo daña a propósito (deben fallar por su razón) → VEGU
 - L-042 — Un texto esperado de toda la pantalla vive en una sola función compartida; un pseudo-elemento que es contrato de prueba lleva sus propiedades exactas en el plan → VEGU
 - L-035 — El rojo se comprueba leyendo la aserción exacta que falla, no el "fail 1": una prueba propia puede fallar por su propio error → VEGU
 - L-036 — Al permitirle un comando a un agente, se permite el texto exacto: una lista de opciones prohibidas no cierra un comando que pasa opciones a dos programas (npm acepta abreviaturas) → VEGU
@@ -497,3 +501,43 @@
 - **Cómo aplicarla:** el Manager captura en WebKit toda maqueta con técnica dependiente del navegador antes de mostrarla al usuario.
 - **Estado:** Vigente
 - **Relacionada con:** L-004 → VEGU
+
+### L-044 — 2026-11-27 — Pruebas de ancho que dependen de la letra
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** en el lote 2 de VS-002 las pruebas de "cabe a 320 px" exigían columnas de 138 ±1 px, medidas del diseño pensadas para SF Pro. En Windows pasaron (166/166) y en la CI (Linux, letra tipo DejaVu, más ancha) fallaron 9: "Consonantes" ensanchó su columna 4,8 px. El tester ya había anotado el riesgo, pero no se corrió en la CI antes de dar el rojo por bueno. Al corregir, fijar Arial con peso 800 hizo que Windows usara Arial Black: hubo que medir los números en 700 y que la guarda mida también un número.
+- **Lección:** lo que exige el criterio ("nada se corta ni se sale") se prueba con la letra de la máquina; las medidas exactas del diseño, con una letra fijada por la prueba, en un peso que tengan todas las máquinas, y con una guarda que compruebe que esa letra se aplicó. Las pruebas de ancho se corren en la CI antes de aceptar su rojo o su verde.
+- **Por qué importa:** la letra cambia de máquina en máquina (L-010); sin esto, la CI se pone en rojo por una letra que el usuario nunca verá, o una prueba relajada deja pasar un diseño roto.
+- **Cómo aplicarla:** el tester lo aplica a toda medida que dependa del ancho del texto; el planner lo pide en "Interfaces públicas" cuando fija anchos del diseño.
+- **Estado:** Vigente
+- **Relacionada con:** L-010, `_project/slices/VS-002/reports/tester.md` (Lote 2 — fallo de la CI y corrección), CI 46009483415 → VEGU
+
+### L-045 — 2026-11-27 — El tester prueba sus pruebas (acierto)
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** en los lotes 1 a 3 de VS-002 el tester, sin leer `src/`, inyectó desde la prueba el CSS del plan (las pruebas pasaron) y luego lo dañó a propósito (dibujos cambiados entre grupos, texto en la imagen, sin el ajuste de 320 px, sin el tope nuevo): cada daño falló con su razón. Así encontró y corrigió errores propios antes del coder.
+- **Lección:** una prueba en rojo se valida dos veces: con lo que pide el contrato inyectado y retirado (debe pasar) y con un daño a propósito (debe fallar por la razón correcta).
+- **Por qué importa:** una prueba que se detiene en su primera aserción esconde errores en las siguientes; complementa L-035.
+- **Cómo aplicarla:** el tester lo hace en todo trabajo A de pantalla y lo reporta en "Prueba de las pruebas"; retira todo lo temporal y lo comprueba con Grep.
+- **Estado:** Vigente
+- **Relacionada con:** L-035 → VEGU
+
+### L-046 — 2026-11-27 — La guarda de los agentes y la línea de atribución
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** el coder no pudo terminar sus commits con `Co-Authored-By: … <noreply@anthropic.com>`: la guarda de Bash bloquea `<`, `>` y saltos de línea. Sus commits de VS-002 (`d0de68b`, `58e824e`, `b2fd3e5`, `4de9b70`) quedaron sin esa línea.
+- **Lección:** la atribución de commits y la guarda de los agentes chocan; hoy un agente no puede cumplir las dos.
+- **Por qué importa:** es una regla de trabajo que el agente no puede cumplir sin rodear la guarda (L-037).
+- **Cómo aplicarla:** mientras se resuelve en VEGU, los commits del coder van sin la línea y el Manager lo acepta; la solución (permitir `git commit -F <archivo>` o que el Manager haga esos commits) se decide en VEGU.
+- **Estado:** Vigente
+- **Relacionada con:** L-011, L-037 → VEGU
+
+### L-047 — 2026-11-27 — Calcular "cabe" en el ancho más angosto de cada tramo
+- **Categoría:** Producto y estructura
+- **Etapa:** Construcción
+- **Qué pasó:** el diseño de VS-002 calculó que todo cabe a 320 y a 390 px, pero el ajuste angosto aplica "menos de 360 px": a 360 px (imagen de 44 px) "100" con su imagen pide ≈ 143 px y la ficha deja ≈ 138. Lo vieron el tester y el designer en el lote 2; el usuario decidió anotarlo como borde que espera.
+- **Lección:** al diseñar un ajuste por ancho, la cuenta de "cabe" se hace en el ancho más angosto de cada tramo (aquí 320 y 360), no solo en los anchos de referencia.
+- **Por qué importa:** el borde de una regla de ancho es justo donde el diseño queda más apretado.
+- **Cómo aplicarla:** el designer lo incluye en la sección de diseño de cada feature con ajustes por ancho; el tester prueba ese borde.
+- **Estado:** Vigente
+- **Relacionada con:** L-041, `_project/slices/VS-002.md` §6 → VEGU

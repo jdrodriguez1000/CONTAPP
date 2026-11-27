@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-27
-**Último ID usado:** D-023
+**Último ID usado:** D-025
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -33,6 +33,8 @@
 - D-021 — Alcance de VS-002: entra el teclado (4 grupos a la vista con hasta 2 líneas y 50 caracteres; mandan las 2 líneas), DT-008 y DT-009; fuera DT-004, DT-017, el total y otros tamaños; sin botones
 - D-022 — Diseño de VS-002: imágenes opción B (boca que canta, rompecabezas, mano que cuenta, carita feliz) al lado del número, colores juego 1 que sirven también como letra (4,5:1), letra del iPhone
 - D-023 — Plan de VS-002 aprobado (7 pasos, 4 lotes): imagen con `::before` y máscara SVG en el CSS, prueba aproximada del teclado (≤ 417 px) y revisión de cierre en Alta
+- D-024 — Pruebas de "cabe": la letra de cada máquina prueba que nada se corte (CA-21); las medidas del diseño se prueban con letra fijada (Arial/Liberation, peso 700) y guarda de la letra
+- D-025 — Pantallas de 360 a ≈ 369 px y la letra real a 320 px quedan como bordes que esperan de VS-002 (slice "Ver bien en otros tamaños")
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -196,3 +198,17 @@
 - **Alternativas descartadas:** `<svg>` en el marcado (cambiaba `src/main.ts` y pruebas); solo la foto para el teclado; bajar la revisión a Normal.
 - **Estado:** Vigente
 - **Relacionada con:** D-021, D-022, `.claude/rules/risk-levels.md`
+
+### D-024 — 2026-11-27 — Cómo se prueba que algo "cabe" en la pantalla
+- **Decisión:** las pruebas de "cabe" tienen dos comprobaciones: (1) con la letra de la máquina, lo que exige CA-21 (fichas dentro de la pantalla, nombre y número completos y sin cortes, sin desplazamiento horizontal); (2) con una letra fijada por la prueba (Arial o Liberation Sans, números en peso 700), las medidas del diseño (columnas de 138 ±1 a 320 px y 173 a 390, margen de 16 px), precedidas de una guarda que comprueba que esa letra se aplicó. La referencia de la letra real sigue siendo el iPhone (D-009).
+- **Razón:** la CI (Linux) usa una letra más ancha y falló en 9 pruebas que exigían las medidas del diseño con cualquier letra (CI 46009483415); la app no se veía cortada.
+- **Alternativas descartadas:** solo la comprobación (1) (deja de detectar una columna que se ensancha); achicar la app para la letra de Linux (rompe CA-18 por una letra que los niños no verán); relajar el margen de ±1 a ±7.
+- **Estado:** Vigente
+- **Relacionada con:** L-010, L-044, `tests/e2e/didactic-screen.spec.ts` (commit `c96b277`, rama de VS-002)
+
+### D-025 — 2026-11-27 — Pantallas de 360 a 369 px: borde que espera
+- **Decisión:** no se cambia el límite del ajuste angosto (sigue en menos de 360 px). Las pantallas de 360 a ≈ 369 px, donde "100" con su imagen podría quedar pegado al borde de la ficha, y la falta de comprobación con la letra real a 320 px, se anotan en "Bordes que esperan" de VS-002 para la slice "Ver bien en otros tamaños".
+- **Razón:** el iPhone de referencia (390 px, y 375 en los modelos pequeños) no se ve afectado; cambiar el límite rompe una regla aprobada del diseño y pide ajustar plan y pruebas.
+- **Alternativas descartadas:** subir el ajuste angosto a menos de 375 px (achica la letra en esos anchos y abre ronda con planner y tester).
+- **Estado:** Vigente
+- **Relacionada con:** L-047, `_project/slices/VS-002.md` §6, D-021
