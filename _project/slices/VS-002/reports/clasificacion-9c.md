@@ -21,3 +21,12 @@ Reproducidos por el Manager el 2026-11-27: BRK-C-1 (2 pruebas) y BRK-C-2 (1 prue
 ## Ronda 2 — corrección de BRK-C-2
 - **Nivel:** Alto por archivo (`src/main.ts`, comentario dentro de `filterChange`). Breakers no se repiten (regla 4: la corrección no agrega comportamiento). Reviewer y security corren en la etapa 10 sobre toda la slice, después de la ronda.
 - **Respaldo (PI-5, criterio escrito antes):** (a) `git diff 25ccf38..HEAD -- src` muestra solo líneas de comentario de `src/main.ts`; (b) el comentario nombra los tres casos: algo no entró, una letra en dos piezas se une y un signo como Kelvin pasa a su letra; (c) `npm run check` y `npm run test:unit` en verde; (d) CI en verde en el commit.
+
+**Resultado de la ronda 2:** commit `944c1a2` (solo comentario, 3 líneas); el Manager verificó (a) a (c) — `npm run check` ok y 207/207 unitarias —, y (d) CI en verde en `cf8bdcf`.
+
+## Etapa 10 — reviewer ∥ security (HEAD `cf8bdcf`)
+Decidido por el usuario el 2026-11-27. **Sin ronda 3.**
+- **Security:** 0 Críticas, 0 Altas, 0 Medias, 0 Bajas del cambio. gitleaks limpio (historial y carpeta). `npm audit`: 12 moderadas solo de desarrollo (`--omit=dev` = 0), preexistentes en DT-001 y DT-005. Nota para DT-004: la CSP futura debe permitir `img-src 'self' data:` o las 4 imágenes desaparecen.
+- **Reviewer:** 1 Bloqueante del cambio — `export` sin uso en `numberRow` (`tests/e2e/field-helpers.ts:58`) y `Key` (`tests/e2e/group-helpers.ts:8`) → el usuario lo **acepta como deuda** (no abre ronda 3; la regla del límite de rondas pide su decisión). Hallazgo 2 (TC-055 y ayudas duplicadas entre pruebas local y publicada) → DT nueva junto con DT-017. Hallazgo 3 → actualizar DT-017 (su "junto con DT-008" ya pasó). Se registran en `_project/tech-debt.md` en `main` al cerrar la slice.
+- **Mutación:** no se corrió (la slice no cambia `src/counting.ts` ni `src/inputFilter.ts`, D-020).
+- **Designer C:** no aplica al cierre (sin cambio de pantalla desde el lote 3).
