@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 **Última actualización:** 2026-11-27
-**Último ID usado:** D-025
+**Último ID usado:** D-026
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -35,6 +35,7 @@
 - D-023 — Plan de VS-002 aprobado (7 pasos, 4 lotes): imagen con `::before` y máscara SVG en el CSS, prueba aproximada del teclado (≤ 417 px) y revisión de cierre en Alta
 - D-024 — Pruebas de "cabe": la letra de cada máquina prueba que nada se corte (CA-21); las medidas del diseño se prueban con letra fijada (Arial/Liberation, peso 700) y guarda de la letra
 - D-025 — Pantallas de 360 a ≈ 369 px y la letra real a 320 px quedan como bordes que esperan de VS-002 (slice "Ver bien en otros tamaños")
+- D-026 — La app se soporta desde iOS 16.4 (objetivo por defecto de Vite 8); un Safari anterior no es defecto
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -212,3 +213,10 @@
 - **Alternativas descartadas:** subir el ajuste angosto a menos de 375 px (achica la letra en esos anchos y abre ronda con planner y tester).
 - **Estado:** Vigente
 - **Relacionada con:** L-047, `_project/slices/VS-002.md` §6, D-021
+
+### D-026 — 2026-11-27 — Versión mínima de iOS: 16.4
+- **Decisión:** la app se soporta desde iOS / Safari 16.4, el objetivo por defecto de Vite 8 (`build.target` "baseline-widely-available"). Lo que falle en un Safari anterior no es defecto. BRK-C-1 (el ajuste de 320 px se publica como `@media (width<=359px)`, que Safari < 16.4 no lee) se descarta como fuera de soporte.
+- **Razón:** solo el iPhone SE de 1.ª generación (2016, máximo iOS 15.8) queda fuera, y en él la pantalla se corre 1 px a 320 px sin tapar nada; el iPhone del usuario tiene un iOS reciente. Soportar iOS 15 exige configurar `build.cssTarget` en un `vite.config.ts` (cambio de cadena de entrega, riesgo Alto).
+- **Alternativas descartadas:** fijar `build.cssTarget: "safari15"` (más configuración y revisión para un celular de 2016); dejarlo como borde que espera sin decidir.
+- **Estado:** Vigente
+- **Relacionada con:** BRK-C-1 (`_project/slices/VS-002/reports/breaker-code.md`), L-055, D-011, D-009

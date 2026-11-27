@@ -30,3 +30,17 @@ Decidido por el usuario el 2026-11-27. **Sin ronda 3.**
 - **Reviewer:** 1 Bloqueante del cambio — `export` sin uso en `numberRow` (`tests/e2e/field-helpers.ts:58`) y `Key` (`tests/e2e/group-helpers.ts:8`) → el usuario lo **acepta como deuda** (no abre ronda 3; la regla del límite de rondas pide su decisión). Hallazgo 2 (TC-055 y ayudas duplicadas entre pruebas local y publicada) → DT nueva junto con DT-017. Hallazgo 3 → actualizar DT-017 (su "junto con DT-008" ya pasó). Se registran en `_project/tech-debt.md` en `main` al cerrar la slice.
 - **Mutación:** no se corrió (la slice no cambia `src/counting.ts` ni `src/inputFilter.ts`, D-020).
 - **Designer C:** no aplica al cierre (sin cambio de pantalla desde el lote 3).
+
+## Aceptación y producción
+- **Aceptación del usuario:** 2026-11-27 — commit `ed9c5e9` (preview `contapp-37urxy4iu-…vercel.app`, `test:published` 8/8; CI en verde en `ed9c5e9`).
+- **Fusión:** PR #3, commit de fusión `297560c`. Producción `https://contapp-tawny.vercel.app`: HTTP 200 y `test:published` 8/8 (las imágenes se pintan en producción).
+
+## Métricas de la slice
+| Rondas | Nivel por entrega | Breakers (corregidos · bordes · descartados) | Reviewer bloqueantes | Security Crítica/Alta | Designer bloqueantes | Mutación | Debugger |
+|---|---|---|---|---|---|---|---|
+| 2 | Alto · Alto | 1 (BRK-C-2) · 1 (pantalla más baja) · 2 (BRK-C-1 por D-026; doble toque) | 1 (aceptado como deuda, DT-019) | 0 / 0 | 0 (lotes 1 a 3) | No aplica (sin cambio de lógica) | Ninguno |
+
+- **Duración:** primer commit de la rama `3ea4d1f` (2026-11-27 08:07) → producción `297560c` (2026-11-27 ≈ 12:20): unas 4 horas de reloj, en varias sesiones del mismo día.
+- **Tiempo de la suite E2E (CI):** lote 1 `4e74b73` 127 E2E en 50,6 s · lote 2 `c96b277` 166 en 1,2 min · lote 3 `e5c18bc` 180 en 1,1 min · lote 4 `f1ef9be` 180 en 1,2 min · cierre `cf8bdcf` 180 en 1,1 min.
+- **Comparación con VS-001:** una ronda más (2 frente a 1), pero mucho más liviana: 1 corrección de comentario frente a 7 defectos de VS-001. La CI corrió en todos los lotes (en VS-001 solo desde el lote 5). La suite E2E creció de 113 a 180 pruebas y pasó de 42,5 s a ≈ 1,1 min. La duración bajó de ≈ 6,5 h a ≈ 4 h.
+- **Revisión que el nivel omitió y dejó pasar un defecto:** ninguna.

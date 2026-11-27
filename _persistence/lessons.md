@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-27
-**Último ID usado:** L-053
+**Último ID usado:** L-060
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -26,6 +26,7 @@
 - L-013 — En las maquetas toda medida va con token o con una medida fija aprobada (D-014), nunca un número suelto
 - L-040 — El espacio con el teclado se mide en la foto convertida a píxeles de la página y se calibra con lo ya construido (SF Pro suma ≈ 10 px)
 - L-020 — Para probar un tope de alto en una captura, medir el alto en el límite y pasado el límite, y comprobar que hay texto escondido → VEGU
+- L-059 — Antes de poner una política de seguridad de contenido (CSP), inventariar las fuentes de imagen, también las `data:` dentro del CSS: una CSP estricta borra los dibujos sin error
 
 ### Herramienta
 - L-048 — La barra de Vercel de las previews guarda claves en `sessionStorage` y pide a `vercel.live`: la prueba de "nada se guarda" falla por ella; se apaga en las previews, la prueba no se relaja
@@ -49,6 +50,9 @@
 - L-043 — Las maquetas que el designer no puede abrir se verifican con `npx playwright screenshot --browser webkit --full-page` (WebKit, como el iPhone) → VEGU
 - L-044 — Una prueba de ancho tomada del diseño fija su letra (con guarda y un peso que tengan todas las máquinas); "nada se corta" se prueba aparte con la letra de la máquina, y se corre en la CI antes de dar por bueno el rojo y el verde → VEGU
 - L-046 — La guarda de Bash de los agentes no deja escribir la línea `Co-Authored-By` (bloquea `<`, `>` y saltos de línea): sus commits quedan sin atribución → VEGU
+- L-054 — Apagar la barra de Vercel solo vale para lo que se publique después: la preview ya publicada se vuelve a publicar (`vercel redeploy`) y se confirma que no carga `feedback.js`
+- L-055 — El CSS publicado no es el que se revisa: Vite 8 (Lightning CSS) reescribe `@media` y prefijos según `build.target`; la versión mínima del navegador se decide y se escribe (D-026) → VEGU
+- L-058 — Al sacar ayudas de prueba a un archivo compartido, exportar solo lo que otro archivo importa y correr `npx knip` antes del commit → VEGU
 
 ### Datos y supuestos
 
@@ -75,6 +79,9 @@
 - L-016 — Durante una slice, los reportes y documentos de la slice se editan solo en su rama: editarlos también en `main` choca al traer `main` → VEGU
 - L-017 — Al cerrar cada lote, juntar en una sola lista lo que solo el dispositivo real puede confirmar y pedírselo al usuario en una pasada → VEGU
 - L-027 — Un usuario con poca experiencia se pierde entre slices, lotes, pasos y rondas: mapa de ubicación en cada mensaje y página `status.html` con los colores de la app → VEGU
+- L-056 — La lista manual del iPhone nombra la dirección exacta, la tecla exacta ("intro", "123") y pide una respuesta por punto; se revisa cada foto antes de darla por buena → VEGU
+- L-057 — Una deuda que "se atiende junto con otra" se lista en el plan que atiende la primera, o se dice por qué se deja → VEGU
+- L-060 — En un campo que crece, probar que el alto vuelve al del campo vacío por cada camino que cambia el texto (borrar, reemplazar, deshacer, volver atrás), no solo que crece → VEGU
 
 ## Registro completo
 
@@ -607,3 +614,73 @@
 - **Cómo aplicarla:** antes de lanzar la espera, `grep "^# "` del reporte para elegir un prefijo nuevo y corto.
 - **Estado:** Vigente
 - **Relacionada con:** playbook §3 → VEGU
+
+### L-054 — 2026-11-27 — Apagar la barra de Vercel no cambia las previews ya publicadas
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** el usuario apagó la barra en *Settings → General → Vercel Toolbar → Pre-Production Deployments: Off*, pero la preview de `fd57232` siguió cargando `vercel.live/_next-live/feedback/feedback.js` y TC-055 falló (7/8). Con `vercel redeploy` la nueva preview no trajo el script y pasó 8/8. La opción estaba en *General*, no en un menú propio como se había anotado.
+- **Lección:** el cambio de la barra solo aplica a lo que se publique después; la preview vieja se vuelve a publicar.
+- **Por qué importa:** evita volver al tester por un fallo que es de la plataforma (R-4).
+- **Cómo aplicarla:** `curl -s <preview> | grep -c feedback.js` antes de correr `test:published`; si da 1, `vercel redeploy <preview>`.
+- **Estado:** Vigente
+- **Relacionada con:** R-4 del plan VS-002, TC-055
+
+### L-055 — 2026-11-27 — El CSS publicado no es el que se revisa
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** BRK-C-1: `src/styles.css` dice `@media (max-width: 359px)` y el CSS construido trae `@media (width<=359px)`, porque Vite 8 minifica con Lightning CSS para iOS 16.4. Un Safari anterior salta el bloque.
+- **Lección:** lo que deba funcionar en un dispositivo concreto se comprueba en el CSS construido, y la versión mínima del navegador se decide por escrito, no la fija la herramienta en silencio.
+- **Por qué importa:** una regla de diseño puede no llegar al celular sin que ninguna prueba en un navegador moderno lo note.
+- **Cómo aplicarla:** al elegir el stack o en la walking skeleton, decidir la versión mínima del navegador (aquí D-026) y revisar `build.target`.
+- **Estado:** Vigente
+- **Relacionada con:** D-026, BRK-C-1 (`VS-002/reports/breaker-code.md`) → VEGU
+
+### L-056 — 2026-11-27 — La lista manual del iPhone se escribe para no equivocarse
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** en P-7 el usuario tomó una foto en producción (sin imágenes) en vez de la preview, escribió un espacio en vez de "intro" en el caso c y no respondió el punto 1 la primera vez; hubo que pedir 3 tandas de fotos.
+- **Lección:** cada punto de la lista manual lleva la dirección exacta, la tecla exacta y la respuesta esperada; el Manager revisa cada foto (dirección, texto, teclado) antes de darla por buena.
+- **Por qué importa:** una foto en el lugar equivocado parece evidencia y no lo es.
+- **Cómo aplicarla:** repetir la dirección en cada punto y pedir las respuestas en una tabla punto por punto.
+- **Estado:** Vigente
+- **Relacionada con:** `VS-002/evidence/iphone-manual.md` → VEGU
+
+### L-057 — 2026-11-27 — Una deuda "junto con otra" se planea con la otra
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** DT-017 decía "se atiende junto con DT-008"; el plan de VS-002 atendió DT-008 en P-1 y DT-017 quedó sin dueño (reviewer, hallazgo 3).
+- **Lección:** cuando el plan atiende una DT, busca en `tech-debt.md` las que dicen "junto con" ella y las lista o dice por qué las deja.
+- **Por qué importa:** una deuda sin fecha no se atiende nunca.
+- **Cómo aplicarla:** el planner hace `grep "DT-XXX" _project/tech-debt.md` por cada DT que atiende.
+- **Estado:** Vigente
+- **Relacionada con:** DT-017, DT-020, `VS-002/reports/reviewer.md` → VEGU
+
+### L-058 — 2026-11-27 — Exportar solo lo que otro archivo usa
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** el tester sacó ayudas a `tests/e2e/group-helpers.ts` y dejó `export` en `numberRow` y `Key` sin que otro archivo las use; el reviewer lo marcó Bloqueante y el usuario lo aceptó como deuda (DT-019) para no abrir la ronda 3.
+- **Lección:** al crear un archivo de ayudas compartidas, exportar solo lo que se importa en otro archivo y correr `npx knip` antes del commit.
+- **Por qué importa:** un `export` sin uso confunde al lector y deja a knip en rojo, así que deja de servir como alarma.
+- **Cómo aplicarla:** proponer `npx knip` en el cierre del trabajo A del tester (guarda y checklist), en el mantenimiento que atienda DT-019.
+- **Estado:** Vigente
+- **Relacionada con:** DT-019, `VS-002/reports/reviewer.md` → VEGU
+
+### L-059 — 2026-11-27 — Inventariar las imágenes antes de una CSP
+- **Categoría:** Producto y estructura
+- **Etapa:** Construcción
+- **Qué pasó:** las 4 imágenes de VS-002 son `data:` usadas como máscara en el CSS; el security avisó que una CSP con solo `img-src 'self'` las borraría sin error visible.
+- **Lección:** antes de escribir una CSP se listan todas las fuentes de imagen, incluidas las `data:` del CSS, y la prueba publicada que cuenta píxeles debe seguir en verde.
+- **Por qué importa:** la app quedaría sin dibujos en producción sin que nadie lo note.
+- **Cómo aplicarla:** al atender DT-004: `img-src 'self' data:` y `test:published` contra la preview.
+- **Estado:** Vigente
+- **Relacionada con:** DT-004, `VS-002/reports/security.md`
+
+### L-060 — 2026-11-27 — El alto de un campo que crece también debe volver
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el breaker-user comprobó que el alto del campo vuelve a 82 px al borrar, reemplazar, deshacer, recargar y volver atrás; es lo que movería las fichas sin cambiar ningún conteo. Resistió, pero ninguna prueba del tester lo pedía.
+- **Lección:** en una pantalla que se ajusta al texto, probar que el alto vuelve al del campo vacío por cada camino que cambia el texto, no solo que crece.
+- **Por qué importa:** un alto que no vuelve tapa los grupos con el teclado abierto.
+- **Cómo aplicarla:** agregarlo como idea de ataque en `edge-cases` (uso de la app) y como caso en la slice "Ver bien en otros tamaños".
+- **Estado:** Vigente
+- **Relacionada con:** `VS-002/reports/breaker-user.md` → VEGU

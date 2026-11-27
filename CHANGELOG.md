@@ -3,6 +3,15 @@
 Versionado `X.YYY.ZZZ`: **X** mayor (cambio que rompe lo anterior: plataforma o metodología) · **YYY** menor (funcionalidad nueva compatible) · **ZZZ** parche (correcciones y ajustes). Al subir un número, los de la derecha vuelven a cero. `0.YYY.ZZZ` = en construcción; `1.000.000` = la app se usa con los niños en el celular, con los 4 grupos y sus imágenes.
 Solo versionan los cambios al producto (catálogo, reglas o app); los cambios a la memoria del agente no. Cada versión lleva etiqueta git `vX.YYY.ZZZ`. Lo más reciente va arriba.
 
+## [0.005.000] — 2026-11-27
+### Agregado
+- VS-002 "Imágenes y diseño para niños" en producción: cada grupo con su dibujo al lado del número (boca que canta, rompecabezas, mano que cuenta, carita feliz) y su color, en modo claro y oscuro (F-002).
+- Pantalla más compacta: con el teclado abierto se ven los 4 grupos y la línea donde se escribe, con hasta 2 líneas y 50 caracteres (F-003). Se ajusta desde 320 px de ancho.
+### Cambiado
+- La app se soporta desde iOS 16.4 (D-026).
+### Conocido
+- Bordes que esperan una slice "Ver bien en otros tamaños": pantallas más bajas o de 360 a 369 px, teclado de emojis, celular girado y otros (`VS-002.md` §6).
+
 ## [0.004.000] — 2026-11-26
 ### Agregado
 - VS-001 "Contar en el celular" en producción (`https://contapp-tawny.vercel.app`): se escribe o pega una palabra o frase y la app muestra al instante cuántas vocales, consonantes, números y otros caracteres tiene (F-001).

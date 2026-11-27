@@ -28,6 +28,8 @@ Usa **siempre** estos nombres en código, tablas, rutas y pruebas. Si necesitas 
 | Grupo | `characterGroup` | Cada uno de los 4 grupos del catálogo, con su imagen |
 | Conteo | `count` | Cuántos caracteres de un grupo tiene el texto escrito |
 | Texto (palabra o frase) | `text` | Lo que se escribe; no se guarda (C-010) |
+| Imagen del grupo | `--group-image` (CSS) · `GroupImage` (diseño) | Dibujo de cada grupo al lado del número, pintado con el color del grupo (F-002, VS-002) |
+| Color del grupo | `--group-color` (CSS) · `--color-<grupo>` (tokens) | Color del número, el borde y la imagen de cada ficha, en claro y oscuro (F-002, VS-002) |
 
 **IDs del catálogo:** si el producto tiene catálogo (`_project/catalog.md`), sus IDs son estables y neutros; un registro se **inactiva**, no se borra.
 
