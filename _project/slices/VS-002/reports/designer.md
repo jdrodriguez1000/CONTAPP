@@ -190,3 +190,69 @@ Las 16 capturas muestran lo aprobado para P-2: cada ficha lleva el color de su g
 - Ninguna nueva. (El hallazgo 1 es un ajuste de nombre para el tester, no una regla.)
 
 STATUS: DONE
+
+# Lote 2 — revisión visual
+**Fecha:** 2026-11-27 · **Trabajo:** Revisión visual · **Commit revisado:** `c96b277` (rama `feature/VS-002-imagenes-ninos`) · **Alcance:** solo lo cambiado desde el lote 1: P-3 (imagen de cada grupo a la izquierda del número) y P-4 (ajuste a menos de 360 px)
+
+## Resumen
+Las 16 capturas muestran lo aprobado:
+- **P-3:** cada ficha tiene su imagen a la izquierda del número, en la misma fila, del color del grupo: boca que canta, rompecabezas, mano que cuenta y carita feliz. Se ve en claro y en oscuro.
+- **P-4:** a 320 px la imagen es más pequeña, y "100" y "Consonantes" caben dentro de su ficha.
+
+El número sigue arriba y el nombre abajo (D-010). **No hay bloqueantes.** Dejo una pregunta de diseño para lotes siguientes: el rango de 360 a 369 px, que mi diseño no calculó (hallazgo 1).
+
+## Archivos creados o modificados
+- `_project/slices/VS-002/reports/designer.md` — esta sección (agregada al final).
+
+## Qué revisé
+- **Capturas** (`_project/slices/VS-002/evidence/capturas/lote-2/`, 16): los mismos 8 estados del lote 1, en claro y oscuro:
+  - 1 vacío, a 390 × 844 y a 320 × 568;
+  - 2 "pingüino" con foco;
+  - 2b frase de 50 con foco;
+  - 3 "¡Hola, 2026! 😀";
+  - 4 límite de 100;
+  - 4b tope de 5 líneas;
+  - 5 con 100 "a" a 320 × 568.
+
+  **Están todos los estados que pide el lote 2.** Las capturas son de Windows, no del iPhone (L-010). Por eso no juzgo anchos finos de letra ni si las imágenes se reconocen a 44 px (eso lo dice la foto del iPhone, TC-057).
+- **Contra:** `mockup-b.html` (líneas 67-75, 106-117), `design-system.md` §4 y §5 (`GroupImage`, `CountCard` por grupo) y F-002 §5.2-5.3.
+- **Código, solo para la fila 5 (tokens):** `src/styles.css`.
+  - Los 4 SVG (líneas 139, 143, 147 y 151) son **idénticos letra por letra** a `--img-vowel` … `--img-other` de la maqueta.
+  - `--size-group-image` vale 44 px en `:root` (línea 28) y 32 px en `@media (max-width: 359px)` (línea 52).
+  - `.count dd::before` usa `currentColor` y `mask` / `-webkit-mask` (líneas 175-182).
+  - El bloque final de menos de 360 px (líneas 186-188) pone el relleno lateral y la separación en `--space-1`.
+  - No hay ningún color escrito a mano fuera de la definición de los tokens.
+
+## Revisión fila por fila (skill design-system §9)
+| # | Qué se compara | Resultado |
+|---|---|---|
+| 1 | Estructura y orden | ✓ En cada ficha, imagen → número en la misma fila y nombre debajo. La cuadrícula 2 × 2 queda en el orden de VS-001. La imagen va centrada en alto con el número, como en la maqueta. |
+| 2 | Textos exactos | ✓ Sin cambios: `Contapp`, `Escribe una palabra o frase`, `Vocales`, `Consonantes`, `Números`, `Otros`. La imagen no agrega texto. |
+| 3 | Estados | ✓ Los 8 estados, en los dos modos. La imagen y el color son los mismos con 0, con 4 y con 100: no cambian con el conteo (F-002 §5.5). |
+| 4 | Valores del dominio | ✓ Los conteos son correctos: 0/0/0/0, 4/4/0/0, 17/20/0/1, 2/2/4/4, 35/40/3/3, 16/18/0/0 y 100/0/0/0. Ningún número se corta, ni con 2 cifras (35, 40) ni con 3 (100). |
+| 5 | Tokens | ✓ La imagen tiene el mismo color que el número y el borde de su ficha (rojo, azul, naranja y morado; tonos claros en modo oscuro). A 390 px la imagen mide lo mismo que la maqueta (≈ 44 px, casi tan alta como el número). A 320 px se ve más pequeña (≈ 32 px), con menos separación y menos relleno lateral. Las medidas exactas las comprueban TC-059 y TC-064. |
+| 6 | Accesibilidad | ✓ Las 4 imágenes se distinguen por la forma, no solo por el color: boca con nota, pieza con dos salientes, mano con dedos y círculo con cara. Cada ficha conserva su nombre escrito. La imagen es decorativa: el lector de pantalla no la lee (TC-056). El foco del campo se sigue viendo en 2 y 2b. |
+| 7 | Anchos sin desbordes | ✓ A 390 px, "40" y "35" con su imagen caben con holgura. A 320 px, la imagen + "100" quedan dentro de la ficha de Vocales con unos pocos px a cada lado, y "Consonantes" no toca el borde punteado (`estado-5-100-a-320x568-*`). No hay desplazamiento horizontal. **Mi hallazgo 4 del lote 1 queda resuelto** en Windows; la última palabra la tiene la foto del iPhone (P-7). |
+| 8 | Detalles finos | Sin hallazgos nuevos. Mi hallazgo 1 del lote 1 (carpeta con el nombre "P-3") **quedó resuelto**: ahora se llama "estado-4b — tope de 5 líneas". |
+
+## Hallazgos
+| # | Pantalla / captura | Hallazgo | Severidad |
+|---|---|---|---|
+| 1 | Ninguna captura (ancho sin probar) | **De 360 a ≈ 369 px de ancho**, mi diseño no tiene una cuenta. Ahí la imagen ya mide 44 px con 8 px de separación, pero la ficha es más angosta que a 390 px. Con la letra del iPhone (SF Pro), "100" mide ≈ 91 px: 44 + 8 + 91 = **143 px**, y a 360 px la ficha deja ≈ **138 px** útiles. Es decir, "100" con su imagen podría salirse de la ficha. A 375 px (iPhone SE y mini) quedan ≈ 2,5 px de margen, así que el iPhone de referencia no se ve afectado; sí se verían afectados celulares Android de 360 px. Lo señaló primero el tester ("Lote 2", sección "Entre 360 y ≈ 369 px"); aquí lo confirmo como **hueco de mi diseño**, no del código. Ver la pregunta 1. | Para lotes siguientes |
+| 2 | Todas, a 320 px y 390 px | Con 32 px, la nota musical de la boca y el saliente del rompecabezas se ven pequeños en la captura. En la pantalla de Windows siguen siendo reconocibles, pero falta confirmar en el iPhone que el niño los distingue (TC-057, foto de P-7). | Para lotes siguientes (P-7) |
+
+**Observación sin severidad:** los espacios todavía son los de VS-001 (título → etiqueta, relleno del campo y de la ficha, campo → fichas). Eso es P-5 del lote 3, como se acordó, y no cuenta como hallazgo.
+
+## Cómo revisar
+- Abrir `estado-3-con-texto-390x844-claro.png` y `…-oscuro.png`, y compararlas con el estado 3 de `_project/design/F-002/mockup-b.html`. Deben verse las 4 imágenes, cada una del color de su número y su borde.
+- Abrir `estado-5-100-a-320x568-claro.png`: "100" con su imagen pequeña debe estar dentro de la ficha roja, y "Consonantes" completo dentro de la azul.
+
+## Preguntas para el usuario
+1. **¿Qué hacemos con las pantallas de 360 a 369 px (hallazgo 1)?**
+   - **(a) Recomiendo** anotarlo en los "Bordes que esperan" de VS-002 y no cambiar nada ahora. El dispositivo de referencia es el iPhone (390 px, y 375 en los modelos pequeños), y a esos anchos sí cabe. **Contra:** un celular Android de 360 px podría ver "100" pegado o saliéndose del borde de la ficha.
+   - **(b)** Subir el límite del ajuste de "menos de 360 px" a "menos de 375 px" (`max-width: 374px`). Con eso, de 360 a 374 px también se usarían la imagen de 32 px y el relleno de 4 px. **Contra:** cambia una regla aprobada (`design-system.md` §3 y §4, F-002 §5.2), mueve las pruebas que hoy miran 359 y 360 px, y además baja la letra de 48 a 44 px y de 20 a 18 px en esos anchos. Pide ronda con el planner y el tester.
+
+## Decisiones o lecciones propuestas
+- **Lección propuesta (diseño para el celular):** al diseñar un ajuste por ancho, la cuenta de "cabe" se hace en el ancho **más angosto de cada tramo**: 320 y **360**, no solo 320 y 390. Por qué: el borde de una regla de "menos de 360 px" es justo 360, y ese fue el ancho que quedó sin calcular.
+
+STATUS: DONE
