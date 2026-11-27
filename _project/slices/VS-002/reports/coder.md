@@ -108,3 +108,52 @@ Ninguno.
 - Ninguna nueva. L-041 (el ajuste de pantalla angosta va después del componente) se aplicó en P-4.
 
 STATUS: DONE
+
+# Lote 3 — VS-002
+**Fecha:** 2026-11-27 · **Rama:** feature/VS-002-imagenes-ninos
+
+## Pasos construidos
+| Paso | Commits (test → feat → refactor) | Casos de prueba cubiertos | Razón del rojo |
+|---|---|---|---|
+| P-5 | `test(acceptance)` `9ec5015` → `feat(P-5)` `9c45554` · sin refactor (solo cambiaron valores, no había nada que limpiar) | TC-061 (aproximación automática), TC-058 | Antes del cambio corrí las 77 de los 3 archivos y falló el comando (la salida se cortó antes del total, así que los 15 de 180 son la cifra del tester). Releí por grupos: las 4 de aproximación (Números y Otros terminan en 432,58 px, el límite es 417), las 2 de espacios (arriba 12 en vez de 8, título a etiqueta 16 en vez de 8, campo a fichas 20 en vez de 12), las 4 de la ficha (relleno de 12 px en vez de 8 arriba y abajo; a 390 y 360, alto 109 en vez de 104) y la de `screen.spec.ts` (campo vacío 90, máximo 85). En la corrida de 77 alcancé a ver además el relleno de 12 px del campo y el tope a 320 px, con 8 px de más. De las otras pruebas del campo y del tope no leí el detalle |
+
+## Explicación para el usuario
+### P-5 — Los 4 grupos a la vista con el teclado abierto
+Cuando el teclado del iPhone está abierto queda poco espacio, y la segunda fila de fichas salía cortada. Para que quepa se recortaron 5 "aires": arriba de la pantalla, entre el título y la etiqueta, dentro del campo (arriba y abajo), entre el campo y las fichas, y dentro de cada ficha (arriba y abajo). Ninguna letra ni dibujo cambió de tamaño. Como el campo tiene menos relleno, también se ajustó la cuenta de su alto máximo, para que siga mostrando 5 líneas y después se desplace por dentro. Los espacios se escogen de la lista de medidas ya definidas (los *tokens*, como `--space-2`, que vale 8 px). El ajuste del celular angosto (4 px a los lados de la ficha) se conserva. Archivo: `src/styles.css`.
+
+La prueba automática solo **se aproxima** al teclado: revisa que las fichas terminen antes de 417 px en un navegador simulado. Lo que dice si de verdad se ven los 4 grupos son las fotos de su iPhone (P-7, lote 4).
+
+## Estado de las pruebas
+| Corrida | Comando | Resultado |
+|---|---|---|
+| Rojo | `npx playwright test tests/e2e/didactic-screen.spec.ts tests/e2e/screen.spec.ts tests/e2e/group-look.spec.ts --project=iphone --workers=2 --reporter=line`, y luego por archivo o con `--grep` | Falla, con las razones de la tabla de arriba |
+
+- **Cierre del lote** (el código es el de `9c45554`; la revisión estática, las unitarias y la corrida de 77 se hicieron justo antes de ese commit, sin cambios después):
+  - Revisión estática, `npm run check` (tipos y lint): **ok**.
+  - Unitarias, `npm run test:unit`: **207/207** (4 archivos).
+  - E2E del lote, `npx playwright test tests/e2e/didactic-screen.spec.ts tests/e2e/screen.spec.ts tests/e2e/group-look.spec.ts --project=iphone --workers=2 --reporter=dot`: **77/77**.
+  - Capturas, `npx playwright test --project=captures --output=_project/slices/VS-002/evidence/capturas/lote-3 --reporter=line`: **20/20** (Playwright usó 1 proceso).
+  - E2E completa, `npm run test:e2e -- --workers=2 --reporter=dot`: **180/180**. No falló ninguna prueba de VS-001 (riesgo R-1).
+- **Capturas:** quedan en `_project/slices/VS-002/evidence/capturas/lote-3/`, **sin commit**.
+- **Autorrevisión visual:** miré 4 de las 20: 2b a 390 × 427 en claro, 2 a 390 × 427 en oscuro, estado 5 a 320 px en claro y tope de 5 líneas en claro.
+  - En las dos de 390 × 427 se ven completos el título, la etiqueta, el campo y las 4 fichas. La frase de 50 ocupa 2 líneas y muestra 17 / 20 / 0 / 1.
+  - A 320 px, "100" y "Consonantes" se ven completos. Con 5 líneas, el campo muestra las 5.
+  - No miré las otras 16; la revisión visual es del designer. Son capturas en Windows, sin teclado ni barras de Safari: la letra y el espacio real se confirman en P-7 (L-010, L-015).
+
+## Líneas de app
+`git diff --numstat 9ec5015 HEAD -- src`: **6 líneas agregadas y 6 quitadas** en `src/styles.css` (estimado del plan: ~8). `index.html` y `src/main.ts` no cambiaron.
+
+## Variables de entorno nuevas
+- Ninguna.
+
+## Desviaciones del plan
+- Ninguna en el código.
+- Commit `9c45554` con mensaje de una línea, sin `Co-Authored-By` (la guarda bloquea `<` y `>`, como quedó en el lote 1). No subí la rama.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Ninguna nueva.
+
+STATUS: DONE
