@@ -1,0 +1,33 @@
+VS-002 · Lote 4 · trabajo A (P-6) · tester · 2026-11-27 · base e5c18bc
+Notas de las corridas. TODAS contra la app LOCAL (build + preview en el puerto 4173).
+Nada de esto prueba la versión publicada: el rojo y el verde sobre las previews los corre el Manager.
+
+1. npm run check, antes de cambiar nada ............................ pasa
+2. npm run check, con las pruebas nuevas ........................... pasa
+
+Ensayo del proyecto "published" contra la app local. Cambios temporales (marcados TEMP y ya
+retirados): baseURL y E2E_BASE_URL locales; capturas en test-results/published-rehearsal/.
+Comando: npx playwright test --project=published --workers=2
+
+3. Sin daño ........................................................ 8/8 en verde
+   Revisadas a ojo tc-050 (claro), tc-051 (oscuro) y tc-053 (con texto): 4 dibujos, 4 colores,
+   2/2/4/4.
+4. Daños A y B juntos (HTML servido, modificado desde la prueba) ... 4 en rojo, 4 en verde
+   A: .count dd::before { content: none }  (app sin imágenes, como la del lote 1)
+   B: <script src="https://vercel.live/_next-live/feedback/feedback.js">, petición abortada
+   - TC-050, TC-051, TC-053: "image of vowel: exists" · Expected "\"\"" · Received "none"
+   - TC-055: "requests to another site" · la dirección de vercel.live, 2 veces
+   - En verde: P-2, TC-001, TC-002, TC-024
+5. Daño C: cabecera content-security-policy "img-src 'self'" (--grep "TC-05")
+   ................................................................. 3 en rojo, 1 en verde
+   - TC-050, TC-051, TC-053: "painted pixels of the image of vowel" · Expected > 100 ·
+     Received 0. Las comprobaciones de estilo calculado (content, 44 px, color, mask) PASARON
+     antes: solo la lectura de píxeles ve que el dibujo no se pinta.
+   - TC-055 en verde (no depende de las imágenes).
+
+Después de retirar lo temporal:
+6. grep "TEMP|localhost|published-rehearsal" en tests/ ............. sin resultados
+7. npm run check ................................................... pasa
+8. npx playwright test --project=iphone --workers=2 ................ 180/180 en verde
+9. npx playwright test --project=published --list .................. 8 pruebas
+10. git status: no hay cambios en VS-001/evidence/ ni se creó VS-002/evidence/published/

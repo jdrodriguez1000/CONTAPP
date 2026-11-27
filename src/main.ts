@@ -58,7 +58,9 @@ function applyChange(nextText: string, cursor: number): InputResult {
 function filterChange() {
   const { text, cursor } = applyChange(textField.value, textField.selectionEnd);
   selected = { start: 0, end: 0 };
-  // The field is only rewritten when something did not get in, so the cursor is not moved.
+  // The field is rewritten only when the accepted text differs from it: something did not get in,
+  // or NFC turned what came in into its standard form (a letter in two pieces joined into one,
+  // a sign like Kelvin into its letter). That is what makes undo stale (DT-003).
   if (text !== textField.value) {
     textField.value = text;
     textField.setSelectionRange(cursor, cursor);

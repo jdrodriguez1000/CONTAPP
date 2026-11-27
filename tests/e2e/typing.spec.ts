@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { expectNothingStored } from "./field-helpers";
 
 // P-6 (plan VS-001 §3 and §5.1; F-001 CA-2, CA-3, CA-7, CA-8): counting while typing.
 // Counts are written as "vowel/consonant/digit/other".
@@ -133,16 +134,7 @@ test('TC-024 — escribir "casa" y recargar deja el campo vacío y los 4 en 0, s
   await field.pressSequentially("casa");
   await expect(field).toHaveValue("casa");
 
-  // Nothing typed is kept in the browser.
-  const stored = await page.evaluate(async () => ({
-    local: JSON.stringify({ ...localStorage }),
-    session: JSON.stringify({ ...sessionStorage }),
-    cookies: document.cookie,
-    databases: (await indexedDB.databases()).length,
-    caches: "caches" in window ? (await caches.keys()).length : 0,
-  }));
-  expect(stored).toEqual({ local: "{}", session: "{}", cookies: "", databases: 0, caches: 0 });
-  expect(await context.cookies()).toEqual([]);
+  await expectNothingStored(page, context);
 
   await page.reload();
   await expect(field).toBeVisible();

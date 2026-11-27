@@ -1,6 +1,6 @@
-import { expect, type Locator, type Page } from "@playwright/test";
+import { expect, type BrowserContext, type Locator, type Page } from "@playwright/test";
 
-// Shared by the input filter and max length specs (plan VS-001 §5.1).
+// Shared by the E2E specs (plan VS-001 §5.1, plan VS-002 §5.3).
 // Counts are written as "vowel/consonant/digit/other".
 
 const GROUP_KEYS = ["vowel", "consonant", "digit", "other"];
@@ -30,6 +30,66 @@ export async function openApp(page: Page): Promise<App> {
   await expect.poll(() => readCounts(page)).toBe("0/0/0/0");
   await field.focus();
   return { page, field, dialogs };
+}
+
+// Nothing typed is kept in the browser (C-010).
+export async function expectNothingStored(page: Page, context: BrowserContext): Promise<void> {
+  const stored = await page.evaluate(async () => ({
+    local: JSON.stringify({ ...localStorage }),
+    session: JSON.stringify({ ...sessionStorage }),
+    cookies: document.cookie,
+    databases: (await indexedDB.databases()).length,
+    caches: "caches" in window ? (await caches.keys()).length : 0,
+  }));
+  expect(stored, "stored in the page").toEqual({
+    local: "{}",
+    session: "{}",
+    cookies: "",
+    databases: 0,
+    caches: 0,
+  });
+  expect(await context.cookies(), "cookies of the browser").toEqual([]);
+}
+
+// Where the number really sits inside its <dd>. The image is a ::before, with no box of
+// its own, so what it takes on screen is read from where the number starts (plan VS-002
+// §5.1: the image is on the left of the number, in the same row). A squeezed image would
+// keep its computed width, but the number would start earlier.
+export async function numberRow(page: Page, key: string) {
+  return page.getByTestId(`count-${key}`).evaluate((el) => {
+    const text = [...el.childNodes].find((node) => node.nodeType === Node.TEXT_NODE);
+    if (!text) throw new Error("the number has no text");
+    const range = document.createRange();
+    range.selectNodeContents(text);
+    const number = range.getBoundingClientRect();
+    const box = el.getBoundingClientRect();
+    const style = getComputedStyle(el);
+    return {
+      display: style.display,
+      // From the left edge of the content of the <dd> to the number: image + gap.
+      beforeNumber: number.left - box.left - parseFloat(style.paddingLeft),
+      rowHeight: box.height,
+      offCenter: Math.abs(number.top + number.height / 2 - (box.top + box.height / 2)),
+      pastRightEdge: number.right - box.right,
+      lineHeight: parseFloat(style.lineHeight),
+    };
+  });
+}
+
+// Image of `size` px, then `gap` px, then the number: one single row, nothing cut.
+export async function expectImageBesideNumber(page: Page, key: string, size: number, gap: number) {
+  const row = await numberRow(page, key);
+  expect(row.display, `display of the <dd> of ${key}`).toBe("flex");
+  expect(
+    Math.abs(row.beforeNumber - (size + gap)),
+    `image + gap before the number of ${key}: ${row.beforeNumber}px, expected ${size + gap}px`,
+  ).toBeLessThanOrEqual(1);
+  // Same row: the <dd> is no taller than the taller of the two.
+  expect(row.rowHeight, `height of the row of ${key}`).toBeLessThanOrEqual(
+    Math.max(size, row.lineHeight) + 1,
+  );
+  expect(row.offCenter, `number of ${key} off the middle of the row`).toBeLessThanOrEqual(2);
+  expect(row.pastRightEdge, `number of ${key} past the row`).toBeLessThanOrEqual(0.5);
 }
 
 // "Paste": the text enters all at once at the cursor (plan VS-001 §3).

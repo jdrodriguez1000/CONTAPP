@@ -11,6 +11,10 @@
   --color-input-bg: #ffffff;
   --color-input-border: #556655;
   --color-focus: #1f6b33;
+  --color-vowel: #c62828;
+  --color-consonant: #1565c0;
+  --color-digit: #a84b00;
+  --color-other: #7b1fa2;
   --font-family-base: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
   --font-size-title: 28px; --font-weight-title: 800;
   --font-size-label: 18px; --font-weight-label: 600;
@@ -21,6 +25,7 @@
   --space-4: 16px; --space-5: 20px; --space-6: 24px;
   --radius-card: 20px; --radius-input: 14px; --radius-badge: 12px;
   --border-width-input: 2px;
+  --size-group-image: 44px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,12 +40,16 @@
     --color-input-bg: #1c2e20;
     --color-input-border: #88aa88;
     --color-focus: #ffdd55;
+    --color-vowel: #ff7b72;
+    --color-consonant: #82b1ff;
+    --color-digit: #ffb74d;
+    --color-other: #ce93d8;
   }
 }
 
-/* Narrow phones: so "Consonantes" fits in its card at 320 px. */
+/* Narrow phones: so "Consonantes" and "100" next to its image fit in their cards at 320 px. */
 @media (max-width: 359px) {
-  :root { --font-size-group: 18px; --font-size-count: 44px; }
+  :root { --font-size-group: 18px; --font-size-count: 44px; --size-group-image: 32px; }
 }
 
 * { box-sizing: border-box; }
@@ -55,12 +64,12 @@ body {
 .app {
   max-width: 480px;
   margin: 0 auto;
-  padding: var(--space-3) var(--space-4) 0;
+  padding: var(--space-2) var(--space-4) 0;
 }
 
 /* AppTitle */
 .app-title {
-  margin: 0 0 var(--space-4);
+  margin: 0 0 var(--space-2);
   font-size: var(--font-size-title);
   font-weight: var(--font-weight-title);
   line-height: 1.2;
@@ -81,9 +90,9 @@ body {
   display: block;
   width: 100%;
   /* 5 lines of text plus padding and border; after that it scrolls inside. */
-  max-height: calc(5 * 1.3em + 2 * var(--space-3) + 2 * var(--border-width-input));
+  max-height: calc(5 * 1.3em + 2 * var(--space-2) + 2 * var(--border-width-input));
   margin: 0;
-  padding: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   resize: none;
   overflow-y: auto;
   font-family: inherit;
@@ -107,7 +116,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-3);
-  margin: var(--space-5) 0 0;
+  margin: var(--space-3) 0 0;
 }
 
 /* CountCard: the HTML has the name first ("Vocales, 0"); the number is shown above it. */
@@ -117,10 +126,29 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 104px;
-  padding: var(--space-3) var(--space-2);
+  padding: var(--space-2);
   background: var(--color-surface);
-  border: var(--border-width-input) dashed var(--color-border);
+  border: var(--border-width-input) dashed var(--group-color);
   border-radius: var(--radius-card);
+}
+
+/* One variant per group: each card only picks which color token and which image it uses. */
+/* GroupImage drawings: copied as they are from _project/design/F-002/mockup-b.html. */
+.count--vowel {
+  --group-color: var(--color-vowel);
+  --group-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path fill-rule='evenodd' d='M5 31a14 12 0 1 0 28 0a14 12 0 1 0-28 0zM10.5 32a8.5 6.5 0 1 0 17 0a8.5 6.5 0 1 0-17 0zM14 35a5 2.8 0 1 0 10 0a5 2.8 0 1 0-10 0z'/><ellipse cx='37' cy='18' rx='4.6' ry='3.6' transform='rotate(-20 37 18)'/><path d='M39.6 17V4h2v13zM41.6 4l6 2.5v5l-6-2.5z'/></svg>");
+}
+.count--consonant {
+  --group-color: var(--color-consonant);
+  --group-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path stroke='black' stroke-width='2' stroke-linejoin='round' d='M8 13h9a5 5 0 0 1 10 0h9v9a5 5 0 0 1 0 10v9H8z'/></svg>");
+}
+.count--digit {
+  --group-color: var(--color-digit);
+  --group-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect x='10' y='24' width='28' height='19' rx='8'/><path fill='none' stroke='black' stroke-width='5.5' stroke-linecap='round' d='M15 27V11M23.5 27V7M32 27V10M36.5 26v-5M11 33l-4-5'/></svg>");
+}
+.count--other {
+  --group-color: var(--color-other);
+  --group-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path fill-rule='evenodd' d='M6 24a18 18 0 1 0 36 0a18 18 0 1 0-36 0zM14.5 19a3 3 0 1 0 6 0a3 3 0 1 0-6 0zM27.5 19a3 3 0 1 0 6 0a3 3 0 1 0-6 0zM15 27h18a9 9 0 0 1-18 0z'/></svg>");
 }
 
 .count dt {
@@ -131,10 +159,31 @@ body {
 }
 
 .count dd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
   margin: 0;
   font-size: var(--font-size-count);
   font-weight: var(--font-weight-count);
   line-height: 1.1;
-  color: var(--color-primary);
+  color: var(--group-color);
   font-variant-numeric: tabular-nums;
+}
+
+/* GroupImage: a box in the number's color, cut out with the group drawing. It adds no text. */
+.count dd::before {
+  content: "";
+  flex: none;
+  width: var(--size-group-image);
+  height: var(--size-group-image);
+  background-color: currentColor;
+  -webkit-mask: var(--group-image) center / contain no-repeat;
+  mask: var(--group-image) center / contain no-repeat;
+}
+
+/* Narrow phones, card spacing. It stays at the end: with equal weight, the later rule wins. */
+@media (max-width: 359px) {
+  .count { padding-left: var(--space-1); padding-right: var(--space-1); }
+  .count dd { gap: var(--space-1); }
 }

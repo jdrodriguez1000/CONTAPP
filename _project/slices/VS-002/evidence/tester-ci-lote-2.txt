@@ -1,0 +1,22 @@
+VS-002 - lote 2 - clasificacion del fallo de la CI (tester, 2026-11-27)
+Commit fcddffa. Notas copiadas a mano.
+
+1) CI run 46009483415 (ci-46009483415-lote-2.log): 157 en verde, 9 en rojo. playwright.config.ts: retries 0.
+   Las 9 estan en didactic-screen.spec.ts, a 320 px, y fallan en la linea 79 (ancho de la columna), primera ficha (vowel).
+   133.21875 px (7): TC-063 claro y oscuro; TC-064 "0", "9", "10", "100" en Consonantes, "100" en Otros.
+   139.859375 px (2): TC-064 "100" en Vocales y "100" en Numeros (las dos de la columna izquierda).
+   Pasa en la misma corrida: screen.spec.ts "P-3 - a 320 px las 4 fichas caben..." (linea 136 del registro).
+
+2) Local (Windows), mismo commit:
+   npx playwright test tests/e2e/didactic-screen.spec.ts --project=iphone --workers=2 --repeat-each=3
+   -> 87 passed (50.2s), 0 en rojo (29 pruebas x 3).
+
+3) Cuenta de la letra. Avances de DejaVu Sans Bold en unidades de 2048 (tabla de MEMORIA del tester,
+   no leida de un archivo de letra):
+   C 1503, o 1407, n 1458, s 1219, a 1382, t 979, e 1389, cifra 1425.
+   "Consonantes" = 14879 u -> a 18 px = 130.77 px
+   ficha = 130.77 + 8 (relleno) + 4 (borde) = 142.77 -> la otra columna = 276 - 142.77 = 133.23
+       CI: 133.21875
+   "100" = 4275 u -> a 44 px = 91.85 px
+   ficha = 32 (imagen) + 4 + 91.85 + 8 + 4 = 139.85
+       CI: 139.859375

@@ -1,0 +1,31 @@
+VS-002 · Lote 1 · Tester · 2026-11-27 · cifras de E2E (proyecto iphone), copiadas a mano de la terminal.
+Solo resumen: no se guarda la salida completa.
+
+1) ANTES de cualquier cambio (árbol limpio, commit 1ed262a) · npm run test:e2e  (6 procesos)
+   Running 113 tests using 6 workers -> 4 failed, 109 passed (4.1m)
+   Los 4 fallos, todos "Test timeout of 30000ms exceeded":
+     - foreign-letters.spec.ts:35  TC-016 (escribir "ç" y "Ç" en el campo vacío)
+     - foreign-letters.spec.ts:50  TC-017 (à â ö ß α ж uno a uno)
+       además: "locator.textContent: Target page, context or browser has been closed" en field-helpers.ts:16
+     - foreign-letters.spec.ts:62  TC-017 borde (mayúsculas, otros alfabetos, ancho completo)
+     - max-length.spec.ts:53       TC-021 borde (con 100, espacio, salto, dígito, emoji, pegado)
+
+2) ANTES · npx playwright test foreign-letters + max-length --project=iphone --workers=2
+   52 passed (1.9m)
+
+3) ANTES · npm run test:e2e -- --workers=2 --reporter=dot
+   Running 113 tests using 2 workers -> 113 passed (3.2m)
+
+4) DESPUÉS de P-1 (DT-008) · npm run test:e2e -- --workers=2 --reporter=dot
+   Running 113 tests using 2 workers -> 113 passed (4.1m), 0 saltadas
+
+5) DESPUÉS de las pruebas de P-2 (rojo) · npm run test:e2e -- --workers=2 --reporter=dot
+   Running 127 tests using 2 workers -> 11 failed, 116 passed (4.6m), 0 saltadas
+   Rojos: 10 de group-look.spec.ts (TC-052) + screen.spec.ts:283 (colores).
+
+6) Capturas, ensayo en carpeta desechable (no en evidence/):
+   npx playwright test --project=captures --workers=2 --output=test-results/captures-check
+   16 passed (46.6s)
+
+7) Prueba de la prueba: con el CSS del plan P-2 inyectado de forma temporal desde group-look.spec.ts
+   (ya retirado), npx playwright test group-look --project=iphone -> 14 passed (40.9s)

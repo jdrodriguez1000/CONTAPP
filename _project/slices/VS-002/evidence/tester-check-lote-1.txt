@@ -1,0 +1,18 @@
+VS-002 · Lote 1 · Tester · 2026-11-27
+Salida de la corrida del tester en la carpeta CONTAPP-VS-002 (rama feature/VS-002-imagenes-ninos),
+con los cambios del lote 1 en tests/ ya aplicados y sin commit.
+La guarda no permite redirigir a un archivo: el texto de abajo se copió a mano de la salida de la terminal
+(sin las líneas en blanco del comienzo). El comando terminó sin error (no hubo "Exit code" distinto de 0).
+
+$ npm run check
+
+> check
+> npm run typecheck && npm run lint
+
+
+> typecheck
+> tsc --noEmit
+
+
+> lint
+> eslint .

@@ -185,9 +185,10 @@ test("P-3 — el campo empieza en 2 líneas, crece hasta 5, luego se desplaza po
   const field = page.getByTestId("text-field");
   await expect(field).toBeVisible();
   const emptyHeight = await fieldHeight(field);
-  // 2 lines of 24px x 1.3, plus 12px padding and 2px border on each side (about 90px).
-  expect(emptyHeight).toBeGreaterThanOrEqual(86);
-  expect(emptyHeight).toBeLessThanOrEqual(95);
+  // 2 lines of 24px x 1.3, plus 8px padding and 2px border on each side (82.4px,
+  // plan VS-002 P-5).
+  expect(emptyHeight).toBeGreaterThanOrEqual(80);
+  expect(emptyHeight).toBeLessThanOrEqual(85);
   const lineHeight = 24 * 1.3;
 
   for (const lines of [1, 2, 3, 4, 5]) {
@@ -288,12 +289,12 @@ test("P-3 — los colores siguen el modo claro u oscuro del celular, sin botón 
 
   const number = page.getByTestId("count-vowel");
   const card = page.getByTestId("count-card-vowel");
-  // --color-primary and --color-surface from design-system.md §2.
-  await expect(number).toHaveCSS("color", "rgb(31, 107, 51)");
+  // --color-vowel and --color-surface from design-system.md §2 (VS-002).
+  await expect(number).toHaveCSS("color", "rgb(198, 40, 40)");
   await expect(card).toHaveCSS("background-color", "rgb(238, 245, 238)");
 
   await page.emulateMedia({ colorScheme: "dark" });
 
-  await expect(number).toHaveCSS("color", "rgb(255, 221, 85)");
+  await expect(number).toHaveCSS("color", "rgb(255, 123, 114)");
   await expect(card).toHaveCSS("background-color", "rgb(28, 46, 32)");
 });
