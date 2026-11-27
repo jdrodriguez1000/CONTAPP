@@ -462,3 +462,154 @@ Ninguno.
 - Varias comprobaciones suaves que esperan (`expect.soft` con `toHaveCSS`) suman sus tiempos y pueden agotar el de la prueba: para valores fijos de estilo, leerlos juntos y compararlos una sola vez. → VEGU
 
 STATUS: DONE
+
+---
+
+# Lote 4 — trabajo A — VS-002
+**Fecha:** 2026-11-27 · P-6 · base `e5c18bc`
+
+## Resumen
+`published.spec.ts` pasa de 4 a **8 pruebas**: se suman TC-050 (claro), TC-051 (oscuro), TC-053 y TC-055 publicadas. TC-001, TC-002, TC-024 y la del título no cambian.
+**Contra la versión publicada no he corrido nada:** el rojo y el verde los corre el Manager. Ensayé las 8 contra la app local (8/8) y comprobé con 3 daños que fallan cuando deben.
+`npm run check` pasa y la E2E local sigue en **180/180**. No hice commits, no leí `src/` y no hay código de app.
+
+## Archivos tocados
+| Archivo | Cambio |
+|---|---|
+| `tests/e2e/published.spec.ts` | +4 pruebas (TC-050, TC-051, TC-053, TC-055) |
+| `tests/e2e/group-helpers.ts` (nuevo) | Colores, `expectGroupImages`, `imageStyle`, `cardLooks` y 3 funciones cortas, **movidos sin cambiar su lógica** desde `group-look.spec.ts` |
+| `tests/e2e/group-look.spec.ts` | Importa lo movido. Ninguna prueba ni valor esperado cambia |
+| `evidence/tester-published-lote-4.txt` (nuevo) | Notas de las corridas |
+
+El plan solo nombra `published.spec.ts`. Creé el módulo porque las dos pruebas necesitan lo mismo, Playwright no deja importar una prueba desde otra y copiarlo repetiría DT-008. **El commit necesita los 3 archivos de `tests/e2e/`.**
+
+## Comandos para el Manager
+
+**Antes de cada corrida:** sacar la dirección única y mirar que responda `200` (L-026, L-006). El SHA va completo.
+```
+vercel ls contapp -m githubCommitSha=<sha completo>
+curl -sI <preview> | head -3
+```
+`302` a `vercel.com/sso-api` es la protección de Vercel y `404` es que no hay publicación. Ninguno es un defecto de la app.
+
+**Comando del rojo y del verde** (desde la raíz del worktree, con las pruebas de este lote; solo cambia la dirección):
+```
+E2E_BASE_URL=<preview> npm run test:published
+```
+Cada corrida borra `test-results/`. Si quiere guardar la salida del rojo, cópiela antes del verde.
+
+### Rojo: preview del último commit del lote 1
+Es `b63efbc`. Si no tiene publicación, sirve `4e74b73` o `58e824e` (`feat(P-2)`): según los mensajes del historial, los commits posteriores a `58e824e` son del reporte, las capturas y la revisión. Los 3 muestran colores sin imágenes (L-021). **Esperado: 3 en rojo y 5 en verde.**
+
+| Prueba | Resultado | Dónde debe fallar y por qué |
+|---|---|---|
+| TC-050 publicada (claro) | **Rojo** | `image of vowel: exists` · `Expected "\"\""`, `Received "none"`. Ya pasaron la pantalla vacía y los colores; falta el `::before` |
+| TC-051 publicada (oscuro) | **Rojo** | La misma aserción y la misma razón |
+| TC-053 publicada | **Rojo** | La misma aserción. Falla antes de pegar la frase: sin imagen, "igual que vacía" no probaría nada |
+| TC-055 publicada | Verde (control) | Sin imágenes tampoco debe haber peticiones a otros sitios. Ver R-4 abajo |
+| TC-001, TC-002, TC-024, título (P-2) | Verde (control) | La pantalla, los conteos y "no se guarda nada" ya estaban |
+
+**El rojo no vale** si alguna de las 3 falla antes: estado HTTP, título, pantalla vacía, `number of …` o `… border of …`. En ese caso la preview no es la correcta.
+
+### Verde: preview del commit que se va a aceptar
+**Esperado: 8/8.** Después:
+- `_project/slices/VS-002/evidence/published/` debe tener **6 capturas**: `tc-001-al-abrir`, `tc-002-casa`, `tc-024-despues-de-recargar`, `tc-050-imagenes-claro`, `tc-051-imagenes-oscuro` y `tc-053-con-texto` (`.png`).
+- **Ojo:** el rojo ya escribe `tc-001`, `tc-002` y `tc-024` en esa carpeta, **con la pantalla del lote 1**. El verde las sobrescribe. No haga commit de la carpeta entre las dos corridas ni después de un verde incompleto.
+- `git status --short _project/slices/VS-001` no debe mostrar nada.
+
+### Si algo falla en el verde
+| Falla | Qué significa |
+|---|---|
+| TC-055, `requests to another site` con `vercel.live` | **R-4:** la barra de herramientas de las previews. No es la app y no se relaja la prueba: el usuario la apaga en *Settings* de Vercel, se publica de nuevo y se repite. Puede salir ya en el rojo (4 en rojo en vez de 3). En ese caso revise también si la barra aparece en las capturas |
+| TC-055 con otra dirección | Posible defecto (C-010): va al Manager con la lista que imprime la prueba |
+| `painted pixels of the image of …` (0 píxeles) con el estilo correcto | El dibujo se pidió pero no se pinta en la versión publicada; por ejemplo, una cabecera de seguridad que bloquea `data:` o un SVG dañado. Es un defecto |
+| `empty pixels left in the image of …` | Se pinta un cuadro lleno: la máscara no se aplicó. Es un defecto |
+
+## Cobertura
+| Caso | Prueba (`published.spec.ts`) | Tipo | Restricción | Resultado (ensayo local) y razón del rojo esperado |
+|---|---|---|---|---|
+| TC-050 | `TC-050 — publicada, modo claro…` | E2E publicada + captura | C-012 | Verde. Rojo en lote 1: sin `::before` |
+| TC-051 | `TC-051 — publicada, modo oscuro…` | E2E publicada + captura | — | Verde. Rojo en lote 1: sin `::before` |
+| TC-053 | `TC-053 — publicada: pegar "¡Hola, 2026! 😀"…` | E2E publicada + captura | C-001, C-006, C-007, C-008, C-012 | Verde. Rojo en lote 1: sin `::before` |
+| TC-055 | `TC-055 — publicada…` | E2E publicada (peticiones) | C-010 | Verde. Control: no tiene rojo sobre el lote 1 |
+| TC-058 | TC-001, TC-002 y TC-024 publicadas (sin cambios) | E2E publicada | C-001, C-010, C-012 | Verde (control) |
+
+Qué comprueban las pruebas nuevas:
+- **TC-050 y TC-051:** las 4 fichas en orden y en "0"; el color del número y de los 4 bordes; el `::before` de 44 px con su color y una máscara `data:image/svg+xml`, distinta en cada grupo; la imagen junto al número en la misma fila; sin avisos.
+- **Píxeles (agregado a lo que pide el plan):** en la pantalla se lee el cuadro de 44 × 44 de cada imagen. Debe tener parte pintada y parte vacía, y los 4 dibujos deben ser distintos. No repite la comparación con la maqueta, que ya hace la TC-050 local.
+- **TC-053:** 2/2/4/4 con los mismos estilos que vacía y los dibujos pintados; la captura va sin foco; después se borra todo y quedan 0/0/0/0 con los mismos estilos.
+- **TC-055:** al abrir, escribir y recargar, toda petición tiene el origen de `E2E_BASE_URL` (se admite `data:`); ninguna lleva "casa" en la dirección, el cuerpo o las cabeceras; no queda nada guardado, antes ni después de recargar.
+
+## Prueba de las pruebas (local)
+| Daño simulado | Resultado |
+|---|---|
+| Ninguno | **8/8** |
+| A: sin imágenes (como el lote 1) | TC-050, TC-051 y TC-053 en rojo en `image of vowel: exists`, `Received "none"` |
+| B: script de `vercel.live` (petición abortada, no salió a internet) | TC-055 en rojo en `requests to another site` |
+| C: cabecera `img-src 'self'` | TC-050, TC-051 y TC-053 en rojo con **0 píxeles pintados**, aunque todo el estilo calculado pasó |
+
+Para el ensayo usé dirección local y capturas en `test-results/`. Ya está retirado (búsqueda de `TEMP` sin resultados) y no creé `evidence/published/`. **El ensayo no reemplaza el rojo ni el verde publicados:** A imita el lote 1, pero no es su preview.
+
+## Lista de verificación para P-7 (iPhone del usuario)
+Sale del plan, P-7. El Manager anota los resultados en `evidence/iphone-manual.md` y guarda las fotos en `evidence/` como `p7-<punto>-<modo>.jpg`. Los conteos de cada texto sirven para confirmar que se escribió bien.
+
+**Antes de empezar**
+- [ ] Abrir la preview del **commit que se va a aceptar** (la misma del verde), en Safari.
+- [ ] Barra de dirección **abajo**, teclado en español, y corrector y sugerencias **apagados** (D-009).
+- [ ] Al abrir: campo vacío y 0 / 0 / 0 / 0.
+
+**1. Nombres tapados (TC-057), modo claro**
+- [ ] Tapar los 4 nombres. ¿Reconoce cada grupo solo por su dibujo? ¿Lo reconocería un niño menor de 8 años? Anotar sí o no **por grupo** y, si es no, por qué. Foto.
+
+**2. Teclado de letras, modo claro (TC-061)**
+En cada caso, sin cerrar el teclado ni mover la pantalla con el dedo: ¿se ven **completos** los 4 grupos (dibujo, número y nombre) **y** la línea donde escribe? Una foto por caso.
+
+| ✓ | Caso | Texto | Debe dar (vocales / consonantes / números / otros) |
+|---|---|---|---|
+| [ ] | a | campo vacío | 0 / 0 / 0 / 0 |
+| [ ] | b | `pingüino` | 4 / 4 / 0 / 0 |
+| [ ] | c | `la casa`, tecla de salto de línea, `el sol` | 5 / 6 / 0 / 0 |
+| [ ] | d | `el sol sale y la luna se va a dormir en su camita.` | 17 / 20 / 0 / 1 |
+
+**3. La frase de 50**
+- [ ] En la foto de (d), ¿ocupa 2 líneas? Si ocupa 3, no se le exige CA-20: escribir otra de 50 caracteres (contando espacios) que ocupe 2, que el Manager la cuente, y repetir (d) y el punto 4 con ella. La frase nueva se anota en F-003 §5.5.
+
+**4. Teclado "123" y modo oscuro (TC-062)**
+El plan no separa si son dos condiciones aparte o juntas (ver la pregunta). Recomiendo mirarlas **juntas**: modo oscuro y teclado "123" abierto.
+- [ ] `pingüino`: ¿se ven los 4 grupos y la línea? Foto.
+- [ ] La frase de 50 del punto 3: ¿se ven los 4 grupos y la línea? Foto.
+- [ ] En oscuro, ¿se distinguen bien los 4 dibujos y colores?
+
+Para los dos casos: primero escribir el texto con el teclado de letras y después tocar "123".
+
+**5. Solo para saber, sin criterio**
+- [ ] Teclado de emojis abierto con `pingüino`: ¿se ven los 4 grupos? Foto.
+- [ ] Teclado cerrado, con la frase de 100 del estado 4 de `captures.spec.ts`: foto (sirve para revisar A-001).
+
+**Resultado:** si falla un caso de los puntos 2 o 4 (algún grupo tapado, con hasta 2 líneas y 50 caracteres), es bloqueante y vuelve como mini-lote, con la foto como evidencia.
+
+## Resultados de la ejecución
+- Pruebas del coder: no corrí las unitarias (este lote no tiene coder ni código de app).
+- Pruebas del tester: E2E local **180 en verde / 0 en rojo**; `published` en el ensayo local **8 en verde / 0 en rojo**; sobre la versión publicada, **sin correr**.
+- `npm run check`: pasa antes y después.
+- Regresión: la CI (la verifica el Manager). La CI no corre `published`.
+- Evidencia: `_project/slices/VS-002/evidence/tester-published-lote-4.txt`.
+- `_project/slices/VS-001/evidence/`: sin cambios. En `git status` aparece `reports/designer.md` modificado: **no es mío**.
+
+## Fallos
+| # | Caso | Clasificación | Cómo reproducirlo | Evidencia |
+|---|---|---|---|---|
+| — | Ningún defecto en este trabajo. Los rojos del ensayo son daños que provoqué | — | — | `tester-published-lote-4.txt` |
+
+## Preguntas para el usuario o el Manager
+Ninguna bloquea.
+- TC-062 dice "con el teclado «123» y en modo oscuro". **Recomiendo** probar las dos cosas juntas, como en la lista. Si algo falla, repetir en claro para saber cuál es la causa.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Un estilo calculado (`mask-image`) dice qué dibujo se pidió, no que se haya pintado: en la versión publicada, donde la plataforma pone sus cabeceras, hay que leer los píxeles. En el ensayo, con una cabecera que bloqueaba `data:`, todo el estilo pasó con 0 píxeles pintados. → VEGU
+- El rojo de una prueba publicada deja capturas de la versión vieja en la carpeta de evidencia: solo se guardan las de un verde completo. → VEGU
+
+STATUS: DONE

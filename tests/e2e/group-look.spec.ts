@@ -9,6 +9,19 @@ import {
   paste,
   type,
 } from "./field-helpers";
+import {
+  card,
+  cardLooks,
+  COLORS,
+  computed,
+  expectGroupImages,
+  IMAGE_GAP,
+  IMAGE_SIZE,
+  imageStyle,
+  KEYS,
+  number,
+  type Colors,
+} from "./group-helpers";
 
 // F-002: one color and one image per group (plan VS-002 P-2, P-3 and §5.1; F-002
 // CA-12 to CA-16, §5.1 to §5.4). Every expected value is the one of the plan §5.1,
@@ -16,13 +29,12 @@ import {
 
 type Scheme = "light" | "dark";
 
-const KEYS = ["vowel", "consonant", "digit", "other"] as const;
 const SIDES = ["top", "right", "bottom", "left"];
 
 const MODES: Array<{
   scheme: Scheme;
   mode: string;
-  colors: Record<(typeof KEYS)[number], string>;
+  colors: Colors;
   cardBackground: string;
   nameColor: string;
   fieldBackground: string;
@@ -30,12 +42,7 @@ const MODES: Array<{
   {
     scheme: "light",
     mode: "modo claro",
-    colors: {
-      vowel: "rgb(198, 40, 40)",
-      consonant: "rgb(21, 101, 192)",
-      digit: "rgb(168, 75, 0)",
-      other: "rgb(123, 31, 162)",
-    },
+    colors: COLORS.light,
     cardBackground: "rgb(238, 245, 238)",
     nameColor: "rgb(17, 34, 17)",
     fieldBackground: "rgb(255, 255, 255)",
@@ -43,12 +50,7 @@ const MODES: Array<{
   {
     scheme: "dark",
     mode: "modo oscuro",
-    colors: {
-      vowel: "rgb(255, 123, 114)",
-      consonant: "rgb(130, 177, 255)",
-      digit: "rgb(255, 183, 77)",
-      other: "rgb(206, 147, 216)",
-    },
+    colors: COLORS.dark,
     cardBackground: "rgb(28, 46, 32)",
     nameColor: "rgb(245, 245, 238)",
     fieldBackground: "rgb(28, 46, 32)",
@@ -59,20 +61,6 @@ async function open(page: Page, scheme: Scheme) {
   await page.emulateMedia({ colorScheme: scheme });
   await page.goto("/");
   await expect(page.getByTestId("count-grid")).toBeVisible();
-}
-
-function card(page: Page, key: string) {
-  return page.getByTestId(`count-card-${key}`);
-}
-
-function number(page: Page, key: string) {
-  return page.getByTestId(`count-${key}`);
-}
-
-async function computed(page: Page, testId: string, property: string) {
-  return page
-    .getByTestId(testId)
-    .evaluate((el, name) => getComputedStyle(el).getPropertyValue(name), property);
 }
 
 // WCAG 2.x contrast of two opaque "rgb(r, g, b)" colors.
@@ -232,75 +220,6 @@ for (const { scheme, mode, colors, cardBackground, nameColor, fieldBackground } 
 // The image is the ::before of the number.
 
 const NAMES = ["Vocales", "Consonantes", "Números", "Otros"];
-const IMAGE_SIZE = 44;
-const IMAGE_GAP = 8;
-
-// What the ::before of a number looks like. WebKit may report the mask under either
-// name (plan §7 R-3): the one that is not "none" counts.
-async function imageStyle(page: Page, key: string) {
-  return number(page, key).evaluate((el) => {
-    const style = getComputedStyle(el, "::before");
-    const masks = ["mask-image", "-webkit-mask-image"].map((name) => style.getPropertyValue(name));
-    return {
-      content: style.content,
-      width: style.width,
-      height: style.height,
-      backgroundColor: style.backgroundColor,
-      mask: masks.find((value) => value !== "" && value !== "none") ?? "none",
-    };
-  });
-}
-
-async function expectGroupImages(page: Page, colors: (typeof MODES)[number]["colors"]) {
-  const masks: string[] = [];
-  for (const key of KEYS) {
-    const target = number(page, key);
-    const before = { pseudo: "before" } as const;
-    await expect(target, `image of ${key}: exists`).toHaveCSS("content", '""', before);
-    await expect(target, `image of ${key}: width`).toHaveCSS("width", `${IMAGE_SIZE}px`, before);
-    await expect(target, `image of ${key}: height`).toHaveCSS("height", `${IMAGE_SIZE}px`, before);
-    await expect(target, `image of ${key}: color`).toHaveCSS(
-      "background-color",
-      colors[key],
-      before,
-    );
-    const { mask } = await imageStyle(page, key);
-    expect(mask, `image of ${key}: mask`).toContain("data:image/svg+xml");
-    masks.push(mask);
-  }
-  expect(new Set(masks).size, "different images").toBe(4);
-}
-
-// Everything of a card that must depend only on its group (plan §5.1): never on the
-// count, on the text or on a rejection (CA-14).
-async function cardLooks(page: Page) {
-  const looks: Record<string, unknown> = {};
-  for (const key of KEYS) {
-    looks[key] = {
-      card: await card(page, key).evaluate((el) => {
-        const style = getComputedStyle(el);
-        const name = getComputedStyle(el.querySelector("dt") as Element);
-        const value = getComputedStyle(el.querySelector("dd") as Element);
-        return [
-          ...["top", "right", "bottom", "left"].flatMap((side) => [
-            style.getPropertyValue(`border-${side}-color`),
-            style.getPropertyValue(`border-${side}-style`),
-            style.getPropertyValue(`border-${side}-width`),
-            style.getPropertyValue(`padding-${side}`),
-          ]),
-          style.backgroundColor,
-          name.color,
-          value.color,
-          value.display,
-          value.columnGap,
-        ].join("|");
-      }),
-      image: await imageStyle(page, key),
-    };
-  }
-  looks.fieldBackground = await computed(page, "text-field", "background-color");
-  return looks;
-}
 
 // The approved drawings, read from the design mockup (F-002 §5.3: copied as they are).
 function approvedImages() {
