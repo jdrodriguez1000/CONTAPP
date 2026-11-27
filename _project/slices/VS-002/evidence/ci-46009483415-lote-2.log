@@ -1,0 +1,452 @@
+checks	Run npm run test:e2e	﻿2026-11-27T13:43:43.4273408Z ##[group]Run npm run test:e2e
+checks	Run npm run test:e2e	2026-11-27T13:43:43.4273856Z ^[[36;1mnpm run test:e2e^[[0m
+checks	Run npm run test:e2e	2026-11-27T13:43:43.4296505Z shell: /usr/bin/bash -e {0}
+checks	Run npm run test:e2e	2026-11-27T13:43:43.4296889Z ##[endgroup]
+checks	Run npm run test:e2e	2026-11-27T13:43:43.5364456Z 
+checks	Run npm run test:e2e	2026-11-27T13:43:43.5365678Z > test:e2e
+checks	Run npm run test:e2e	2026-11-27T13:43:43.5366422Z > playwright test --project=iphone
+checks	Run npm run test:e2e	2026-11-27T13:43:43.5366916Z 
+checks	Run npm run test:e2e	2026-11-27T13:43:45.2749501Z 
+checks	Run npm run test:e2e	2026-11-27T13:43:45.2750559Z Running 166 tests using 2 workers
+checks	Run npm run test:e2e	2026-11-27T13:43:45.2751107Z 
+checks	Run npm run test:e2e	2026-11-27T13:43:50.1853099Z   ✓    1 [iphone] › tests/e2e/didactic-screen.spec.ts:98:3 › TC-059 — control, a 390 px: número, nombre y campo con la letra de VS-001, y el campo no baja de 16 px (CA-18) (3.6s)
+checks	Run npm run test:e2e	2026-11-27T13:43:50.6723312Z   ✓    2 [iphone] › tests/e2e/foreign-letters.spec.ts:35:1 › TC-016 — en el campo vacío, escribir "ç" y "Ç" no cambia nada ni muestra aviso (C-011, D-005) (4.1s)
+checks	Run npm run test:e2e	2026-11-27T13:43:51.0008413Z   ✓    3 [iphone] › tests/e2e/didactic-screen.spec.ts:98:3 › TC-059 — control, a 320 px: número, nombre y campo con la letra de VS-001, y el campo no baja de 16 px (CA-18) (792ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:51.8586635Z   ✓    5 [iphone] › tests/e2e/didactic-screen.spec.ts:118:3 › TC-059 — a 390 px, la imagen de cada grupo mide 44 × 44 px (CA-18) (829ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:52.5436948Z   ✓    6 [iphone] › tests/e2e/didactic-screen.spec.ts:133:3 › TC-064 — a 390 px, la ficha deja 8 px a los lados y 8 px entre la imagen y el número (656ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:52.7344985Z   ✓    4 [iphone] › tests/e2e/foreign-letters.spec.ts:50:1 › TC-017 — con "casa", escribir à â ö ß α ж uno a uno no cambia nada (C-011, D-005) (2.0s)
+checks	Run npm run test:e2e	2026-11-27T13:43:53.2157536Z   ✓    7 [iphone] › tests/e2e/didactic-screen.spec.ts:118:3 › TC-059 — a 320 px, la imagen de cada grupo mide 32 × 32 px (CA-18) (654ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:53.8730391Z   ✓    9 [iphone] › tests/e2e/didactic-screen.spec.ts:133:3 › TC-064 — a 320 px, la ficha deja 4 px a los lados y 4 px entre la imagen y el número (640ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:54.4486523Z   ✓   10 [iphone] › tests/e2e/didactic-screen.spec.ts:118:3 › TC-059 — a 359 px, la imagen de cada grupo mide 32 × 32 px (CA-18) (560ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:54.9464988Z   ✓    8 [iphone] › tests/e2e/foreign-letters.spec.ts:62:1 › TC-017 — borde: tampoco entran en mayúscula, de otros alfabetos o de ancho completo (C-011) (2.2s)
+checks	Run npm run test:e2e	2026-11-27T13:43:55.0472093Z   ✓   11 [iphone] › tests/e2e/didactic-screen.spec.ts:133:3 › TC-064 — a 359 px, la ficha deja 4 px a los lados y 4 px entre la imagen y el número (585ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:55.7155511Z   ✓   13 [iphone] › tests/e2e/didactic-screen.spec.ts:118:3 › TC-059 — a 360 px, la imagen de cada grupo mide 44 × 44 px (CA-18) (657ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:56.0473193Z   ✓   12 [iphone] › tests/e2e/foreign-letters.spec.ts:74:1 › TC-017 — borde: con el cursor en medio de "casa", la letra rechazada deja el cursor en su sitio (D-005) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:43:56.3793993Z   ✓   14 [iphone] › tests/e2e/didactic-screen.spec.ts:133:3 › TC-064 — a 360 px, la ficha deja 8 px a los lados y 8 px entre la imagen y el número (652ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:57.0914577Z   ✓   15 [iphone] › tests/e2e/foreign-letters.spec.ts:90:1 › TC-018 — con "casa", pegar "ç" o solo letras de otros idiomas no cambia nada (C-011, D-005) (1.0s)
+checks	Run npm run test:e2e	2026-11-27T13:43:57.1556576Z   ✓   16 [iphone] › tests/e2e/didactic-screen.spec.ts:150:1 › TC-060 — control: al abrir y con "casa", solo se ven el título, la etiqueta, los 4 nombres y los números, y el campo es el único control (C-009, C-013) (766ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:57.8203453Z   ✓   17 [iphone] › tests/e2e/foreign-letters.spec.ts:101:1 › TC-018 — borde: pegar "ç" sobre una parte seleccionada no borra lo seleccionado (C-011, D-005) (712ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:58.4032931Z   ✓   19 [iphone] › tests/e2e/foreign-letters.spec.ts:114:1 › TC-019 — control: ñ Ñ á É í Ó ú ü Ü sí entran: 7 vocales y 2 consonantes (C-001, C-002, C-011) (571ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:58.5472108Z   ✓   18 [iphone] › tests/e2e/didactic-screen.spec.ts:176:5 › TC-063 — a 390 × 844 en modo claro: las 4 fichas caben, con los nombres completos y sin desplazamiento horizontal, también con 100 "m" (CA-21) (1.4s)
+checks	Run npm run test:e2e	2026-11-27T13:43:59.0573721Z   ✓   20 [iphone] › tests/e2e/foreign-letters.spec.ts:125:1 › TC-019 — control: entra todo el alfabeto español, con tildes y ü, en minúscula y mayúscula (C-011) (645ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:59.6644316Z   ✓   22 [iphone] › tests/e2e/foreign-letters.spec.ts:137:1 › TC-029 — pegar "façade" en el campo vacío deja "faade": 3 vocales y 2 consonantes (C-011, C-016) (596ms)
+checks	Run npm run test:e2e	2026-11-27T13:43:59.8982511Z   ✓   21 [iphone] › tests/e2e/didactic-screen.spec.ts:176:5 › TC-063 — a 390 × 844 en modo oscuro: las 4 fichas caben, con los nombres completos y sin desplazamiento horizontal, también con 100 "m" (CA-21) (1.3s)
+checks	Run npm run test:e2e	2026-11-27T13:44:00.3157070Z   ✓   23 [iphone] › tests/e2e/foreign-letters.spec.ts:147:1 › TC-029 — borde: pegar "façade" en medio de "casa" entra en el cursor y el cursor queda tras lo que entró (C-016) (633ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:00.6994091Z   ✘   24 [iphone] › tests/e2e/didactic-screen.spec.ts:176:5 › TC-063 — a 320 × 568 en modo claro: las 4 fichas caben, con los nombres completos y sin desplazamiento horizontal, también con 100 "m" (CA-21) (692ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:00.9107547Z   ✓   25 [iphone] › tests/e2e/foreign-letters.spec.ts:159:1 › TC-029 — borde: de un texto mezclado entra lo demás en el mismo orden, con espacios, signos, dígitos y emoji (C-016) (582ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:01.4788924Z   ✓   26 [iphone] › tests/e2e/foreign-letters.spec.ts:170:1 › TC-033 — pegar "canción" con la "ó" en dos piezas entra completa y en una sola pieza (C-014) (559ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:02.1052971Z   ✓   28 [iphone] › tests/e2e/foreign-letters.spec.ts:181:1 › TC-033 — borde: á é í ó ú ü ñ en dos piezas, minúscula y mayúscula, entran en una sola pieza (C-014) (605ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:02.2983514Z   ✘   27 [iphone] › tests/e2e/didactic-screen.spec.ts:176:5 › TC-063 — a 320 × 568 en modo oscuro: las 4 fichas caben, con los nombres completos y sin desplazamiento horizontal, también con 100 "m" (CA-21) (780ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:02.6763269Z   ✓   29 [iphone] › tests/e2e/foreign-letters.spec.ts:197:1 › TC-035 — control: escribir "^" en el campo vacío entra y cuenta como otro (C-007, C-015) (563ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:03.3163224Z   ✓   30 [iphone] › tests/e2e/foreign-letters.spec.ts:207:1 › TC-035 — control: las tildes sueltas, 1️⃣, ² ½ ª º sí entran y cuentan como otros (C-007, C-015) (619ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:04.0763015Z   ✓   32 [iphone] › tests/e2e/foreign-letters.spec.ts:218:1 › TC-036 — pegar "٣" en el campo vacío no cambia nada (C-006, C-011, C-015) (747ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:04.1156432Z   ✓   31 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 390 px con "0": la imagen entera y el número completo caben en su ficha (A-001, CA-21) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:04.8156755Z   ✓   33 [iphone] › tests/e2e/foreign-letters.spec.ts:225:1 › TC-036 — pegar "a٣b" deja "ab": 1 vocal, 1 consonante y 0 números (C-015, C-016) (725ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:05.1721562Z   ✓   34 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 390 px con "9" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (1.0s)
+checks	Run npm run test:e2e	2026-11-27T13:44:05.7094200Z   ✓   35 [iphone] › tests/e2e/foreign-letters.spec.ts:235:1 › TC-036 — borde: tampoco entran dígitos de otros sistemas (devanagari y de ancho completo) (C-015) (882ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:06.2659488Z   ✓   36 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 390 px con "10" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:06.2886142Z   ✓   37 [iphone] › tests/e2e/foreign-letters.spec.ts:247:1 › TC-038 — pegar "ca" + invisible suelto + "sa" deja "casa", de 4 caracteres (C-015) (564ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:07.1434628Z   ✓   39 [iphone] › tests/e2e/foreign-letters.spec.ts:258:3 › TC-038 — borde: el invisible U+200B no entra, ni solo ni en medio de un texto (C-015) (840ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:07.3513254Z   ✓   38 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 390 px con "100" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:08.0612582Z   ✓   40 [iphone] › tests/e2e/foreign-letters.spec.ts:258:3 › TC-038 — borde: el invisible U+200D no entra, ni solo ni en medio de un texto (C-015) (908ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:08.4182630Z   ✓   41 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 390 px con "100" en Consonantes: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:08.9514151Z   ✓   42 [iphone] › tests/e2e/foreign-letters.spec.ts:258:3 › TC-038 — borde: el invisible U+2060 no entra, ni solo ni en medio de un texto (C-015) (875ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:09.4321516Z   ✓   43 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 390 px con "100" en Números: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (1.0s)
+checks	Run npm run test:e2e	2026-11-27T13:44:09.8702470Z   ✓   44 [iphone] › tests/e2e/foreign-letters.spec.ts:258:3 › TC-038 — borde: el invisible U+FEFF no entra, ni solo ni en medio de un texto (C-015) (910ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:10.4771256Z   ✓   45 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 390 px con "100" en Otros: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (1.0s)
+checks	Run npm run test:e2e	2026-11-27T13:44:10.8063969Z   ✓   46 [iphone] › tests/e2e/foreign-letters.spec.ts:258:3 › TC-038 — borde: el invisible U+00AD no entra, ni solo ni en medio de un texto (C-015) (918ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:11.4120131Z   ✘   47 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "0": la imagen entera y el número completo caben en su ficha (A-001, CA-21) (806ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:11.6763368Z   ✓   48 [iphone] › tests/e2e/foreign-letters.spec.ts:258:3 › TC-038 — borde: el invisible U+FE0F no entra, ni solo ni en medio de un texto (C-015) (858ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:12.3248378Z   ✓   49 [iphone] › tests/e2e/foreign-letters.spec.ts:271:1 › TC-038 — control: la familia, la bandera, el tono de piel y el corazón entran completos, con sus piezas (C-007) (638ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:12.9873665Z   ✓   51 [iphone] › tests/e2e/foreign-letters.spec.ts:284:1 › TC-038 — control: el filtro no quita tabulaciones, saltos de línea ni el espacio que no se parte (C-008, C-015) (653ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:13.0957762Z   ✘   50 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "9" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (849ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:13.5559021Z   ✓   52 [iphone] › tests/e2e/foreign-letters.spec.ts:295:1 › TC-040 — pegar "niño" con la "ñ" en dos piezas entra completa y en una sola pieza (C-002, C-014) (553ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:14.4780093Z   ✓   53 [iphone] › tests/e2e/foreign-letters.spec.ts:306:1 › TC-041 — con "casa", pegar "à" en dos piezas no cambia nada: tampoco entra la "a" sola (C-014, D-005) (911ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:14.7518822Z   ✘   54 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "10" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (868ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:15.0284886Z   ✓   55 [iphone] › tests/e2e/foreign-letters.spec.ts:316:1 › TC-041 — en el campo vacío, pegar "càsa" con la "à" en dos piezas deja "csa" (C-011, C-014, C-016) (533ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:16.0934728Z   ✓   56 [iphone] › tests/e2e/foreign-letters.spec.ts:326:1 › TC-041 — borde: "ç" y "ê" en dos piezas, y una "á" con un segundo signo ajeno, no entran (C-011, C-014) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:16.3847535Z   ✘   57 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (848ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:16.9925631Z   ✓   58 [iphone] › tests/e2e/foreign-letters.spec.ts:342:1 › TC-041 — borde: un signo suelto no entra, ni en el campo vacío ni detrás de una letra ya escrita (C-015, plan R-7) (888ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:17.5163531Z   ✓   60 [iphone] › tests/e2e/group-look.spec.ts:95:3 › TC-052 — modo claro: el número de cada ficha lleva el color de su grupo (491ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:18.0070838Z   ✘   59 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Consonantes: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (849ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:18.0886523Z   ✓   61 [iphone] › tests/e2e/group-look.spec.ts:103:3 › TC-052 — modo claro: los 4 lados del borde de cada ficha llevan el color de su grupo (565ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:18.5772867Z   ✓   62 [iphone] › tests/e2e/group-look.spec.ts:118:3 › TC-052 — modo claro: los 4 colores de los números son distintos entre sí (475ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:19.5583308Z   ✓   63 [iphone] › tests/e2e/group-look.spec.ts:128:3 › TC-052 — modo claro: cada ficha toma el color de su token y no de un color suelto (969ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:19.7091090Z   ✘   64 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Números: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (887ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:19.9949320Z   ✓   65 [iphone] › tests/e2e/group-look.spec.ts:169:3 › TC-052 — modo claro: cada ficha tiene la clase de su grupo y no la de otro (424ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:20.7361097Z   ✓   66 [iphone] › tests/e2e/group-look.spec.ts:184:3 › TC-052 — control, modo claro: borde punteado de 2 px, fondo de la ficha, nombre y fondo del campo sin cambio (731ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:21.3593171Z   ✓   68 [iphone] › tests/e2e/group-look.spec.ts:211:3 › TC-052 — control, modo claro: contraste de 4,5:1 o más sobre la ficha y como letra sobre el campo (606ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:21.3782477Z   ✘   67 [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Otros: la imagen entera y el número completo caben en su ficha (A-001, CA-21) (838ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:21.7692979Z   ✓   69 [iphone] › tests/e2e/group-look.spec.ts:95:3 › TC-052 — modo oscuro: el número de cada ficha lleva el color de su grupo (400ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:22.2712968Z   ✓   70 [iphone] › tests/e2e/group-look.spec.ts:103:3 › TC-052 — modo oscuro: los 4 lados del borde de cada ficha llevan el color de su grupo (484ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:22.8578766Z   ✓   72 [iphone] › tests/e2e/group-look.spec.ts:118:3 › TC-052 — modo oscuro: los 4 colores de los números son distintos entre sí (575ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:23.0424513Z   ✓   71 [iphone] › tests/e2e/max-length.spec.ts:33:1 › TC-020 — control: con 99 "a", escribir "b" entra y quedan 100, sin aviso (A-001) (931ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:23.6296141Z   ✓   73 [iphone] › tests/e2e/group-look.spec.ts:128:3 › TC-052 — modo oscuro: cada ficha toma el color de su token y no de un color suelto (757ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:24.1065724Z   ✓   75 [iphone] › tests/e2e/group-look.spec.ts:169:3 › TC-052 — modo oscuro: cada ficha tiene la clase de su grupo y no la de otro (467ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:24.1905171Z   ✓   74 [iphone] › tests/e2e/max-length.spec.ts:43:1 › TC-021 — con 100 caracteres, escribir "c" no entra y no hay aviso ni marca de límite (A-001, D-007) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:24.8359423Z   ✓   76 [iphone] › tests/e2e/group-look.spec.ts:184:3 › TC-052 — control, modo oscuro: borde punteado de 2 px, fondo de la ficha, nombre y fondo del campo sin cambio (720ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:25.4342983Z   ✓   78 [iphone] › tests/e2e/group-look.spec.ts:211:3 › TC-052 — control, modo oscuro: contraste de 4,5:1 o más sobre la ficha y como letra sobre el campo (585ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:26.0118430Z   ✓   77 [iphone] › tests/e2e/max-length.spec.ts:53:1 › TC-021 — borde: con 100, tampoco entran un espacio, un salto de línea, un dígito, un emoji ni un pegado (A-001, D-007) (1.8s)
+checks	Run npm run test:e2e	2026-11-27T13:44:26.1381619Z   ✓   79 [iphone] › tests/e2e/group-look.spec.ts:343:3 › TC-050 — modo claro: al abrir, las 4 fichas en orden, cada una con su imagen, "0" y su nombre; las 4 imágenes son distintas (694ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:26.7473137Z   ✓   81 [iphone] › tests/e2e/group-look.spec.ts:362:3 › TC-050 — modo claro: cada imagen va a la izquierda de su número, en la misma fila (44 px y 8 px de separación) (599ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:27.4581204Z   ✓   82 [iphone] › tests/e2e/group-look.spec.ts:343:3 › TC-051 — modo oscuro: al abrir, las 4 fichas en orden, cada una con su imagen, "0" y su nombre; las 4 imágenes son distintas (695ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:27.7513860Z   ✓   80 [iphone] › tests/e2e/max-length.spec.ts:66:1 › TC-021 — borde: con 100, escribir en medio no entra, no se pierde el último carácter y el cursor no se mueve (D-007) (1.7s)
+checks	Run npm run test:e2e	2026-11-27T13:44:28.0719497Z   ✓   83 [iphone] › tests/e2e/group-look.spec.ts:362:3 › TC-051 — modo oscuro: cada imagen va a la izquierda de su número, en la misma fila (44 px y 8 px de separación) (599ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:28.8081299Z   ✓   84 [iphone] › tests/e2e/max-length.spec.ts:78:1 › TC-021 — borde: con 100, al borrar uno vuelve a entrar exactamente uno (A-001) (1.0s)
+checks	Run npm run test:e2e	2026-11-27T13:44:28.8113108Z   ✓   85 [iphone] › tests/e2e/group-look.spec.ts:374:1 › TC-050 — cada ficha pinta el dibujo aprobado de su grupo (boca, rompecabezas, mano y carita) y no el de otro (727ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:29.5704808Z   ✓   86 [iphone] › tests/e2e/max-length.spec.ts:92:1 › TC-021 — control: con 100, escribir sobre un carácter seleccionado lo reemplaza (A-001) (753ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:30.1523217Z   ✓   88 [iphone] › tests/e2e/max-length.spec.ts:103:1 › TC-022 — pegar 150 "a" en el campo vacío deja entrar 100, sin aviso (A-001, D-007) (571ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:30.1566189Z   ✓   87 [iphone] › tests/e2e/group-look.spec.ts:406:1 › TC-053 — escribir "¡Hola, 2026! 😀" da 2/2/4/4 con la imagen y el color iguales que vacía, y al borrar todo siguen iguales con los 4 en 0 (1.3s)
+checks	Run npm run test:e2e	2026-11-27T13:44:30.7527519Z   ✓   89 [iphone] › tests/e2e/max-length.spec.ts:113:1 › TC-022 — borde: al pegar 101 entra el comienzo de lo pegado y se queda por fuera solo el final (A-001, D-007) (590ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:31.3547802Z   ✓   91 [iphone] › tests/e2e/max-length.spec.ts:124:1 › TC-022 — control: pegar exactamente 100 entra completo (A-001) (588ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:31.4055927Z   ✓   90 [iphone] › tests/e2e/group-look.spec.ts:425:1 › TC-054 — con "casa", escribir "ç" no entra y la imagen y el color de las fichas no cambian, sin aviso (C-011, D-005) (1.2s)
+checks	Run npm run test:e2e	2026-11-27T13:44:32.0904799Z   ✓   92 [iphone] › tests/e2e/max-length.spec.ts:132:1 › TC-022 — borde: lo que el filtro rechaza no ocupa lugar en los 100 (A-001, C-016) (721ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:32.5291548Z   ✓   93 [iphone] › tests/e2e/group-look.spec.ts:440:1 › TC-054 — borde: con 100 caracteres, escribir "b" no entra y la imagen y el color de las fichas no cambian, sin aviso (A-001, D-007) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:33.0433207Z   ✓   94 [iphone] › tests/e2e/max-length.spec.ts:142:1 › TC-023 — con 99 "a", pegar la familia entra porque ocupa 1; luego "b" no entra (A-001, C-007) (938ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:33.7458758Z   ✓   96 [iphone] › tests/e2e/max-length.spec.ts:153:1 › TC-023 — borde: caben 100 familias completas y la 101 no entra (A-001) (695ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:34.0464563Z   ✓   95 [iphone] › tests/e2e/group-look.spec.ts:455:1 › TC-055 — control: al abrir y escribir "casa", todo se pide a la misma dirección de la app, nada lleva el texto y nada queda guardado (C-010) (1.5s)
+checks	Run npm run test:e2e	2026-11-27T13:44:34.4013008Z   ✓   97 [iphone] › tests/e2e/max-length.spec.ts:163:1 › TC-023 — borde: con 99, de dos banderas entra una completa, nunca media (A-001, D-007) (644ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:34.6634420Z   ✓   98 [iphone] › tests/e2e/group-look.spec.ts:502:1 › TC-056 — control: cada ficha se lee como su nombre y su número, sin nada más por la imagen, y el nombre se ve escrito (C-013) (601ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:35.4012548Z   ✓   99 [iphone] › tests/e2e/max-length.spec.ts:173:1 › TC-028 — los espacios ocupan lugar: con "a " repetido hasta 99 entra un espacio y "b" ya no (A-001, D-007) (990ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:36.0526264Z   ✓  101 [iphone] › tests/e2e/max-length.spec.ts:190:3 › TC-028 — borde: un salto de línea también ocupa lugar en los 100 (A-001) (638ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:36.6674941Z   ✓  100 [iphone] › tests/e2e/round1.spec.ts:60:3 › TC-043 — volver con "atrás" (tras abrir otra dirección) deja el campo vacío y los 4 en 0 (CA-7, D-017, C-010) (2.0s)
+checks	Run npm run test:e2e	2026-11-27T13:44:36.8067807Z   ✓  102 [iphone] › tests/e2e/max-length.spec.ts:190:3 › TC-028 — borde: una tabulación también ocupa lugar en los 100 (A-001) (742ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:37.5610271Z   ✓  104 [iphone] › tests/e2e/max-length.spec.ts:200:1 › TC-030 — con 98 "a", pegar "xyz" en medio deja entrar "xy" ahí y el cursor queda después (A-001, D-007) (744ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:38.1058694Z   ✓  105 [iphone] › tests/e2e/max-length.spec.ts:211:1 › TC-030 — borde: con 100, pegar "xyz" sobre 2 seleccionados deja entrar solo "xy" (A-001, D-007) (537ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:38.7356238Z   ✓  103 [iphone] › tests/e2e/round1.spec.ts:60:3 › TC-043 — volver con "atrás" (tras navegar desde la propia página) deja el campo vacío y los 4 en 0 (CA-7, D-017, C-010) (2.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:38.7946225Z   ✓  106 [iphone] › tests/e2e/max-length.spec.ts:222:1 › TC-042 — con 99 "a", pegar "ñ" en dos piezas entra completa porque ocupa 1; luego "b" no entra (A-001, C-014, D-007) (681ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:39.1678578Z   ✓  107 [iphone] › tests/e2e/round1.spec.ts:129:1 › TC-044 — control: en este navegador de pruebas, deshacer y rehacer sí funcionan en un campo sin la app (415ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:39.4678407Z   ✓  108 [iphone] › tests/e2e/max-length.spec.ts:234:1 › TC-042 — borde: 101 letras en dos piezas pegadas dejan entrar 100 completas, sin partir ninguna (A-001, C-014) (652ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:40.1314176Z   ✓  109 [iphone] › tests/e2e/round1.spec.ts:145:3 › TC-044 — "casa", escribir una letra ajena, deshacer y rehacer con el teclado: queda "casa" (CA-5, CA-8) (958ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:40.1803402Z   ✓  110 [iphone] › tests/e2e/screen.spec.ts:39:1 › TC-001 — al abrir: campo vacío, los 4 grupos en 0 y sin pantalla de cuenta (C-010, C-012) (683ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:41.0069346Z   ✓  112 [iphone] › tests/e2e/screen.spec.ts:82:1 › TC-026 — los grupos se llaman exactamente Vocales, Consonantes, Números y Otros, en ese orden (C-013) (819ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:41.1164294Z   ✓  111 [iphone] › tests/e2e/round1.spec.ts:161:3 › TC-044 — borde: deshacer y rehacer varias veces seguidas con el teclado nunca inventa ni repite texto (974ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:41.6983439Z   ✓  113 [iphone] › tests/e2e/screen.spec.ts:129:1 › TC-031 — el campo apaga corrector y sugerencias del teclado (C-009, D-009) (677ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:41.8873446Z   ✓  114 [iphone] › tests/e2e/round1.spec.ts:176:3 › TC-044 — control: pegar "façade" y rehacer sin haber deshecho con el teclado: queda "faade" (CA-5, C-016) (758ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:42.1864928Z   ✓  115 [iphone] › tests/e2e/screen.spec.ts:154:1 › TC-031 — escribir "cas" y un espacio deja el texto igual, "cas " (C-009, D-009) (467ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:42.6741493Z   ✓  116 [iphone] › tests/e2e/round1.spec.ts:190:3 › TC-044 — pegar "façade", deshacer y rehacer con el teclado: queda "faade" (CA-5, CA-8) (776ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:42.8126128Z   ✓  117 [iphone] › tests/e2e/screen.spec.ts:166:1 › TC-031 — el texto del campo es solo lo escrito, con mayúsculas tal cual y salto de línea (C-009, A-001) (623ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:43.7719499Z   ✓  118 [iphone] › tests/e2e/round1.spec.ts:145:3 › TC-044 — "casa", escribir una letra ajena, deshacer y rehacer con la orden de edición: queda "casa" (CA-5, CA-8) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:44.0330820Z   ✓  119 [iphone] › tests/e2e/screen.spec.ts:180:1 › P-3 — el campo empieza en 2 líneas, crece hasta 5, luego se desplaza por dentro y vuelve a encoger (1.2s)
+checks	Run npm run test:e2e	2026-11-27T13:44:44.7603836Z   ✓  120 [iphone] › tests/e2e/round1.spec.ts:161:3 › TC-044 — borde: deshacer y rehacer varias veces seguidas con la orden de edición nunca inventa ni repite texto (979ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:44.8853991Z   ✓  121 [iphone] › tests/e2e/screen.spec.ts:230:1 › P-3 — el campo también crece letra por letra cuando el texto pasa de renglón, sin desplazamiento horizontal (840ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:45.5105824Z   ✓  122 [iphone] › tests/e2e/round1.spec.ts:176:3 › TC-044 — control: pegar "façade" y rehacer sin haber deshecho con la orden de edición: queda "faade" (CA-5, C-016) (737ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:45.6937417Z   ✓  123 [iphone] › tests/e2e/screen.spec.ts:247:3 › P-3 — a 390 px las 4 fichas caben, sin desplazamiento horizontal y con la letra del diseño (799ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:46.3063503Z   ✓  124 [iphone] › tests/e2e/round1.spec.ts:190:3 › TC-044 — pegar "façade", deshacer y rehacer con la orden de edición: queda "faade" (CA-5, CA-8) (785ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:46.4673169Z   ✓  125 [iphone] › tests/e2e/screen.spec.ts:247:3 › P-3 — a 320 px las 4 fichas caben, sin desplazamiento horizontal y con la letra del diseño (759ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:46.9645200Z   ✓  127 [iphone] › tests/e2e/screen.spec.ts:283:1 › P-3 — los colores siguen el modo claro u oscuro del celular, sin botón (D-010) (488ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:47.3667753Z   ✓  126 [iphone] › tests/e2e/round1.spec.ts:221:5 › TC-045 — pegar c con cedilla + U+20E3 no entra, en el campo vacío ni tras "casa" (C-011, C-015) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:47.4373466Z   ✓  128 [iphone] › tests/e2e/skeleton.spec.ts:4:1 › P-1: la página abre con el título Contapp (456ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:48.0849324Z   ✓  130 [iphone] › tests/e2e/typing.spec.ts:48:1 › TC-002 — escribir "casa" letra por letra cambia los conteos al instante con cada letra (C-001) (629ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:48.3785006Z   ✓  129 [iphone] › tests/e2e/round1.spec.ts:221:5 › TC-045 — pegar c con cedilla + U+FE0F + U+20E3 no entra, en el campo vacío ni tras "casa" (C-011, C-015) (998ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:48.8123596Z   ✓  131 [iphone] › tests/e2e/typing.spec.ts:66:1 › TC-002 — pegar una frase, o reemplazarla, también cuenta al instante los 4 grupos (C-006, C-007, C-008) (714ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:49.5190537Z   ✓  132 [iphone] › tests/e2e/round1.spec.ts:221:5 › TC-045 — pegar alfa griega + U+20E3 no entra, en el campo vacío ni tras "casa" (C-011, C-015) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:49.7986366Z   ✓  133 [iphone] › tests/e2e/typing.spec.ts:84:1 › TC-003 — borrar una letra de "casa" baja los conteos y borrar todo deja los 4 en 0 (C-012) (977ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:50.4096338Z   ✓  135 [iphone] › tests/e2e/typing.spec.ts:114:1 › TC-003 — al borrar hasta dejar solo espacios y saltos de línea, los 4 quedan en 0 (C-012, C-008) (601ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:50.5744859Z   ✓  134 [iphone] › tests/e2e/round1.spec.ts:221:5 › TC-045 — pegar alfa griega + U+FE0F + U+20E3 no entra, en el campo vacío ni tras "casa" (C-011, C-015) (1.0s)
+checks	Run npm run test:e2e	2026-11-27T13:44:51.4701049Z   ✓  136 [iphone] › tests/e2e/typing.spec.ts:129:1 › TC-024 — escribir "casa" y recargar deja el campo vacío y los 4 en 0, sin guardar nada (C-010) (1.0s)
+checks	Run npm run test:e2e	2026-11-27T13:44:51.6783913Z   ✓  137 [iphone] › tests/e2e/round1.spec.ts:221:5 › TC-045 — pegar zhe cirílica + U+20E3 no entra, en el campo vacío ni tras "casa" (C-011, C-015) (1.1s)
+checks	Run npm run test:e2e	2026-11-27T13:44:52.5971057Z   ✓  139 [iphone] › tests/e2e/round1.spec.ts:221:5 › TC-045 — pegar zhe cirílica + U+FE0F + U+20E3 no entra, en el campo vacío ni tras "casa" (C-011, C-015) (907ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:52.9947387Z   ✓  138 [iphone] › tests/e2e/typing.spec.ts:150:1 › TC-025 — al escribir "casa" no sale ninguna petición y ninguna lleva el texto (C-010) (1.5s)
+checks	Run npm run test:e2e	2026-11-27T13:44:53.4443069Z   ✓  140 [iphone] › tests/e2e/round1.spec.ts:221:5 › TC-045 — pegar tres de otro alfabeto + U+20E3 no entra, en el campo vacío ni tras "casa" (C-011, C-015) (837ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:54.1672144Z   ✓  142 [iphone] › tests/e2e/round1.spec.ts:221:5 › TC-045 — pegar tres de otro alfabeto + U+FE0F + U+20E3 no entra, en el campo vacío ni tras "casa" (C-011, C-015) (709ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:54.8303805Z   ✓  143 [iphone] › tests/e2e/round1.spec.ts:221:5 › TC-045 — pegar a grave en dos piezas + U+20E3 no entra, en el campo vacío ni tras "casa" (C-011, C-015) (654ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:55.5175921Z   ✓  141 [iphone] › tests/e2e/typing.spec.ts:186:1 › TC-027 — escribir "cas" y esperar: el texto sigue "cas" y la app no propone nada (C-009) (2.5s)
+checks	Run npm run test:e2e	2026-11-27T13:44:55.5246024Z   ✓  144 [iphone] › tests/e2e/round1.spec.ts:221:5 › TC-045 — pegar a grave en dos piezas + U+FE0F + U+20E3 no entra, en el campo vacío ni tras "casa" (C-011, C-015) (687ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:55.9803505Z   ✓  145 [iphone] › tests/e2e/round1.spec.ts:235:1 › TC-045 — borde: en "ab" pegado con una c con cedilla + U+20E3 en medio entra solo "ab" (C-016) (449ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:56.5441257Z   ✓  146 [iphone] › tests/e2e/round1.spec.ts:243:1 › TC-045 — con "c" escrita, pegar U+0327 + U+20E3 no la cambia (C-011, C-015) (556ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:57.1008463Z   ✓  147 [iphone] › tests/e2e/round1.spec.ts:250:1 › TC-045 — con "1" escrito, pegar U+20E3 solo no lo cambia: sigue 1 número (C-015) (548ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:57.5322872Z   ✓  148 [iphone] › tests/e2e/round1.spec.ts:259:1 › TC-045 — control: la tecla 1️⃣ sigue entrando como 1 otro (CA-10, C-015) (420ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:57.9673335Z   ✓  149 [iphone] › tests/e2e/round1.spec.ts:269:3 › TC-045 — pegar U+0D4E delante de un emoji: entra solo el emoji (C-011, C-015) (429ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:58.4297124Z   ✓  150 [iphone] › tests/e2e/round1.spec.ts:269:3 › TC-045 — pegar U+0600 delante de un emoji: entra solo el emoji (C-011, C-015) (454ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:58.9816958Z   ✓  151 [iphone] › tests/e2e/round1.spec.ts:278:1 › TC-045 — con "1" escrito, pegar U+FE0F + U+20E3 no lo convierte en tecla: sigue 1 número (C-015) (544ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:59.4446901Z   ✓  152 [iphone] › tests/e2e/round1.spec.ts:287:1 › TC-045 — pegar la tecla 1️⃣ con una tilde detrás: entra la tecla intacta, sin la tilde (D-018) (455ms)
+checks	Run npm run test:e2e	2026-11-27T13:44:59.8703372Z   ✓  153 [iphone] › tests/e2e/round1.spec.ts:295:1 › TC-049 — pegar un emoji con 2000 tildes detrás: entra solo el emoji (CA-11, D-018, A-001) (418ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:00.4170985Z   ✓  154 [iphone] › tests/e2e/round1.spec.ts:308:1 › TC-046 — con "casa", escribir la s larga (U+017F) no cambia nada (C-011, D-005) (539ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:00.8306575Z   ✓  155 [iphone] › tests/e2e/round1.spec.ts:317:1 › TC-046 — pegar "casa" escrita con s larga en el campo vacío deja "caa" (C-016) (404ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:01.2799999Z   ✓  156 [iphone] › tests/e2e/round1.spec.ts:381:3 › TC-047 — pegar sobre una selección: "casa", "as" ← "aç" → "caa" (C-016, D-005) (440ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:01.7472964Z   ✓  157 [iphone] › tests/e2e/round1.spec.ts:381:3 › TC-047 — pegar sobre una selección: "casa" entera ← "caç" → "ca" (C-016, D-005) (455ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:02.2049034Z   ✓  158 [iphone] › tests/e2e/round1.spec.ts:381:3 › TC-047 — pegar sobre una selección: "banana" entera ← "ban" + dígito ajeno → "ban" (C-016, D-005) (450ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:02.6507205Z   ✓  159 [iphone] › tests/e2e/round1.spec.ts:381:3 › TC-047 — pegar sobre una selección: 100 letras seleccionadas ← 10 iguales + letra ajena → quedan las 10 (C-016, D-005) (439ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:03.1114397Z   ✓  160 [iphone] › tests/e2e/round1.spec.ts:381:3 › TC-047 — pegar sobre una selección: control: "casa" entera ← "casa" + letra ajena → "casa", ya sin selección (C-016, D-005) (452ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:03.5386935Z   ✓  161 [iphone] › tests/e2e/round1.spec.ts:407:3 › TC-048 — con "casa", pegar espacio + U+0300: entra el blanco y la tilde no (CA-11, D-018) (419ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:03.9806778Z   ✓  162 [iphone] › tests/e2e/round1.spec.ts:407:3 › TC-048 — con "casa", pegar espacio + U+0327: entra el blanco y la tilde no (CA-11, D-018) (435ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:04.4277363Z   ✓  163 [iphone] › tests/e2e/round1.spec.ts:407:3 › TC-048 — con "casa", pegar espacio que no se parte + U+0300: entra el blanco y la tilde no (CA-11, D-018) (439ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:04.8755063Z   ✓  164 [iphone] › tests/e2e/round1.spec.ts:407:3 › TC-048 — control: con "casa", pegar tabulación + U+0300: entra el blanco y la tilde no (CA-11, D-018) (440ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.3034805Z   ✓  165 [iphone] › tests/e2e/round1.spec.ts:407:3 › TC-048 — control: con "casa", pegar salto de línea + U+0300: entra el blanco y la tilde no (CA-11, D-018) (418ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.7265476Z   ✓  166 [iphone] › tests/e2e/round1.spec.ts:407:3 › TC-048 — con "casa", pegar espacio + 3 tildes: entra el blanco y la tilde no (CA-11, D-018) (415ms)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8093744Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8102613Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8113159Z   1) [iphone] › tests/e2e/didactic-screen.spec.ts:176:5 › TC-063 — a 320 × 568 en modo claro: las 4 fichas caben, con los nombres completos y sin desplazamiento horizontal, también con 100 "m" (CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8114387Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8114770Z     Error: width of the card of vowel: 133.21875px, expected 138px
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8115183Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8115486Z     expect(received).toBeLessThanOrEqual(expected)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8115836Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8115985Z     Expected: <= 1
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8116350Z     Received:    4.78125
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8116567Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8116782Z       77 |       Math.abs(cardBox.width - column),
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8117273Z       78 |       `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8117854Z     > 79 |     ).toBeLessThanOrEqual(1);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8118262Z          |       ^
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8118594Z       80 |
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8119115Z       81 |     await expect(card.locator("dt")).toHaveText(NAMES[index]);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8119804Z       82 |     const inside = await contentSides(card);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8120832Z         at expectCardsFit (/home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:79:7)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8121860Z         at /home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:182:7
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8122361Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8125147Z     Error Context: test-results/didactic-screen-TC-063-—-a-3f875-al-también-con-100-m-CA-21--iphone/error-context.md
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8125858Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8126497Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8127253Z     test-results/didactic-screen-TC-063-—-a-3f875-al-también-con-100-m-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8127689Z     Usage:
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8127816Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8128305Z         npx playwright show-trace test-results/didactic-screen-TC-063-—-a-3f875-al-también-con-100-m-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8128907Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8129273Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8129944Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8131087Z   2) [iphone] › tests/e2e/didactic-screen.spec.ts:176:5 › TC-063 — a 320 × 568 en modo oscuro: las 4 fichas caben, con los nombres completos y sin desplazamiento horizontal, también con 100 "m" (CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8131750Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8131971Z     Error: width of the card of vowel: 133.21875px, expected 138px
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8132210Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8132381Z     expect(received).toBeLessThanOrEqual(expected)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8132606Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8132711Z     Expected: <= 1
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8132946Z     Received:    4.78125
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8133097Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8133242Z       77 |       Math.abs(cardBox.width - column),
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8133684Z       78 |       `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8134089Z     > 79 |     ).toBeLessThanOrEqual(1);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8134358Z          |       ^
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8134576Z       80 |
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8134893Z       81 |     await expect(card.locator("dt")).toHaveText(NAMES[index]);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8135297Z       82 |     const inside = await contentSides(card);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8135946Z         at expectCardsFit (/home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:79:7)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8136569Z         at /home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:182:7
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8136875Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8137349Z     Error Context: test-results/didactic-screen-TC-063-—-a-c63e9-al-también-con-100-m-CA-21--iphone/error-context.md
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8137771Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8138141Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8138811Z     test-results/didactic-screen-TC-063-—-a-c63e9-al-también-con-100-m-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8139229Z     Usage:
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8139345Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8139819Z         npx playwright show-trace test-results/didactic-screen-TC-063-—-a-c63e9-al-también-con-100-m-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8140249Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8140568Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8141123Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8141713Z   3) [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "0": la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8142182Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8142382Z     Error: width of the card of vowel: 133.21875px, expected 138px
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8142625Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8142788Z     expect(received).toBeLessThanOrEqual(expected)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8142992Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8143091Z     Expected: <= 1
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8143318Z     Received:    4.78125
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8143467Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8143612Z       77 |       Math.abs(cardBox.width - column),
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8144032Z       78 |       `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8144529Z     > 79 |     ).toBeLessThanOrEqual(1);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8144942Z          |       ^
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8145254Z       80 |
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8145623Z       81 |     await expect(card.locator("dt")).toHaveText(NAMES[index]);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8146025Z       82 |     const inside = await contentSides(card);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8146532Z         at expectCardsFit (/home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:79:7)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8147115Z         at /home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:218:7
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8147410Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8147891Z     Error Context: test-results/didactic-screen-TC-064-—-a-fdd75-en-en-su-ficha-A-001-CA-21--iphone/error-context.md
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8148299Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8148663Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8149452Z     test-results/didactic-screen-TC-064-—-a-fdd75-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8149888Z     Usage:
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8150006Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8150482Z         npx playwright show-trace test-results/didactic-screen-TC-064-—-a-fdd75-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8151179Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8151527Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8151783Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8152399Z   4) [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "9" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8152906Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8153116Z     Error: width of the card of vowel: 133.21875px, expected 138px
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8153353Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8153526Z     expect(received).toBeLessThanOrEqual(expected)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8153751Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8153845Z     Expected: <= 1
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8154096Z     Received:    4.78125
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8154238Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8154388Z       77 |       Math.abs(cardBox.width - column),
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8154813Z       78 |       `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8155228Z     > 79 |     ).toBeLessThanOrEqual(1);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8155496Z          |       ^
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8155696Z       80 |
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8156012Z       81 |     await expect(card.locator("dt")).toHaveText(NAMES[index]);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8156411Z       82 |     const inside = await contentSides(card);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8156918Z         at expectCardsFit (/home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:79:7)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8157510Z         at /home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:218:7
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8157796Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8158255Z     Error Context: test-results/didactic-screen-TC-064-—-a-71d3b-en-en-su-ficha-A-001-CA-21--iphone/error-context.md
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8158683Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8159042Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8159760Z     test-results/didactic-screen-TC-064-—-a-71d3b-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8160430Z     Usage:
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8160602Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8161599Z         npx playwright show-trace test-results/didactic-screen-TC-064-—-a-71d3b-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8162310Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8162838Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8163267Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8164272Z   5) [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "10" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8165172Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8165503Z     Error: width of the card of vowel: 133.21875px, expected 138px
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8166101Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8166343Z     expect(received).toBeLessThanOrEqual(expected)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8166696Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8166842Z     Expected: <= 1
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8167202Z     Received:    4.78125
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8167419Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8167631Z       77 |       Math.abs(cardBox.width - column),
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8168312Z       78 |       `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8168934Z     > 79 |     ).toBeLessThanOrEqual(1);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8169354Z          |       ^
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8169653Z       80 |
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8170116Z       81 |     await expect(card.locator("dt")).toHaveText(NAMES[index]);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8170551Z       82 |     const inside = await contentSides(card);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8171323Z         at expectCardsFit (/home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:79:7)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8171956Z         at /home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:218:7
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8172282Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8172846Z     Error Context: test-results/didactic-screen-TC-064-—-a-0c577-en-en-su-ficha-A-001-CA-21--iphone/error-context.md
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8173431Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8173833Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8174540Z     test-results/didactic-screen-TC-064-—-a-0c577-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8174992Z     Usage:
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8175110Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8175615Z         npx playwright show-trace test-results/didactic-screen-TC-064-—-a-0c577-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8176051Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8176377Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8176660Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8177291Z   6) [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8177807Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8178006Z     Error: width of the card of vowel: 139.859375px, expected 138px
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8178267Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8178430Z     expect(received).toBeLessThanOrEqual(expected)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8178641Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8178741Z     Expected: <= 1
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8178970Z     Received:    1.859375
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8179121Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8179311Z       77 |       Math.abs(cardBox.width - column),
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8179939Z       78 |       `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8180546Z     > 79 |     ).toBeLessThanOrEqual(1);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8181040Z          |       ^
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8181319Z       80 |
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8181634Z       81 |     await expect(card.locator("dt")).toHaveText(NAMES[index]);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8182041Z       82 |     const inside = await contentSides(card);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8182836Z         at expectCardsFit (/home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:79:7)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8183428Z         at /home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:218:7
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8183732Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8184226Z     Error Context: test-results/didactic-screen-TC-064-—-a-e33de-en-en-su-ficha-A-001-CA-21--iphone/error-context.md
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8184644Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8185011Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8185691Z     test-results/didactic-screen-TC-064-—-a-e33de-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8186119Z     Usage:
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8186235Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8186720Z         npx playwright show-trace test-results/didactic-screen-TC-064-—-a-e33de-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8187155Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8187486Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8187873Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8188501Z   7) [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Consonantes: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8189120Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8189324Z     Error: width of the card of vowel: 133.21875px, expected 138px
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8189563Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8189718Z     expect(received).toBeLessThanOrEqual(expected)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8189928Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8190027Z     Expected: <= 1
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8190248Z     Received:    4.78125
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8190393Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8190535Z       77 |       Math.abs(cardBox.width - column),
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8191256Z       78 |       `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8191661Z     > 79 |     ).toBeLessThanOrEqual(1);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8191992Z          |       ^
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8192214Z       80 |
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8192525Z       81 |     await expect(card.locator("dt")).toHaveText(NAMES[index]);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8192945Z       82 |     const inside = await contentSides(card);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8193457Z         at expectCardsFit (/home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:79:7)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8194053Z         at /home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:218:7
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8194352Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8194976Z     Error Context: test-results/didactic-screen-TC-064-—-a-1ab87-en-en-su-ficha-A-001-CA-21--iphone/error-context.md
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8195640Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8196235Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8197277Z     test-results/didactic-screen-TC-064-—-a-1ab87-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8197999Z     Usage:
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8198125Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8198629Z         npx playwright show-trace test-results/didactic-screen-TC-064-—-a-1ab87-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8199068Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8199399Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8199673Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8200268Z   8) [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Números: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8201120Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8201334Z     Error: width of the card of vowel: 139.859375px, expected 138px
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8201570Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8201733Z     expect(received).toBeLessThanOrEqual(expected)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8201945Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8202043Z     Expected: <= 1
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8202268Z     Received:    1.859375
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8202420Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8202562Z       77 |       Math.abs(cardBox.width - column),
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8203156Z       78 |       `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8203551Z     > 79 |     ).toBeLessThanOrEqual(1);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8203830Z          |       ^
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8204035Z       80 |
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8204347Z       81 |     await expect(card.locator("dt")).toHaveText(NAMES[index]);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8204745Z       82 |     const inside = await contentSides(card);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8205248Z         at expectCardsFit (/home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:79:7)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8205843Z         at /home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:218:7
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8206136Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8206597Z     Error Context: test-results/didactic-screen-TC-064-—-a-e1f76-en-en-su-ficha-A-001-CA-21--iphone/error-context.md
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8207017Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8207380Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8208055Z     test-results/didactic-screen-TC-064-—-a-e1f76-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8208481Z     Usage:
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8208597Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8209160Z         npx playwright show-trace test-results/didactic-screen-TC-064-—-a-e1f76-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8209593Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8209913Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8210173Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8210900Z   9) [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Otros: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8211403Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8211611Z     Error: width of the card of vowel: 133.21875px, expected 138px
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8211850Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8212009Z     expect(received).toBeLessThanOrEqual(expected)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8212216Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8212331Z     Expected: <= 1
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8212554Z     Received:    4.78125
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8212704Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8212849Z       77 |       Math.abs(cardBox.width - column),
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8213280Z       78 |       `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8213672Z     > 79 |     ).toBeLessThanOrEqual(1);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8213937Z          |       ^
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8214135Z       80 |
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8214436Z       81 |     await expect(card.locator("dt")).toHaveText(NAMES[index]);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8214831Z       82 |     const inside = await contentSides(card);
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8215330Z         at expectCardsFit (/home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:79:7)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8215915Z         at /home/runner/work/CONTAPP/CONTAPP/tests/e2e/didactic-screen.spec.ts:218:7
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8216206Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8216668Z     Error Context: test-results/didactic-screen-TC-064-—-a-a0c76-en-en-su-ficha-A-001-CA-21--iphone/error-context.md
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8217078Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8217441Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8218117Z     test-results/didactic-screen-TC-064-—-a-a0c76-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8218544Z     Usage:
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8218660Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8219137Z         npx playwright show-trace test-results/didactic-screen-TC-064-—-a-a0c76-en-en-su-ficha-A-001-CA-21--iphone/trace.zip
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8219566Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8219891Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8220151Z 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8220245Z   9 failed
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8221237Z     [iphone] › tests/e2e/didactic-screen.spec.ts:176:5 › TC-063 — a 320 × 568 en modo claro: las 4 fichas caben, con los nombres completos y sin desplazamiento horizontal, también con 100 "m" (CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8222674Z     [iphone] › tests/e2e/didactic-screen.spec.ts:176:5 › TC-063 — a 320 × 568 en modo oscuro: las 4 fichas caben, con los nombres completos y sin desplazamiento horizontal, también con 100 "m" (CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8223898Z     [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "0": la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8224950Z     [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "9" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8226193Z     [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "10" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8227947Z     [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Vocales: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8229819Z     [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Consonantes: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8231813Z     [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Números: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8233581Z     [iphone] › tests/e2e/didactic-screen.spec.ts:208:5 › TC-064 — a 320 px con "100" en Otros: la imagen entera y el número completo caben en su ficha (A-001, CA-21) 
+checks	Run npm run test:e2e	2026-11-27T13:45:05.8234491Z   157 passed (1.4m)
+checks	Run npm run test:e2e	2026-11-27T13:45:05.9834536Z ##[error]Process completed with exit code 1.

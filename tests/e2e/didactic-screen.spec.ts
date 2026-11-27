@@ -11,7 +11,9 @@ import {
 
 // F-003: the screen for children (plan VS-002 P-4 and §5.1; F-003 CA-18, CA-19, CA-21).
 // Widths and sizes are the ones of F-003 §5.4 and F-002 §5.2. How wide "100" or
-// "Consonantes" come out depends on the font (L-010): the iPhone has the last word.
+// "Consonantes" come out depends on the font (L-010): what CA-21 asks is checked with the
+// font of the machine, the widths of the design with a font set by the test, and the
+// iPhone has the last word.
 
 const KEYS = ["vowel", "consonant", "digit", "other"];
 const NAMES = ["Vocales", "Consonantes", "Números", "Otros"];
@@ -62,21 +64,15 @@ async function expectNoHorizontalScroll(page: Page) {
   expect(sizes.field, "horizontal scroll of the field").toBeLessThanOrEqual(0);
 }
 
-// The 4 cards fit across (CA-21): inside the margins of the screen (16 px), in two
-// columns of the same width (design: about 173 px at 390 and 138 px at 320; a column
-// grows when its content does not fit), with the whole name and number inside.
+// What CA-21 asks, with the font of the machine that runs the test: the 4 cards fit across
+// the screen, with the whole name and number inside their card. How wide each column comes
+// out depends on that font, so it is not checked here (see expectDesignWidths).
 async function expectCardsFit(page: Page, width: number) {
-  // The column of the app is 480 px at most; every width here is below that.
-  const column = (width - 2 * 16 - 12) / 2;
   for (const [index, key] of KEYS.entries()) {
     const card = page.getByTestId(`count-card-${key}`);
     const cardBox = await box(card);
-    expect(cardBox.x, `left side of ${key}`).toBeGreaterThanOrEqual(15.5);
-    expect(cardBox.x + cardBox.width, `right side of ${key}`).toBeLessThanOrEqual(width - 15.5);
-    expect(
-      Math.abs(cardBox.width - column),
-      `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
-    ).toBeLessThanOrEqual(1);
+    expect(cardBox.x, `left side of ${key}`).toBeGreaterThanOrEqual(0);
+    expect(cardBox.x + cardBox.width, `right side of ${key}`).toBeLessThanOrEqual(width);
 
     await expect(card.locator("dt")).toHaveText(NAMES[index]);
     const inside = await contentSides(card);
@@ -92,6 +88,69 @@ async function expectCardsFit(page: Page, width: number) {
       ).toBeLessThanOrEqual(0);
     }
   }
+}
+
+// Arial and Liberation Sans have the same widths: one is on Windows and the other one comes
+// with `playwright install --with-deps` on the Linux of the CI. Neither is the SF Pro of
+// the iPhone. The numbers are measured in bold (700), which both have: with the 800 of the
+// app, Windows takes the wider Arial Black, that Liberation Sans does not have. The 800
+// itself is checked by TC-059.
+const DESIGN_FONT =
+  'body, body * { font-family: Arial, "Liberation Sans" !important; } dd { font-weight: 700 !important; }';
+// Widths in that font for each pixel of font size: "Consonantes" in bold (about 114 px at
+// 18 px) and one digit in bold (about 24.5 px at 44 px).
+const CONSONANTES_PER_PX = 114 / 18;
+const DIGIT_PER_PX = 0.556;
+
+async function textMetrics(locator: Locator) {
+  return locator.evaluate((el) => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    return {
+      width: range.getBoundingClientRect().width,
+      size: parseFloat(getComputedStyle(el).fontSize),
+      length: (el.textContent ?? "").length,
+    };
+  });
+}
+
+// Guard: without it, a machine with neither font would look like a broken design. It reads
+// one name and one number, the two things whose width decides if a column grows.
+async function expectDesignFont(page: Page) {
+  const name = await textMetrics(page.getByTestId("count-card-consonant").locator("dt"));
+  const number = await textMetrics(page.getByTestId("count-vowel"));
+
+  for (const { what, got, expected } of [
+    { what: '"Consonantes"', got: name, expected: CONSONANTES_PER_PX * name.size },
+    { what: "the number of Vowels", got: number, expected: DIGIT_PER_PX * number.size * number.length },
+  ]) {
+    expect(
+      Math.abs(got.width - expected),
+      `the font of the test (Arial or Liberation Sans, bold) is not applied: ${what} at ${got.size}px is ${got.width}px wide, expected ${expected}px`,
+    ).toBeLessThanOrEqual(1);
+  }
+}
+
+// The widths of the design (F-002 §5.2, F-003 §5.8), with a font set by the test: margins
+// of 16 px and two columns of the same width (173 px at 390 and 138 px at 320; a column
+// grows when its content does not fit). The font of the app comes back at the end.
+async function expectDesignWidths(page: Page, width: number) {
+  const font = await page.addStyleTag({ content: DESIGN_FONT });
+  await expectDesignFont(page);
+
+  // The column of the app is 480 px at most; every width here is below that.
+  const column = (width - 2 * 16 - 12) / 2;
+  for (const key of KEYS) {
+    const cardBox = await box(page.getByTestId(`count-card-${key}`));
+    expect(
+      Math.abs(cardBox.width - column),
+      `width of the card of ${key}: ${cardBox.width}px, expected ${column}px`,
+    ).toBeLessThanOrEqual(1);
+    expect(cardBox.x, `left margin of ${key}`).toBeGreaterThanOrEqual(15.5);
+    expect(cardBox.x + cardBox.width, `right margin of ${key}`).toBeLessThanOrEqual(width - 15.5);
+  }
+
+  await font.evaluate((el) => (el as Element).remove());
 }
 
 for (const size of SIZES) {
@@ -181,12 +240,14 @@ for (const size of SIZES) {
 
       await expectCardsFit(page, size.width);
       await expectNoHorizontalScroll(page);
+      await expectDesignWidths(page, size.width);
 
       await paste(app, "m".repeat(100));
 
       expect(await readCounts(page)).toBe("0/100/0/0");
       await expectNoHorizontalScroll(page);
       await expectCardsFit(page, size.width);
+      await expectDesignWidths(page, size.width);
     });
   }
 }
@@ -217,6 +278,7 @@ for (const size of SIZES) {
       }
       await expectCardsFit(page, size.width);
       await expectNoHorizontalScroll(page);
+      await expectDesignWidths(page, size.width);
     });
   }
 }

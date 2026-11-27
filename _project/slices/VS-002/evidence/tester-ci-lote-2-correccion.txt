@@ -1,0 +1,28 @@
+VS-002 - lote 2 - correccion de la prueba (tester, 2026-11-27)
+Base fcddffa + cambios sin commit en tests/e2e/didactic-screen.spec.ts. Windows. Notas copiadas a mano.
+
+FINAL (sin nada temporal; Grep de TEMPORARY|MEASURE|console.log|Verdana|no-such en tests/: sin resultados)
+  npm run check                                         -> pasa
+  npm run test:e2e -- --workers=2 --reporter=dot        -> 166 passed (1.3m)
+  didactic-screen.spec.ts --workers=2 --repeat-each=3   -> 87 passed
+  (a) La suite completa tambien dio 166 passed en la primera version del cambio (antes de ajustar el peso).
+
+(b) Medidas con la letra fijada
+  Primera version (sin peso fijo): "Consonantes" 114.01@18; "100" 88.04@44 y 96.05@48 (esperado 73.4 / 80.1)
+  Version final (dd en 700):       "Consonantes" 114.01@18, 126.68@20; "100" 73.41@44, 80.09@48
+  Guarda con letra inexistente -> rojo: "Consonantes" at 18px is 98.02px wide, expected 114px
+  Guarda sin el peso 700       -> rojo: the number of Vowels at 44px is 29.35px wide, expected 24.46px
+
+(c) CSS "solo P-3" inyectado desde la prueba:
+  :root{--size-group-image:44px} .count{padding-left/right:8px} .count dd{gap:8px}  (!important)
+  Archivo completo: rojos a menos de 360 px (salida cortada; se leyeron hasta el fallo 13).
+  TC-063 a 320, claro y oscuro -> 2 rojos en expectDesignWidths: vowel 130.578125px, expected 138px
+  TC-064 con numeros fallaba antes, en image + gap (52px, expected 36px). Con esa medida desactivada:
+    "100" en Vocales / Numeros       -> rojo: vowel 145.421875px
+    "100" en Consonantes / Otros     -> rojo: vowel 130.578125px
+    "0", "9", "10"                   -> verde (nada se sale)
+    -> 4 rojos, 3 en verde
+
+Extra - simulacion de letra ancha (no propuesta antes): Verdana !important como letra de la maquina.
+  A 320: "Consonantes" 129.74px, columna de Vocales 134.25px (la prueba anterior exigia 138 +-1).
+  Filtro --grep "TC-06[34] — a 320 [×p]" -> 10 passed (TC-063 x2, TC-064 x7 y TC-064 de relleno x1).

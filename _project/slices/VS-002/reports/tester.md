@@ -197,3 +197,168 @@ Ninguno nuevo. El de los tiempos límite con 6 procesos (lote 1) no lo volví a 
 - Cuando el contrato es "la imagen aprobada", comparar lo pintado contra el dibujo de la maqueta: "las 4 son distintas" no detecta dos dibujos cambiados entre sí. → VEGU
 
 STATUS: DONE
+
+# Lote 2 — fallo de la CI
+**Fecha:** 2026-11-27 · **Trabajo B (c)** · commit `fcddffa` · CI run 46009483415
+
+## Resumen
+**Es un error de mi prueba: depende de la letra de la máquina.** No es intermitente y, con lo que hay, no lo clasifico como defecto de la app.
+La comprobación "columna de 138 ±1 px" la agregué yo, más allá del plan, con medidas de diseño pensadas para SF Pro, y la corrí con la letra que tuviera cada máquina.
+**No cambié ninguna prueba** ni hice commits.
+
+## Evidencia de la clasificación
+- **No es intermitente:** en la CI fallan las 9 con solo dos valores. 133,22 px sale 7 veces. 139,86 px sale 2 veces, justo cuando "100" está en la columna izquierda (Vocales o Números). No hay reintentos (`retries: 0`). En local, el mismo archivo repetido 3 veces dio **87/87**. Hay una sola corrida de la CI: lo que muestra que es determinista es que las cifras se repiten entre pruebas.
+- **Por qué falla:** la cuadrícula tiene dos columnas flexibles. Si el contenido de una no cabe en 138 px, esa columna crece y la otra se encoge. Con "0", Vocales mide 133,22, así que Consonantes mide ≈ 142,78. Su número es "0", de modo que lo ancho es el **nombre**.
+- **Quién pasa y quién falla:** las pruebas de imagen, relleno y letra (TC-059 y TC-064) pasan en la CI, y a 390 px pasa todo. En TC-064 la fila "imagen + número" también pasa a 320: esa comprobación va antes de la que falla.
+
+## Qué letra usa WebKit en la CI
+**Casi con seguridad, DejaVu Sans Bold** (u otra con las mismas medidas). Es una **deducción por medidas**: el registro no nombra la letra y no la vi en la máquina de la CI.
+
+| Texto | DejaVu Sans Bold (calculado) | Ancho de columna que predice | CI |
+|---|---|---|---|
+| "Consonantes", 18 px | 130,77 px | 276 − (130,77 + 12) = **133,23** | **133,22** |
+| "100", 44 px | 91,85 px | 32 + 4 + 91,85 + 12 = **139,85** | **139,86** |
+
+- Dos medidas independientes coinciden con ≈ 0,01 px, y el modelo explica las 9 fallas.
+- **Límite:** los anchos de cada carácter de DejaVu salen de mi memoria, no de un archivo. En este equipo no encontré DejaVu en `C:\Windows\Fonts`. La cuenta está en `evidence/tester-ci-lote-2.txt`.
+- **Por qué llegaría a esa letra (inferencia):** la pila del diseño es `-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif`. En Linux las tres primeras no existirían, y `system-ui` daría la letra por defecto del sistema. Supongo que la CI usa esa pila: no leí `src/`.
+
+| Ancho (útil en la ficha a 320: 126 px) | SF Pro (estimado de F-002 §5.2) | Windows | CI |
+|---|---|---|---|
+| "Consonantes" | ≈ 107 | cabe | 130,8 (**no cabe**, +4,8) |
+| imagen + 4 + "100" | ≈ 118 | ≈ 110 (estimado del lote 2) | 127,9 (**no cabe**, +1,9) |
+
+## ¿La app incumple CA-21 en Linux?
+CA-21 pide: sin desplazamiento horizontal, y nombre y número completos dentro de su ficha. No pide columnas iguales. F-002 §5.2 y F-003 §5.8 sí dicen ≈ 138 px, calculados para SF Pro. La referencia es el iPhone (D-009).
+
+| Con la letra de la CI, a 320 px | Estado |
+|---|---|
+| Campo vacío y 100 "m": fichas dentro de la pantalla, nombre dentro de su ficha y sin cortar, sin desplazamiento horizontal | **Comprobado:** `screen.spec.ts` "P-3 — a 320 px…" pasa en la CI |
+| "Consonantes" cabe porque su columna crece (142,8 frente a ≈ 133,2) | **Deducido:** fichas desiguales por ≈ 10 px |
+| "100" en Vocales o Números: las columnas suman 139,86 + 142,78 = 282,64 en un espacio de 276 | **Deducido:** la cuadrícula se pasa ≈ 6,6 px y el margen derecho baja de 16 a ≈ 9,4. No habría desplazamiento |
+| Con "100" a la izquierda: desplazamiento horizontal y `dt`/`dd` dentro de la ficha | **Sin comprobar:** mi prueba se detiene en la primera falla |
+
+Ojo: en esos dos casos, quitar solo la comprobación de 138 px **no basta**. La del margen derecho (≤ 304,5) también fallaría en Consonantes (≈ 310,6, deducido).
+
+## Corrección propuesta (sin aplicar): separar en dos comprobaciones, en `didactic-screen.spec.ts`
+Solo cambia `expectCardsFit`, que usan TC-063 y TC-064.
+
+1. **Con la letra de la máquina: lo que CA-21 exige.** Las fichas quedan dentro de la pantalla (de 0 al ancho, como en `screen.spec.ts`). `dt` y `dd` quedan dentro del espacio útil de su ficha y sin cortes. Los nombres se ven completos y no hay desplazamiento horizontal. Con esto, la CI comprueba además que nada se corta con una letra ancha.
+2. **Con una letra fijada por la prueba: las medidas del diseño.** La prueba inyecta `font-family: Arial, "Liberation Sans" !important` en `body` y en todo lo que contiene. Después exige el margen de 16 px y la columna de 138 ±1 (173 a 390). Arial y Liberation Sans están hechas para medir igual, y `fonts-liberation` está en la lista de paquetes de Linux de la Playwright instalada (`install --with-deps`).
+3. **Guarda de la letra:** antes del punto 2, la prueba mide "Consonantes" a 18 px y 700 y exige ≈ 114 ±1 px. Si la letra no se aplicó, falla diciendo eso y no un falso problema de diseño.
+
+**Cuentas esperadas (de memoria, sin medir todavía):** "Consonantes" ≈ 114 px y "100" ≈ 73,4 px, así que ambos caben en 126. Si entra P-3 sin P-4: 44 + 8 + 73,4 ≈ 125 frente a 118 útiles, y la columna sube a ≈ 145. **La protección de P-4 se conserva** en los casos con "100".
+
+**Al aplicarla** comprobaría: (a) en local, en verde; (b) que la guarda mida lo esperado; (c) con el CSS de "solo P-3" inyectado desde la prueba, como en el lote 2, que vuelva a salir en rojo a 320; (d) el Manager confirma la CI en verde. Que Linux mida igual que Windows solo se sabe con esa corrida.
+
+**Contras:**
+- Las medidas del diseño se prueban con una letra que no es la de la app. Arial **no es SF Pro**: su "100" (≈ 73) es más angosto que el estimado de SF Pro (≈ 82), y su "Consonantes" (≈ 114) más ancho (≈ 107). Es menos exigente con los números.
+- Depende de que la CI siga instalando Liberation. La guarda lo avisaría.
+- La prueba queda más larga.
+- Con la letra de la máquina, el margen de 16 px y las columnas iguales dejan de exigirse.
+
+**Alternativas que no recomiendo:**
+| Opción | Contra |
+|---|---|
+| Solo el punto 1, quitando las 138 px | Es la más simple, pero deja de probar que la columna no se ensancha. Los TC-059 y TC-064 de medidas seguirían exigiendo el CSS de P-4, no el resultado "cabe" |
+| Aplicar las 138 px solo si el texto es angosto | En la CI se saltaría sin que se note |
+| Subir el margen de ±1 a ±7 | Relaja la prueba hasta que pase y depende de esta letra |
+| Instalar una letra en la CI o cambiar la configuración | Está fuera de este encargo, y ninguna libre es SF Pro |
+| Ajustar la app para que quepa con DejaVu | "Consonantes" pediría bajar el nombre a ≈ 17 px (17 px → 123,5), y CA-18 y F-003 §5.4 fijan 18. La otra vía es quitar relleno que el diseño fija. Sería diseñar para una letra que el usuario no usa |
+
+## Cobertura
+| Caso | Prueba (archivo) | Tipo | Restricción | Resultado |
+|---|---|---|---|---|
+| TC-063 a 320 (claro y oscuro) | `didactic-screen.spec.ts` | E2E | — | CI en rojo (2) · local en verde |
+| TC-064 a 320 (7 contenidos) | `didactic-screen.spec.ts` | E2E | A-001 | CI en rojo (7) · local en verde |
+
+## Resultados de la ejecución
+- Local: `npx playwright test tests/e2e/didactic-screen.spec.ts --project=iphone --workers=2 --repeat-each=3`: **87/87**. No corrí la suite completa ni las pruebas del coder.
+- CI (registro entregado): 157 en verde y 9 en rojo.
+- Evidencia: `_project/slices/VS-002/evidence/tester-ci-lote-2.txt` y `ci-46009483415-lote-2.log` (sigue sin commit).
+
+## Fallos
+| # | Caso | Clasificación | Cómo reproducirlo | Evidencia |
+|---|---|---|---|---|
+| 1 | TC-063 y TC-064 a 320 px (9 pruebas) | **Error de mi prueba** (depende de la letra de la máquina) | Subir `fcddffa` y dejar correr la CI en `ubuntu-latest`. En Windows no se reproduce | `ci-46009483415-lote-2.log`, `tester-ci-lote-2.txt` |
+
+## Preguntas para el usuario o el Manager
+- **¿Aplico la corrección de dos comprobaciones?** La recomiendo.
+- **A 320 px nadie comprueba la letra real.** La lista de P-7 usa el iPhone del usuario (390 px). Con el estimado de SF Pro sobran ≈ 19 px para "Consonantes" y ≈ 8 para "100", pero ni la CI ni Windows lo confirman. Recomiendo anotarlo como riesgo conocido, sin cambiar el plan.
+- Si en el futuro la app debe verse con otras letras (por ejemplo, en Android o Linux), las columnas desiguales a 320 px serían un tema de alcance y diseño. Hoy D-009 fija el iPhone.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Una prueba que exige un ancho exacto, tomado de un diseño, debe fijar la letra con la que mide y comprobar que se aplicó. Lo que exige el criterio ("nada se corta, no hay desplazamiento") se prueba aparte, con la letra de la máquina. Complementa L-010. → VEGU
+- Anotar un riesgo de letra no basta: si la CI usa otro sistema que la máquina local, las pruebas de ancho se corren en la CI antes de dar por bueno el rojo y el verde. → VEGU
+
+STATUS: DONE
+
+# Lote 2 — corrección de la prueba
+**Fecha:** 2026-11-27 · **Trabajo B** · aprobada por el usuario el 2026-11-27 · base `fcddffa`
+
+## Resumen
+Apliqué las dos comprobaciones y la guarda en `tests/e2e/didactic-screen.spec.ts`. En local: **166/166** y `npm run check` en verde.
+Hice un **ajuste a mi propuesta**: la letra fijada mide los números en peso 700. No toqué `src/` ni la configuración, y no hice commits. **Falta confirmar la CI.**
+
+## Qué cambió (un solo archivo de pruebas)
+| Comprobación | Qué exige |
+|---|---|
+| 1. `expectCardsFit`, con la letra de la máquina (CA-21) | Fichas dentro de la pantalla (de 0 al ancho). Nombres completos. `dt` y `dd` dentro del espacio útil de su ficha y sin cortes. Sin desplazamiento horizontal (comprobación aparte, sin cambios) |
+| 2. `expectDesignWidths`, con Arial o Liberation Sans | Columna de 138 ±1 (173 a 390) y margen de 16 px a los lados. Al terminar retira la letra fijada |
+| 3. `expectDesignFont`, la guarda (corre dentro de la 2) | "Consonantes" ≈ 114 px a 18 px (126,7 a 20 px) **y** el número de Vocales ≈ 0,556 × tamaño por cifra, ±1 |
+
+TC-063 (vacío y con 100 "m") y TC-064 corren la 1 y la 2. No cambian las medidas de imagen, relleno, separación y letra, ni los nombres o la cantidad de pruebas (29 en el archivo).
+
+## Ajuste a lo propuesto: mi cálculo estaba mal para los números
+- Con solo cambiar la familia, "100" midió **88,04 px** a 44 px, no ≈ 73,4. Cada cifra ocupaba 0,667 del tamaño.
+- **Inferencia:** con el peso 800 de la app, Windows toma **Arial Black** (0,667 es su medida, según mi memoria). Liberation Sans no tiene esa cara, así que Windows y Linux habrían medido distinto.
+- **Arreglo:** la letra fijada pone `dd` en **700**. "100" mide 73,41 px (80,09 a 48 px), como en la propuesta.
+- La guarda ahora mide también un número: con solo "Consonantes" (700) no habría visto este error.
+- **Contra:** los anchos del diseño se miden con números en 700, no en 800. El 800 se sigue exigiendo en TC-059.
+
+## Comprobaciones
+| | Qué | Resultado |
+|---|---|---|
+| (a) | `npm run test:e2e -- --workers=2` (con `--reporter=dot`) sobre el archivo final | **166/166** |
+| (a) | `npm run check` | pasa |
+| (a) | El archivo corregido, repetido 3 veces | 87/87 |
+| (b) | La guarda mide lo esperado | 114,01 px a 18 y 126,68 a 20; "100": 73,41 a 44 y 80,09 a 48 |
+| (b) | Guarda con una letra que no existe | **Rojo** con su mensaje: 98,02 px frente a 114 |
+| (b) | Guarda sin el peso 700 | **Rojo** en el número: cifra de 29,35 px frente a 24,46 |
+| (c) | CSS de "solo P-3" inyectado: TC-063 a 320, claro y oscuro | **Rojo** en los anchos del diseño: Vocales 130,58 px frente a 138 |
+| (c) | Igual, TC-064 a 320 | Con números falla primero la medida de la imagen (52 px frente a 36). **Desactivándola de forma temporal**, para aislar los anchos: los 4 casos con "100" en **rojo** (145,42 o 130,58 px); "0", "9" y "10" en verde, porque nada se sale |
+| (c) | Igual, TC-059 de imagen y TC-064 de relleno a menos de 360 px | En rojo (la salida del archivo completo se cortó; no hago un total) |
+
+**Comprobación adicional, simulando la CI:** puse de forma temporal Verdana como letra de la máquina. A 320 px "Consonantes" midió 129,74 px y la columna de Vocales 134,25, así que la prueba anterior habría fallado. Con la corregida, los **10** casos filtrados (TC-063 ×2, TC-064 ×7 y el de relleno) quedaron **en verde**, también con "100" en Vocales: sin desplazamiento ni cortes. Verdana **no es** DejaVu: es una simulación, no la CI.
+
+Todo lo temporal quedó retirado (Grep de las marcas en `tests/`: sin resultados). La corrida final es posterior a la limpieza.
+
+## Lo que falta y los límites
+- **La CI sobre el commit nuevo.** Ahí se sabe si Liberation Sans se aplica y mide igual. Si no, la guarda falla con el mensaje "the font of the test … is not applied". Mándemelo para clasificarlo.
+- La comprobación 2 mira anchos y márgenes, no si el contenido se sale. Hoy basta, porque una columna crece cuando su contenido no cabe. Si el CSS fijara las columnas para que no crezcan, solo la comprobación 1 vería el desborde, y según lo ancha que sea la letra de la máquina. No lo agregué: no estaba en lo aprobado.
+- Siguen en pie los contras aprobados: Arial no es SF Pro y a 320 px nadie comprueba la letra real.
+
+## Resultados de la ejecución
+- Pruebas del coder: no corrí las unitarias.
+- E2E `iphone` en local: 166 en verde y 0 en rojo.
+- Regresión: la CI (la verifica el Manager).
+- Evidencia: `_project/slices/VS-002/evidence/tester-ci-lote-2-correccion.txt`.
+
+## Fallos
+| # | Caso | Clasificación | Cómo reproducirlo | Evidencia |
+|---|---|---|---|---|
+| — | Ninguno abierto en local; los rojos de (b) y (c) fueron provocados | — | — | `tester-ci-lote-2-correccion.txt` |
+
+## Preguntas para el usuario o el Manager
+- Ninguna bloquea. Para el commit: `tests/e2e/didactic-screen.spec.ts`, este reporte y las evidencias `tester-ci-lote-2*.txt`. El registro `ci-46009483415-lote-2.log` sigue sin commit.
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Al fijar una letra en una prueba, fijar también un peso que tengan todas las máquinas y medir en la guarda cada tipo de texto: con peso 800, "Arial" midió los números con otra cara. → VEGU
+
+STATUS: DONE
