@@ -288,12 +288,12 @@ test("P-3 — los colores siguen el modo claro u oscuro del celular, sin botón 
 
   const number = page.getByTestId("count-vowel");
   const card = page.getByTestId("count-card-vowel");
-  // --color-primary and --color-surface from design-system.md §2.
-  await expect(number).toHaveCSS("color", "rgb(31, 107, 51)");
+  // --color-vowel and --color-surface from design-system.md §2 (VS-002).
+  await expect(number).toHaveCSS("color", "rgb(198, 40, 40)");
   await expect(card).toHaveCSS("background-color", "rgb(238, 245, 238)");
 
   await page.emulateMedia({ colorScheme: "dark" });
 
-  await expect(number).toHaveCSS("color", "rgb(255, 221, 85)");
+  await expect(number).toHaveCSS("color", "rgb(255, 123, 114)");
   await expect(card).toHaveCSS("background-color", "rgb(28, 46, 32)");
 });

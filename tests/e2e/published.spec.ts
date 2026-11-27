@@ -1,5 +1,5 @@
 import { test, expect, type Page, type TestInfo } from "@playwright/test";
-import { expectNoNotice, readCounts, type App } from "./field-helpers";
+import { expectNoNotice, expectNothingStored, readCounts, type App } from "./field-helpers";
 
 // Runs only in the "published" project, whose baseURL is E2E_BASE_URL (plan VS-001 §5.3).
 test("P-2: la dirección publicada abre con el título Contapp", async ({ page }) => {
@@ -20,7 +20,7 @@ test("P-2: la dirección publicada abre con el título Contapp", async ({ page }
 // Counts are written as "vowel/consonant/digit/other".
 
 const ZERO = "0/0/0/0";
-const EVIDENCE = "_project/slices/VS-001/evidence/published";
+const EVIDENCE = "_project/slices/VS-002/evidence/published";
 const CARDS = [
   { key: "vowel", name: "Vocales" },
   { key: "consonant", name: "Consonantes" },
@@ -133,16 +133,7 @@ test('TC-024 — publicada: escribir "casa" y recargar deja el campo vacío y lo
   await app.field.pressSequentially("casa");
   await expect(app.field).toHaveValue("casa");
 
-  // Nothing typed is kept in the browser.
-  const stored = await page.evaluate(async () => ({
-    local: JSON.stringify({ ...localStorage }),
-    session: JSON.stringify({ ...sessionStorage }),
-    cookies: document.cookie,
-    databases: (await indexedDB.databases()).length,
-    caches: "caches" in window ? (await caches.keys()).length : 0,
-  }));
-  expect(stored).toEqual({ local: "{}", session: "{}", cookies: "", databases: 0, caches: 0 });
-  expect(await context.cookies()).toEqual([]);
+  await expectNothingStored(page, context);
 
   await page.reload();
   await expectEmptyScreen(app);

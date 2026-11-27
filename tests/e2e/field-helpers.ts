@@ -1,6 +1,6 @@
-import { expect, type Locator, type Page } from "@playwright/test";
+import { expect, type BrowserContext, type Locator, type Page } from "@playwright/test";
 
-// Shared by the input filter and max length specs (plan VS-001 §5.1).
+// Shared by the E2E specs (plan VS-001 §5.1, plan VS-002 §5.3).
 // Counts are written as "vowel/consonant/digit/other".
 
 const GROUP_KEYS = ["vowel", "consonant", "digit", "other"];
@@ -30,6 +30,25 @@ export async function openApp(page: Page): Promise<App> {
   await expect.poll(() => readCounts(page)).toBe("0/0/0/0");
   await field.focus();
   return { page, field, dialogs };
+}
+
+// Nothing typed is kept in the browser (C-010).
+export async function expectNothingStored(page: Page, context: BrowserContext): Promise<void> {
+  const stored = await page.evaluate(async () => ({
+    local: JSON.stringify({ ...localStorage }),
+    session: JSON.stringify({ ...sessionStorage }),
+    cookies: document.cookie,
+    databases: (await indexedDB.databases()).length,
+    caches: "caches" in window ? (await caches.keys()).length : 0,
+  }));
+  expect(stored, "stored in the page").toEqual({
+    local: "{}",
+    session: "{}",
+    cookies: "",
+    databases: 0,
+    caches: 0,
+  });
+  expect(await context.cookies(), "cookies of the browser").toEqual([]);
 }
 
 // "Paste": the text enters all at once at the cursor (plan VS-001 §3).
