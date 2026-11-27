@@ -64,12 +64,12 @@ body {
 .app {
   max-width: 480px;
   margin: 0 auto;
-  padding: var(--space-3) var(--space-4) 0;
+  padding: var(--space-2) var(--space-4) 0;
 }
 
 /* AppTitle */
 .app-title {
-  margin: 0 0 var(--space-4);
+  margin: 0 0 var(--space-2);
   font-size: var(--font-size-title);
   font-weight: var(--font-weight-title);
   line-height: 1.2;
@@ -90,9 +90,9 @@ body {
   display: block;
   width: 100%;
   /* 5 lines of text plus padding and border; after that it scrolls inside. */
-  max-height: calc(5 * 1.3em + 2 * var(--space-3) + 2 * var(--border-width-input));
+  max-height: calc(5 * 1.3em + 2 * var(--space-2) + 2 * var(--border-width-input));
   margin: 0;
-  padding: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   resize: none;
   overflow-y: auto;
   font-family: inherit;
@@ -116,7 +116,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-3);
-  margin: var(--space-5) 0 0;
+  margin: var(--space-3) 0 0;
 }
 
 /* CountCard: the HTML has the name first ("Vocales, 0"); the number is shown above it. */
@@ -126,7 +126,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 104px;
-  padding: var(--space-3) var(--space-2);
+  padding: var(--space-2);
   background: var(--color-surface);
   border: var(--border-width-input) dashed var(--group-color);
   border-radius: var(--radius-card);
