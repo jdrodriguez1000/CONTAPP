@@ -54,3 +54,57 @@ Ninguno. En mis corridas con 2 procesos no se repitieron los tiempos límite que
 - El Manager decide cómo hacer compatibles la línea de atribución de los commits y la guarda de los agentes (relacionada con L-008 y L-011) — hoy un agente no puede cumplir las dos cosas. → VEGU
 
 STATUS: DONE
+
+# Lote 2 — VS-002
+**Fecha:** 2026-11-27 · **Rama:** feature/VS-002-imagenes-ninos
+
+## Pasos construidos
+| Paso | Commits (test → feat → refactor) | Casos de prueba cubiertos | Razón del rojo |
+|---|---|---|---|
+| P-3 | `test(acceptance)` `a71d0c1` → `feat(P-3)` `b2fd3e5` · sin refactor | TC-050, 051, 053, 054; control TC-055 y 056 | `group-look`: 8 fallan y 16 pasan. En los fallos que se ven en la salida: no hay `::before` (`content` = `none`) y `column-gap` = `normal`. La salida se cortó en la mitad: de los demás vi el nombre y, en el último, la misma razón |
+| P-4 | `test(acceptance)` `a71d0c1` → `feat(P-4)` `4de9b70` · sin refactor | TC-059, 064, 063; control TC-060 | Antes de P-3, `didactic-screen`: 22 fallan y 7 pasan (`content` = `none`, `gap` = `normal`, `dd` en `block`). Después de P-3: **13 fallan y 16 pasan**, todos a 320 o 359 px, como dijo el tester. Razones vistas: imagen de 44 px en vez de 32, relleno de 8 px en vez de 4, y 52 px antes del número en vez de 36. La salida también se cortó: no leí el detalle de cada uno de los 13 (los de TC-063 incluidos) |
+
+## Explicación para el usuario
+### P-3 — Una imagen por grupo
+Cada ficha ahora muestra su dibujo a la izquierda del número. El dibujo es un texto (formato SVG, que describe figuras) escrito dentro del archivo de estilos, así que la app no pide ninguna imagen a internet. El navegador dibuja un cuadrito antes del número, lo pinta del color del número y lo "recorta" con la forma del dibujo, como con un molde. Por eso el mismo dibujo sale del color correcto en claro y en oscuro. El cuadrito no tiene texto, así que el lector de pantalla sigue leyendo solo el nombre y el número. Los 4 dibujos se copiaron de la maqueta aprobada. Archivo: `src/styles.css`.
+
+### P-4 — Que todo quepa en el celular angosto
+La letra no se achica respecto de lo que ya había. Cuando la pantalla mide menos de 360 px, el dibujo baja de 44 a 32 px, la ficha deja menos espacio a los lados y se acerca el dibujo al número. Así caben "100" y "Consonantes" completos. Esas reglas van al final del archivo porque, cuando dos reglas pesan lo mismo, gana la que está después. Archivo: `src/styles.css`.
+
+## Estado de las pruebas
+| Corrida | Comando | Resultado |
+|---|---|---|
+| Rojo de P-3 | `npx playwright test tests/e2e/group-look.spec.ts --project=iphone --workers=2 --reporter=line` | 8 fallan, 16 pasan (24) |
+| Rojo previo de `didactic-screen` | `npx playwright test tests/e2e/didactic-screen.spec.ts --project=iphone --workers=2 --reporter=dot` | 22 fallan, 7 pasan (29) |
+| Verde de P-3 | `group-look` (mismo archivo, `--reporter=dot`) | 24/24 |
+| Después de P-3 | `didactic-screen` · `npm run test:unit` | 13 fallan (previstos), 16 pasan · 207/207 |
+| Verde de P-4 | `didactic-screen` · `npm run test:unit` | 29/29 · 207/207 |
+
+- **Cierre del lote** (sobre `4de9b70`):
+  - Revisión estática, `npm run check` (tipos y lint): **ok**.
+  - Unitarias, `npm run test:unit`: **207/207** (4 archivos).
+  - E2E completa, `npm run test:e2e -- --workers=2 --reporter=dot`: **166/166** (incluye las del lote y las afectadas); no hubo tiempos límite.
+  - Capturas, `npx playwright test --project=captures --workers=2 --output=_project/slices/VS-002/evidence/capturas/lote-2 --reporter=line`: **16/16** (Playwright usó 1 proceso).
+- **Capturas:** quedan en `_project/slices/VS-002/evidence/capturas/lote-2/`, **sin commit**.
+- **Autorrevisión visual:** miré 4 de las 16: estado 3 (390 px) y estado 5 (320 px, 100 "a"), en claro y en oscuro.
+  - Cada ficha muestra su dibujo a la izquierda del número, en la misma fila y del color del grupo.
+  - A 320 px, "100" y "Consonantes" se ven completos dentro de su ficha. "Consonantes" queda con poco margen a los lados.
+  - No miré las otras 12; la revisión visual es del designer. Son capturas en Windows, no del iPhone: lo que cabe a lo ancho y si los dibujos se reconocen se confirma en P-7 (L-010).
+
+## Líneas de app
+`git diff --numstat a71d0c1 HEAD`: **42 líneas agregadas y 7 quitadas**, todas en `src/styles.css` (estimado del plan: ~30). La diferencia viene de escribir las 4 variantes y el `::before` en varias líneas, como el resto del archivo. Está muy por debajo del tope de ~200. `index.html` y `src/main.ts` no cambiaron.
+
+## Variables de entorno nuevas
+- Ninguna.
+
+## Desviaciones del plan
+- Ninguna en el código.
+- Commits `b2fd3e5` y `4de9b70` con mensaje de una línea, sin `Co-Authored-By` (no la intenté: la guarda la bloquea, como quedó en el lote 1; el Manager lo autorizó en el paquete).
+
+## Fallo sin explicar
+Ninguno.
+
+## Lecciones propuestas
+- Ninguna nueva. L-041 (el ajuste de pantalla angosta va después del componente) se aplicó en P-4.
+
+STATUS: DONE
