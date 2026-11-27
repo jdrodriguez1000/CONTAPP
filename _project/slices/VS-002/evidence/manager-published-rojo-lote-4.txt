@@ -1,0 +1,183 @@
+
+> test:published
+> playwright test --project=published
+
+
+Running 8 tests using 1 worker
+
+  ok 1 [published] › tests\e2e\published.spec.ts:24:1 › P-2: la dirección publicada abre con el título Contapp (1.1s)
+  ok 2 [published] › tests\e2e\published.spec.ts:93:1 › TC-001 — publicada: campo vacío, los 4 grupos en 0 y sin pantalla de cuenta (C-010, C-012) (1.2s)
+  ok 3 [published] › tests\e2e\published.spec.ts:118:1 › TC-002 — publicada: escribir "casa" letra por letra cambia los conteos con cada letra (C-001) (1.4s)
+  ok 4 [published] › tests\e2e\published.spec.ts:146:1 › TC-024 — publicada: escribir "casa" y recargar deja el campo vacío y los 4 en 0, sin guardar nada (C-010) (2.5s)
+  x  5 [published] › tests\e2e\published.spec.ts:252:3 › TC-050 — publicada, modo claro: las 4 fichas en 0 con su color y su imagen de 44 px pintada junto al número; las 4 imágenes son distintas (6.2s)
+  x  6 [published] › tests\e2e\published.spec.ts:252:3 › TC-051 — publicada, modo oscuro: las 4 fichas en 0 con su color y su imagen de 44 px pintada junto al número; las 4 imágenes son distintas (6.3s)
+  x  7 [published] › tests\e2e\published.spec.ts:271:1 › TC-053 — publicada: pegar "¡Hola, 2026! 😀" da 2/2/4/4 con la imagen y el color iguales que vacía, y al borrar todo siguen iguales con los 4 en 0 (C-001, C-006, C-007, C-008, C-012) (6.3s)
+  x  8 [published] › tests\e2e\published.spec.ts:300:1 › TC-055 — publicada: al abrir, escribir "casa" y recargar, todo se pide a la dirección publicada, nada lleva el texto y nada queda guardado (C-010) (2.3s)
+
+
+  1) [published] › tests\e2e\published.spec.ts:252:3 › TC-050 — publicada, modo claro: las 4 fichas en 0 con su color y su imagen de 44 px pintada junto al número; las 4 imágenes son distintas 
+
+    Error: image of vowel: exists
+
+    expect(locator).toHaveCSS(expected) failed
+
+    Locator:  getByTestId('count-vowel')
+    Expected: "\"\""
+    Received: "none"
+    Timeout:  5000ms
+
+    Call log:
+      - image of vowel: exists getByTestId('count-vowel') with timeout 5000ms
+      - waiting for getByTestId('count-vowel')
+        14 × locator resolved to <dd data-testid="count-vowel">0</dd>
+           - unexpected value "none"
+
+
+       at group-helpers.ts:64
+
+      62 |     const target = number(page, key);
+      63 |     const before = { pseudo: "before" } as const;
+    > 64 |     await expect(target, `image of ${key}: exists`).toHaveCSS("content", '""', before);
+         |                                                     ^
+      65 |     await expect(target, `image of ${key}: width`).toHaveCSS("width", `${IMAGE_SIZE}px`, before);
+      66 |     await expect(target, `image of ${key}: height`).toHaveCSS("height", `${IMAGE_SIZE}px`, before);
+      67 |     await expect(target, `image of ${key}: color`).toHaveCSS(
+        at expectGroupImages (C:\Users\USUARIO\Documents\PERSONAL\CONTAPP-VS-002\tests\e2e\group-helpers.ts:64:53)
+        at C:\Users\USUARIO\Documents\PERSONAL\CONTAPP-VS-002\tests\e2e\published.spec.ts:260:11
+
+    Error Context: test-results\published-TC-050-—-publica-1a6a9-as-4-imágenes-son-distintas-published\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\published-TC-050-—-publica-1a6a9-as-4-imágenes-son-distintas-published\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\published-TC-050-—-publica-1a6a9-as-4-imágenes-son-distintas-published\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [published] › tests\e2e\published.spec.ts:252:3 › TC-051 — publicada, modo oscuro: las 4 fichas en 0 con su color y su imagen de 44 px pintada junto al número; las 4 imágenes son distintas 
+
+    Error: image of vowel: exists
+
+    expect(locator).toHaveCSS(expected) failed
+
+    Locator:  getByTestId('count-vowel')
+    Expected: "\"\""
+    Received: "none"
+    Timeout:  5000ms
+
+    Call log:
+      - image of vowel: exists getByTestId('count-vowel') with timeout 5000ms
+      - waiting for getByTestId('count-vowel')
+        13 × locator resolved to <dd data-testid="count-vowel">0</dd>
+           - unexpected value "none"
+
+
+       at group-helpers.ts:64
+
+      62 |     const target = number(page, key);
+      63 |     const before = { pseudo: "before" } as const;
+    > 64 |     await expect(target, `image of ${key}: exists`).toHaveCSS("content", '""', before);
+         |                                                     ^
+      65 |     await expect(target, `image of ${key}: width`).toHaveCSS("width", `${IMAGE_SIZE}px`, before);
+      66 |     await expect(target, `image of ${key}: height`).toHaveCSS("height", `${IMAGE_SIZE}px`, before);
+      67 |     await expect(target, `image of ${key}: color`).toHaveCSS(
+        at expectGroupImages (C:\Users\USUARIO\Documents\PERSONAL\CONTAPP-VS-002\tests\e2e\group-helpers.ts:64:53)
+        at C:\Users\USUARIO\Documents\PERSONAL\CONTAPP-VS-002\tests\e2e\published.spec.ts:260:11
+
+    Error Context: test-results\published-TC-051-—-publica-b6a5a-as-4-imágenes-son-distintas-published\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\published-TC-051-—-publica-b6a5a-as-4-imágenes-son-distintas-published\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\published-TC-051-—-publica-b6a5a-as-4-imágenes-son-distintas-published\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [published] › tests\e2e\published.spec.ts:271:1 › TC-053 — publicada: pegar "¡Hola, 2026! 😀" da 2/2/4/4 con la imagen y el color iguales que vacía, y al borrar todo siguen iguales con los 4 en 0 (C-001, C-006, C-007, C-008, C-012) 
+
+    Error: image of vowel: exists
+
+    expect(locator).toHaveCSS(expected) failed
+
+    Locator:  getByTestId('count-vowel')
+    Expected: "\"\""
+    Received: "none"
+    Timeout:  5000ms
+
+    Call log:
+      - image of vowel: exists getByTestId('count-vowel') with timeout 5000ms
+      - waiting for getByTestId('count-vowel')
+        13 × locator resolved to <dd data-testid="count-vowel">0</dd>
+           - unexpected value "none"
+
+
+       at group-helpers.ts:64
+
+      62 |     const target = number(page, key);
+      63 |     const before = { pseudo: "before" } as const;
+    > 64 |     await expect(target, `image of ${key}: exists`).toHaveCSS("content", '""', before);
+         |                                                     ^
+      65 |     await expect(target, `image of ${key}: width`).toHaveCSS("width", `${IMAGE_SIZE}px`, before);
+      66 |     await expect(target, `image of ${key}: height`).toHaveCSS("height", `${IMAGE_SIZE}px`, before);
+      67 |     await expect(target, `image of ${key}: color`).toHaveCSS(
+        at expectGroupImages (C:\Users\USUARIO\Documents\PERSONAL\CONTAPP-VS-002\tests\e2e\group-helpers.ts:64:53)
+        at C:\Users\USUARIO\Documents\PERSONAL\CONTAPP-VS-002\tests\e2e\published.spec.ts:279:9
+
+    Error Context: test-results\published-TC-053-—-publica-95c10-01-C-006-C-007-C-008-C-012--published\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\published-TC-053-—-publica-95c10-01-C-006-C-007-C-008-C-012--published\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\published-TC-053-—-publica-95c10-01-C-006-C-007-C-008-C-012--published\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [published] › tests\e2e\published.spec.ts:300:1 › TC-055 — publicada: al abrir, escribir "casa" y recargar, todo se pide a la dirección publicada, nada lleva el texto y nada queda guardado (C-010) 
+
+    Error: stored in the page
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "caches": 0,
+        "cookies": "",
+        "databases": 0,
+        "local": "{}",
+    -   "session": "{}",
+    +   "session": "{\"vc-dt-src\":\"ctrl\",\"vc-mfe-session-cleared\":\"1\",\"__vtkb-hide-key\":\"\"}",
+      }
+
+       at field-helpers.ts:44
+
+      42 |     caches: "caches" in window ? (await caches.keys()).length : 0,
+      43 |   }));
+    > 44 |   expect(stored, "stored in the page").toEqual({
+         |                                        ^
+      45 |     local: "{}",
+      46 |     session: "{}",
+      47 |     cookies: "",
+        at expectNothingStored (C:\Users\USUARIO\Documents\PERSONAL\CONTAPP-VS-002\tests\e2e\field-helpers.ts:44:40)
+        at C:\Users\USUARIO\Documents\PERSONAL\CONTAPP-VS-002\tests\e2e\published.spec.ts:325:3
+
+    Error Context: test-results\published-TC-055-—-publica-bbba4--nada-queda-guardado-C-010--published\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\published-TC-055-—-publica-bbba4--nada-queda-guardado-C-010--published\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\published-TC-055-—-publica-bbba4--nada-queda-guardado-C-010--published\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [published] › tests\e2e\published.spec.ts:252:3 › TC-050 — publicada, modo claro: las 4 fichas en 0 con su color y su imagen de 44 px pintada junto al número; las 4 imágenes son distintas 
+    [published] › tests\e2e\published.spec.ts:252:3 › TC-051 — publicada, modo oscuro: las 4 fichas en 0 con su color y su imagen de 44 px pintada junto al número; las 4 imágenes son distintas 
+    [published] › tests\e2e\published.spec.ts:271:1 › TC-053 — publicada: pegar "¡Hola, 2026! 😀" da 2/2/4/4 con la imagen y el color iguales que vacía, y al borrar todo siguen iguales con los 4 en 0 (C-001, C-006, C-007, C-008, C-012) 
+    [published] › tests\e2e\published.spec.ts:300:1 › TC-055 — publicada: al abrir, escribir "casa" y recargar, todo se pide a la dirección publicada, nada lleva el texto y nada queda guardado (C-010) 
+  4 passed (29.5s)
