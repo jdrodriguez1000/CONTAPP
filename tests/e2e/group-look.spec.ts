@@ -1,7 +1,18 @@
+import { readFileSync } from "node:fs";
 import { test, expect, type Page } from "@playwright/test";
+import {
+  expectImageBesideNumber,
+  expectNothingStored,
+  expectRejected,
+  expectState,
+  openApp,
+  paste,
+  type,
+} from "./field-helpers";
 
-// F-002: one color per group (plan VS-002 P-2 and §5.1; F-002 CA-13, §5.2 and §5.4).
-// Every expected value is the one of the plan §5.1, as the browser returns it.
+// F-002: one color and one image per group (plan VS-002 P-2, P-3 and §5.1; F-002
+// CA-12 to CA-16, §5.1 to §5.4). Every expected value is the one of the plan §5.1,
+// as the browser returns it.
 
 type Scheme = "light" | "dark";
 
@@ -215,3 +226,297 @@ for (const { scheme, mode, colors, cardBackground, nameColor, fieldBackground } 
     }
   });
 }
+
+// ---------------------------------------------------------------------------
+// P-3: one image per group (plan §3 P-3 and §5.1; F-002 CA-12, CA-14 to CA-16).
+// The image is the ::before of the number.
+
+const NAMES = ["Vocales", "Consonantes", "Números", "Otros"];
+const IMAGE_SIZE = 44;
+const IMAGE_GAP = 8;
+
+// What the ::before of a number looks like. WebKit may report the mask under either
+// name (plan §7 R-3): the one that is not "none" counts.
+async function imageStyle(page: Page, key: string) {
+  return number(page, key).evaluate((el) => {
+    const style = getComputedStyle(el, "::before");
+    const masks = ["mask-image", "-webkit-mask-image"].map((name) => style.getPropertyValue(name));
+    return {
+      content: style.content,
+      width: style.width,
+      height: style.height,
+      backgroundColor: style.backgroundColor,
+      mask: masks.find((value) => value !== "" && value !== "none") ?? "none",
+    };
+  });
+}
+
+async function expectGroupImages(page: Page, colors: (typeof MODES)[number]["colors"]) {
+  const masks: string[] = [];
+  for (const key of KEYS) {
+    const target = number(page, key);
+    const before = { pseudo: "before" } as const;
+    await expect(target, `image of ${key}: exists`).toHaveCSS("content", '""', before);
+    await expect(target, `image of ${key}: width`).toHaveCSS("width", `${IMAGE_SIZE}px`, before);
+    await expect(target, `image of ${key}: height`).toHaveCSS("height", `${IMAGE_SIZE}px`, before);
+    await expect(target, `image of ${key}: color`).toHaveCSS(
+      "background-color",
+      colors[key],
+      before,
+    );
+    const { mask } = await imageStyle(page, key);
+    expect(mask, `image of ${key}: mask`).toContain("data:image/svg+xml");
+    masks.push(mask);
+  }
+  expect(new Set(masks).size, "different images").toBe(4);
+}
+
+// Everything of a card that must depend only on its group (plan §5.1): never on the
+// count, on the text or on a rejection (CA-14).
+async function cardLooks(page: Page) {
+  const looks: Record<string, unknown> = {};
+  for (const key of KEYS) {
+    looks[key] = {
+      card: await card(page, key).evaluate((el) => {
+        const style = getComputedStyle(el);
+        const name = getComputedStyle(el.querySelector("dt") as Element);
+        const value = getComputedStyle(el.querySelector("dd") as Element);
+        return [
+          ...["top", "right", "bottom", "left"].flatMap((side) => [
+            style.getPropertyValue(`border-${side}-color`),
+            style.getPropertyValue(`border-${side}-style`),
+            style.getPropertyValue(`border-${side}-width`),
+            style.getPropertyValue(`padding-${side}`),
+          ]),
+          style.backgroundColor,
+          name.color,
+          value.color,
+          value.display,
+          value.columnGap,
+        ].join("|");
+      }),
+      image: await imageStyle(page, key),
+    };
+  }
+  looks.fieldBackground = await computed(page, "text-field", "background-color");
+  return looks;
+}
+
+// The approved drawings, read from the design mockup (F-002 §5.3: copied as they are).
+function approvedImages() {
+  const mockup = readFileSync("_project/design/F-002/mockup-b.html", "utf8");
+  return KEYS.map((key) => {
+    const match = new RegExp(`--img-${key}:url\\("(data:image/svg\\+xml,[^"]+)"\\)`).exec(mockup);
+    if (!match) throw new Error(`the mockup has no --img-${key}`);
+    return match[1];
+  });
+}
+
+// The mask really painted at 44 x 44: one 0/1 per pixel (is it part of the drawing?).
+// A drawing that the browser cannot decode fails here (plan §7 R-2).
+async function shapeOf(page: Page, url: string) {
+  return page.evaluate(
+    async ([source, size]) => {
+      const image = new Image();
+      image.src = source as string;
+      await image.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = size as number;
+      const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      const { data } = context.getImageData(0, 0, canvas.width, canvas.height);
+      return Array.from({ length: data.length / 4 }, (_, i) => (data[i * 4 + 3] > 127 ? 1 : 0));
+    },
+    [url, IMAGE_SIZE] as const,
+  );
+}
+
+function differentPixels(first: number[], second: number[]) {
+  return first.filter((pixel, index) => pixel !== second[index]).length;
+}
+
+const MIXED_PHRASE = "¡Hola, 2026! \u{1F600}";
+
+for (const { scheme, mode, colors } of MODES) {
+  const testCase = scheme === "light" ? "TC-050" : "TC-051";
+
+  test(`${testCase} — ${mode}: al abrir, las 4 fichas en orden, cada una con su imagen, "0" y su nombre; las 4 imágenes son distintas`, async ({
+    page,
+  }) => {
+    await open(page, scheme);
+
+    const order = await page
+      .getByTestId("count-grid")
+      .locator('[data-testid^="count-card-"]')
+      .evaluateAll((elements) => elements.map((el) => el.getAttribute("data-testid")));
+    expect(order).toEqual(KEYS.map((key) => `count-card-${key}`));
+
+    for (const [index, key] of KEYS.entries()) {
+      await expect(card(page, key)).toBeVisible();
+      await expect(card(page, key).locator("dt")).toHaveText(NAMES[index]);
+      await expect(number(page, key)).toHaveText(/^0$/);
+    }
+    await expectGroupImages(page, colors);
+  });
+
+  test(`${testCase} — ${mode}: cada imagen va a la izquierda de su número, en la misma fila (44 px y 8 px de separación)`, async ({
+    page,
+  }) => {
+    await open(page, scheme);
+
+    for (const key of KEYS) {
+      await expect(number(page, key), `gap of ${key}`).toHaveCSS("column-gap", `${IMAGE_GAP}px`);
+      await expectImageBesideNumber(page, key, IMAGE_SIZE, IMAGE_GAP);
+    }
+  });
+}
+
+test("TC-050 — cada ficha pinta el dibujo aprobado de su grupo (boca, rompecabezas, mano y carita) y no el de otro", async ({
+  page,
+}) => {
+  await open(page, "light");
+
+  const approved: number[][] = [];
+  for (const url of approvedImages()) {
+    approved.push(await shapeOf(page, url));
+  }
+  // The comparison itself: the 4 approved drawings are painted and are far apart.
+  for (const [index, shape] of approved.entries()) {
+    const painted = shape.filter(Boolean).length;
+    expect(painted, `painted pixels of ${KEYS[index]}`).toBeGreaterThan(100);
+    expect(painted, `painted pixels of ${KEYS[index]}`).toBeLessThan(shape.length - 100);
+    for (const other of approved.slice(index + 1)) {
+      expect(differentPixels(shape, other)).toBeGreaterThan(100);
+    }
+  }
+
+  for (const [index, key] of KEYS.entries()) {
+    const { mask } = await imageStyle(page, key);
+    expect(mask, `image of ${key}: mask`).toContain("data:image/svg+xml");
+    // The computed value is url("..."), with the inner quotes and backslashes escaped.
+    const url = mask.replace(/^url\("/, "").replace(/"\)$/, "").replace(/\\(.)/g, "$1");
+    // At most 1 % of the pixels apart: room for another way of writing the same SVG.
+    expect(
+      differentPixels(await shapeOf(page, url), approved[index]),
+      `pixels of ${key} that differ from the approved drawing`,
+    ).toBeLessThanOrEqual(19);
+  }
+});
+
+test('TC-053 — escribir "¡Hola, 2026! 😀" da 2/2/4/4 con la imagen y el color iguales que vacía, y al borrar todo siguen iguales con los 4 en 0', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  const app = await openApp(page);
+  // First the image must be there: "the same as before" proves nothing without it.
+  await expectGroupImages(page, MODES[0].colors);
+  const empty = await cardLooks(page);
+
+  await paste(app, MIXED_PHRASE);
+  await expectState(app, MIXED_PHRASE, "2/2/4/4");
+  expect(await cardLooks(page), "looks with text").toEqual(empty);
+
+  await app.field.selectText();
+  await app.field.press("Backspace");
+  await expectState(app, "", "0/0/0/0");
+  expect(await cardLooks(page), "looks after deleting everything").toEqual(empty);
+});
+
+test('TC-054 — con "casa", escribir "ç" no entra y la imagen y el color de las fichas no cambian, sin aviso (C-011, D-005)', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  const app = await openApp(page);
+  await type(app, "casa");
+  await expectState(app, "casa", "2/2/0/0");
+  await expectGroupImages(page, MODES[0].colors);
+  const before = await cardLooks(page);
+
+  await expectRejected(app, () => type(app, "ç"), "typing a foreign letter");
+
+  expect(await cardLooks(page), "looks after the rejection").toEqual(before);
+});
+
+test('TC-054 — borde: con 100 caracteres, escribir "b" no entra y la imagen y el color de las fichas no cambian, sin aviso (A-001, D-007)', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  const app = await openApp(page);
+  await paste(app, "a".repeat(100));
+  await expectState(app, "a".repeat(100), "100/0/0/0");
+  await expectGroupImages(page, MODES[0].colors);
+  const before = await cardLooks(page);
+
+  await expectRejected(app, () => type(app, "b"), "typing character 101");
+
+  expect(await cardLooks(page), "looks after the rejection").toEqual(before);
+});
+
+test('TC-055 — control: al abrir y escribir "casa", todo se pide a la misma dirección de la app, nada lleva el texto y nada queda guardado (C-010)', async ({
+  page,
+  context,
+  baseURL,
+}) => {
+  const requests: Array<{ url: string; sent: string }> = [];
+  const note = (url: string, sent: string) => requests.push({ url, sent });
+  context.on("request", (request) => {
+    note(
+      request.url(),
+      `${request.url()} ${request.postData() ?? ""} ${JSON.stringify(request.headers())}`,
+    );
+  });
+  page.on("websocket", (socket) => {
+    note(socket.url(), socket.url());
+    socket.on("framesent", (frame) => note(socket.url(), String(frame.payload)));
+  });
+
+  const app = await openApp(page);
+  await page.waitForLoadState("networkidle");
+  await type(app, "casa");
+  await expectState(app, "casa", "2/2/0/0");
+  await app.field.blur();
+  await page.waitForLoadState("networkidle");
+  await expectNothingStored(page, context);
+
+  // Leaving and loading again must not send the text or ask another site either.
+  await page.reload();
+  await page.waitForLoadState("networkidle");
+
+  const appHost = new URL(baseURL ?? "").host;
+  // Proves the listener works: loading the page itself was seen.
+  expect(requests.length).toBeGreaterThan(0);
+  // A data: address carries its own content, so it counts as part of the app.
+  expect(
+    requests
+      .map((request) => request.url)
+      .filter((url) => !url.startsWith("data:") && new URL(url).host !== appHost),
+    "requests to another site",
+  ).toEqual([]);
+  expect(
+    requests.filter((request) => request.sent.toLowerCase().includes("casa")),
+    "requests that carry the typed text",
+  ).toEqual([]);
+  await expectNothingStored(page, context);
+});
+
+test("TC-056 — control: cada ficha se lee como su nombre y su número, sin nada más por la imagen, y el nombre se ve escrito (C-013)", async ({
+  page,
+}) => {
+  await open(page, "light");
+
+  await expect(page.getByTestId("count-grid")).toMatchAriaSnapshot(`
+    - /children: equal
+    - term: Vocales
+    - definition: "0"
+    - term: Consonantes
+    - definition: "0"
+    - term: Números
+    - definition: "0"
+    - term: Otros
+    - definition: "0"
+  `);
+  for (const [index, key] of KEYS.entries()) {
+    await expect(card(page, key).locator("dt")).toBeVisible();
+    await expect(card(page, key).locator("dt")).toHaveText(NAMES[index]);
+  }
+});

@@ -135,7 +135,7 @@ for (const { scheme, name } of SCHEMES) {
   // The cap of the field (design §5.3): 8 lines of text, 5 visible, inner scroll.
   const capFile = `estado-4-tope-5-lineas-${IPHONE.width}x${IPHONE.height}-${name}.png`;
 
-  test(`P-3 — captura ${capFile}`, async ({ page }, testInfo) => {
+  test(`estado 4b — tope de 5 líneas: captura ${capFile}`, async ({ page }, testInfo) => {
     await open(page, IPHONE, scheme);
     const field = page.getByTestId("text-field");
 

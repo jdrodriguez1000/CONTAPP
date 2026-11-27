@@ -1,0 +1,46 @@
+VS-002 · lote 2 · tester, trabajo A · 2026-11-27 · base: 4e74b73 + pruebas sin commit
+(Resúmenes copiados A MANO de la terminal: la guarda no deja redirigir salidas.)
+
+1) ANTES de tocar nada
+   npm run check                               -> pasa (typecheck + lint, sin mensajes)
+   npm run test:e2e -- --workers=2             -> Running 127 tests · 127 passed (56.6s)
+
+2) DESPUÉS (pruebas nuevas, app sin cambios)
+   npm run check                               -> pasa
+   npm run test:e2e -- --workers=2             -> Running 166 tests · 30 F en la salida de puntos
+   Archivos sin cambios (foreign-letters, max-length, round1, screen, skeleton, typing)
+                                               -> 113 passed (51.7s)
+   group-look --grep "TC-052" (lote 1)         -> 14 passed
+   => 166 = 136 en verde + 30 en rojo (las 127 de antes en verde; los 30 rojos son nuevos)
+   npx playwright test --project=captures --output=test-results/captures-check
+                                               -> 16 passed (9.5s)
+
+3) RAZÓN DE CADA ROJO (leída por grupos)
+   group-look (8):
+     TC-050 y TC-051 "al abrir ... con su imagen", TC-053, TC-054 x2
+        image of vowel: exists · Expected "\"\"" · Received "none"
+     TC-050 y TC-051 "a la izquierda de su número"
+        gap of vowel · Expected "8px" · Received "normal"
+     TC-050 "dibujo aprobado"
+        image of vowel: mask · Expected substring "data:image/svg+xml" · Received "none"
+   didactic-screen (22):
+     TC-059 imagen a 390, 320, 359, 360 (4)    content: Expected "\"\"" · Received "none"
+     TC-064 relleno y separación a 390, 360 (2) column-gap: Expected "8px" · Received "normal"
+     TC-064 relleno y separación a 320, 359 (2) padding-left: Expected "4px" · Received "8px"
+     TC-064 con cada número, 390 y 320 (14)     display of the <dd> of vowel: Expected "flex" · Received "block"
+
+4) PRUEBA DE LAS PRUEBAS (CSS del plan inyectado temporalmente desde la prueba; ya retirado)
+   Etapa B (P-3 + P-4): group-look 24/24 passed · didactic-screen 32/32 passed
+        (29 pruebas + 3 mediciones temporales a 360, 366 y 375 px)
+   Etapa A (solo P-3): didactic-screen 13 en rojo, todos a 320 o 359 px:
+        TC-059 imagen (2: width 44px, esperado 32px) · TC-064 relleno (2: 8px, esperado 4px)
+        TC-063 a 320 (2: "width of the card of vowel: 130px, expected 138px")
+        TC-064 con cada número a 320 (7; en "100" leído: "52px, expected 36px")
+   Daño a propósito:
+        dibujos de Vocales y Consonantes cambiados -> "pixels of vowel that differ ...: 582" (máx. 19)
+        content "boca" en una imagen               -> TC-056 lee "definition: boca 0"
+        lo escrito enviado a example.invalid       -> TC-055 "requests to another site": 4 direcciones
+   Mediciones (Windows, 100 "a", CSS del plan): "100" a 48 px = 80,7 px; fila de Vocales = 132,7 px
+        360 px: ficha 158 (útiles 138) · 366: 161 (141) · 375: 165,5 (145,5) -> cabe en los tres
+   Limpieza: Grep de TEMPORARY|PROOF|SABOTAGE|addStyleTag|addInitScript|example.invalid|classList
+        en tests/ -> sin resultados
