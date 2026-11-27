@@ -87,26 +87,26 @@ dl.gloss dd { margin: 0; min-width: 0; color: var(--muted); }
 <div class="wrap">
   <header>
     <h1>Avance de Contapp</h1>
-    <p class="meta">Actualizado: 2026-11-26 · Versión del producto 0.004.000</p>
+    <p class="meta">Actualizado: 2026-11-27 · Versión del producto 0.004.000</p>
     <p class="meta">✓ terminado · ▸ en curso · ○ pendiente</p>
   </header>
 
   <section class="here" aria-labelledby="here-h">
     <h2 id="here-h">📍 Dónde estás ahora</h2>
-    <div class="row"><span class="label">Proyecto</span><span>Fase 0 ✓ · VS-001 ✓ · 1 de 6 slices terminada</span></div>
+    <div class="row"><span class="label">Proyecto</span><span>Fase 0 ✓ · VS-001 ✓ · VS-002 ▸ en curso · 1 de 6 slices terminada</span></div>
     <div class="row"><span class="label">En producción</span><span>Contapp v0.004.000 en contapp-tawny.vercel.app</span></div>
-    <div class="row"><span class="label">Ahora</span><span>Nada en curso · MANT-001 ✓ (el tester revisa sus pruebas con <code>npm run check</code>, PR #2)</span></div>
-    <div class="row"><span class="label">Sigue</span><span>Definir VS-002 "Imágenes y diseño para niños" con el architect</span></div>
+    <div class="row"><span class="label">Ahora</span><span>VS-002 "Imágenes y diseño para niños": definida, diseñada y planeada (aprobada por ti el 2026-11-27)</span></div>
+    <div class="row"><span class="label">Sigue</span><span>Crear la rama de VS-002 y construir el lote 1: deuda DT-008 y DT-009, y un color por grupo</span></div>
   </section>
 
   <section aria-labelledby="slices-h">
     <h2 id="slices-h">El camino del proyecto</h2>
-    <div class="tally"><span><b>✓</b>Fase 0</span><span><b>1</b>slice terminada</span><span><b>0</b>en curso</span><span><b>5</b>pendientes</span></div>
-    <div class="bar" aria-hidden="true"><i class="done"></i><i class="done"></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="tally"><span><b>✓</b>Fase 0</span><span><b>1</b>slice terminada</span><span><b>1</b>en curso</span><span><b>4</b>pendientes</span></div>
+    <div class="bar" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="now"></i><i></i><i></i><i></i><i></i></div>
     <ol class="slices">
       <li><span class="id">Fase 0</span><span class="name">Entendimiento del proyecto<small>Qué es la app, para quién, reglas de conteo (C-001 a C-013), los 4 grupos y el roadmap · 2026-11-25</small></span><span class="pill done">✓ Terminada</span></li>
       <li><span class="id">VS-001</span><span class="name">Contar en el celular<small>Escribir y ver los 4 conteos (walking skeleton) · en producción 2026-11-26, v0.004.000</small></span><span class="pill done">✓ Terminada</span></li>
-      <li><span class="id">VS-002</span><span class="name">Imágenes y diseño para niños<small>Una imagen y un color por grupo</small></span><span class="pill todo">○ Pendiente</span></li>
+      <li class="now"><span class="id">VS-002</span><span class="name">Imágenes y diseño para niños<small>Una imagen y un color por grupo · boca que canta, rompecabezas, mano que cuenta, carita feliz</small></span><span class="pill now">▸ En curso</span></li>
       <li><span class="id">VS-003</span><span class="name">Ver cada letra en su grupo<small>Cada carácter con el color de su grupo</small></span><span class="pill todo">○ Pendiente</span></li>
       <li><span class="id">VS-004</span><span class="name">Aviso amable<small>Mensaje para el niño ante una letra de otro idioma</small></span><span class="pill todo">○ Pendiente</span></li>
       <li><span class="id">VS-005</span><span class="name">Borrar y empezar de nuevo<small>Botón grande para borrar todo</small></span><span class="pill todo">○ Pendiente</span></li>
@@ -115,29 +115,23 @@ dl.gloss dd { margin: 0; min-width: 0; color: var(--muted); }
   </section>
 
   <section aria-labelledby="vs-h">
-    <h2 id="vs-h">VS-001 paso a paso (terminada)</h2>
+    <h2 id="vs-h">VS-002 paso a paso (en curso)</h2>
     <ol class="steps">
-      <li class="done"><span class="dot">✓</span><span class="txt">Definir, diseñar y planear<small>architect, designer y planner · aprobado por ti</small></span></li>
-      <li class="done"><span class="dot">✓</span><span class="txt">Construir en 5 lotes<small>Cada lote: el tester escribe las pruebas, el coder las pone en verde</small>
+      <li class="done"><span class="dot">✓</span><span class="txt">Definir la slice<small>architect · 7 pasos aprobados por ti · teclado con hasta 2 líneas y 50 letras</small></span></li>
+      <li class="done"><span class="dot">✓</span><span class="txt">Diseñar la pantalla<small>designer · elegiste las imágenes B, los colores del juego 1 y la imagen al lado del número</small></span></li>
+      <li class="done"><span class="dot">✓</span><span class="txt">Planear el trabajo<small>planner · 4 lotes, sin librerías nuevas · aprobado por ti</small></span></li>
+      <li class="now"><span class="dot">▸</span><span class="txt">Construir en 4 lotes<small>Cada lote: el tester escribe las pruebas, el coder las pone en verde</small>
         <div class="lotes">
-          <div class="lote"><b>Lote 1 ✓</b><span>P-1, P-2 · esqueleto y publicar</span></div>
-          <div class="lote"><b>Lote 2 ✓</b><span>P-3, P-4 · pantalla y letras</span></div>
-          <div class="lote"><b>Lote 3 ✓</b><span>P-5, P-6 · números y contar al escribir</span></div>
-          <div class="lote"><b>Lote 4 ✓</b><span>P-7, P-8 · otros idiomas y tope de 100</span></div>
-          <div class="lote"><b>Lote 5 ✓</b><span>P-9, P-10 · CI y prueba en el celular</span></div>
+          <div class="lote"><b>Lote 1 ○</b><span>P-1, P-2 · deuda y colores</span></div>
+          <div class="lote"><b>Lote 2 ○</b><span>P-3, P-4 · imágenes y letra grande</span></div>
+          <div class="lote"><b>Lote 3 ○</b><span>P-5 · el teclado no tapa nada</span></div>
+          <div class="lote"><b>Lote 4 ○</b><span>P-6, P-7 · versión publicada y tu iPhone</span></div>
         </div></span></li>
-      <li class="done"><span class="dot">✓</span><span class="txt">Intentar romperla<small>breaker-user y breaker-code · 7 hallazgos para corregir</small></span></li>
-      <li class="done"><span class="dot">✓</span><span class="txt">Ronda 1: corregir los hallazgos
-        <ul class="sub">
-          <li class="done"><span class="mark">✓</span>Ajustar F-001 y el plan (D-017, D-018)</li>
-          <li class="done"><span class="mark">✓</span>Tester: pruebas en rojo de TC-043 a TC-049</li>
-          <li class="done"><span class="mark">✓</span>Coder: corregir hasta verde (207 unitarias, 113 E2E)</li>
-          <li class="done"><span class="mark">✓</span>CI en verde (207 unitarias, 113 E2E)</li>
-        </ul></span></li>
-      <li class="done"><span class="dot">✓</span><span class="txt">Revisar calidad y seguridad<small>0 bloqueantes · mutación 93 % · pendientes menores como deuda (DT-004 a DT-011)</small></span></li>
-      <li class="done"><span class="dot">✓</span><span class="txt">Verificación del Manager</span></li>
-      <li class="done"><span class="dot">✓</span><span class="txt">Tu aceptación en el celular<small>4 pruebas en el iPhone · commit 25baa39</small></span></li>
-      <li class="done"><span class="dot">✓</span><span class="txt">Publicar en producción y cerrar la slice<small>PR #1 fusionado · v0.004.000 en contapp-tawny.vercel.app</small></span></li>
+      <li><span class="dot">○</span><span class="txt">Intentar romperla<small>breaker-user y breaker-code (revisión Alta, como decidiste)</small></span></li>
+      <li><span class="dot">○</span><span class="txt">Revisar calidad y seguridad</span></li>
+      <li><span class="dot">○</span><span class="txt">Verificación del Manager</span></li>
+      <li><span class="dot">○</span><span class="txt">Tu aceptación en el celular</span></li>
+      <li><span class="dot">○</span><span class="txt">Publicar en producción y cerrar la slice</span></li>
     </ol>
   </section>
 

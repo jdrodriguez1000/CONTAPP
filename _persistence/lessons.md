@@ -1,6 +1,6 @@
 # Lecciones aprendidas
-**Última actualización:** 2026-11-26
-**Último ID usado:** L-039
+**Última actualización:** 2026-11-27
+**Último ID usado:** L-043
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -22,6 +22,7 @@
 ### Producto y estructura
 - L-031 — Si la app reescribe un campo, el plan decide antes qué pasa con deshacer/rehacer y con la selección: una función sin la selección no distingue pegar sobre una selección de escribir
 - L-013 — En las maquetas toda medida va con token o con una medida fija aprobada (D-014), nunca un número suelto
+- L-040 — El espacio con el teclado se mide en la foto convertida a píxeles de la página y se calibra con lo ya construido (SF Pro suma ≈ 10 px)
 - L-020 — Para probar un tope de alto en una captura, medir el alto en el límite y pasado el límite, y comprobar que hay texto escondido → VEGU
 
 ### Herramienta
@@ -39,10 +40,13 @@
 - L-026 — La dirección única de la preview de un commit sale con `vercel ls contapp -m githubCommitSha=<sha completo>`
 - L-019 — Una corrida con muchos rojos se corta en la terminal del agente: correr por grupos con `--grep` para leer la razón de cada fallo → VEGU
 - L-039 — Desde ESLint 10, una carpeta donde un agente escribe puede traer su propio `eslint.config.*`: la configuración se fija con `-c` en el script (DT-015) → VEGU
+- L-041 — En CSS, el ajuste de un componente para pantalla angosta va en un `@media` después del componente: con igual peso gana la regla que va después
+- L-043 — Las maquetas que el designer no puede abrir se verifican con `npx playwright screenshot --browser webkit --full-page` (WebKit, como el iPhone) → VEGU
 
 ### Datos y supuestos
 
 ### Proceso y memoria
+- L-042 — Un texto esperado de toda la pantalla vive en una sola función compartida; un pseudo-elemento que es contrato de prueba lleva sus propiedades exactas en el plan → VEGU
 - L-035 — El rojo se comprueba leyendo la aserción exacta que falla, no el "fail 1": una prueba propia puede fallar por su propio error → VEGU
 - L-036 — Al permitirle un comando a un agente, se permite el texto exacto: una lista de opciones prohibidas no cierra un comando que pasa opciones a dos programas (npm acepta abreviaturas) → VEGU
 - L-037 — Las guardas de Bash son barandas contra errores, no una jaula: un agente que ejecuta código propio las rodea; se dice como riesgo aceptado → VEGU
@@ -453,3 +457,43 @@
 - **Cómo aplicarla:** DT-015.
 - **Estado:** Vigente
 - **Relacionada con:** DT-015 → VEGU
+
+### L-040 — 2026-11-27 — Medir el teclado en la foto y calibrar con lo construido (acierto)
+- **Categoría:** Producto y estructura
+- **Etapa:** Construcción
+- **Qué pasó:** el designer convirtió la foto del iPhone del lote 3 de VS-001 a píxeles de la página (591 px de foto ÷ 390 = 1,516) y comparó dónde termina hoy la 2.ª fila en la foto con su cuenta: así midió 427 px visibles y que SF Pro suma ≈ 10 px.
+- **Lección:** el espacio con el teclado abierto se mide en una foto real convertida a píxeles de la página y se calibra contra algo ya construido, no solo se calcula.
+- **Por qué importa:** en F-001 §5.5 el cálculo prometió que cabían las 4 fichas y en el iPhone no cabían (D-015).
+- **Cómo aplicarla:** toda promesa de "cabe con el teclado" trae su medida desde una foto y su margen de calibración; refuerza L-015.
+- **Estado:** Vigente
+- **Relacionada con:** L-010, L-015, D-015, F-003 §5.2
+
+### L-041 — 2026-11-27 — Orden de los `@media` en el CSS
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** al planear P-4 y P-5 de VS-002, el planner vio que `src/styles.css` tiene un `@media` de pantalla angosta antes del componente; una regla del componente dentro de ese `@media` pierde contra la regla base que va después, porque pesan igual.
+- **Lección:** los ajustes de un componente para pantallas angostas van en un `@media` después del componente.
+- **Por qué importa:** sin eso, un cambio de espacios taparía el ajuste de 320 px sin que nadie lo note salvo una prueba.
+- **Cómo aplicarla:** el plan de VS-002 lo fija en P-4 ("Orden en el archivo"); el reviewer lo mira en cada diff de `styles.css`.
+- **Estado:** Vigente
+- **Relacionada con:** `_project/slices/VS-002/plan.md` P-4
+
+### L-042 — 2026-11-27 — Contratos de prueba que no se rompen con cada cambio de pantalla
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el architect encontró el mismo texto visible exacto de toda la pantalla copiado en 4 archivos de prueba; el planner tuvo que dar las propiedades calculadas del `::before` de la imagen porque el tester no tiene selector para encontrarlo.
+- **Lección:** el texto esperado de toda la pantalla vive en una sola función compartida, y un pseudo-elemento que es contrato de prueba lleva en el plan sus propiedades exactas (tamaño, color, máscara).
+- **Por qué importa:** cada cambio de texto obligaba a tocar muchos archivos; sin contrato, el tester tendría que leer el código.
+- **Cómo aplicarla:** el planner lo pone en "Interfaces públicas"; el reviewer marca como duplicación un texto esperado copiado.
+- **Estado:** Vigente
+- **Relacionada con:** DT-008, DT-017 → VEGU
+
+### L-043 — 2026-11-27 — Verificar maquetas con WebKit (acierto)
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** el designer no pudo abrir sus maquetas y pidió confirmar que las imágenes (máscaras CSS con SVG) se veían y que nada se cortaba; el Manager las capturó con `npx playwright screenshot --browser webkit --full-page --viewport-size "1400,900" file:///…` y las revisó.
+- **Lección:** las maquetas se verifican en WebKit, el motor de Safari, con la Playwright ya instalada; complementa L-004 (Edge) cuando la técnica depende del navegador.
+- **Por qué importa:** una máscara CSS puede dibujarse distinto en Safari que en Edge.
+- **Cómo aplicarla:** el Manager captura en WebKit toda maqueta con técnica dependiente del navegador antes de mostrarla al usuario.
+- **Estado:** Vigente
+- **Relacionada con:** L-004 → VEGU

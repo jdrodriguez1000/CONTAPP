@@ -1,6 +1,6 @@
 # Decisiones del proyecto
-**Última actualización:** 2026-11-26
-**Último ID usado:** D-020
+**Última actualización:** 2026-11-27
+**Último ID usado:** D-023
 
 > **Reglas del archivo:**
 > - Dos capas: (1) *Índice de decisiones vigentes*, una línea `D-XXX — decisión`, máx. ~30 líneas, se lee al inicio; (2) *Registro completo*, se consulta por demanda, siempre antes que el resto de la memoria fría.
@@ -30,6 +30,9 @@
 - D-018 — Una tilde combinable pegada sola entra solo si forma con la letra anterior una letra del español; si no, no entra y lo demás sí (amplía C-015)
 - D-019 — Ubicación siempre visible (piloto → VEGU): mapa de 3 líneas en cada mensaje con avance y página `_project/status.html` (Fase 0 + slices, colores de la app, estados con ✓ ▸ ○)
 - D-020 — Herramientas del reviewer: jscpd 5.4.3, knip 6.45.1 y Stryker 10.1.1 (vitest-runner), dependencias de desarrollo exactas; mutación solo de `src/counting.ts` y `src/inputFilter.ts`
+- D-021 — Alcance de VS-002: entra el teclado (4 grupos a la vista con hasta 2 líneas y 50 caracteres; mandan las 2 líneas), DT-008 y DT-009; fuera DT-004, DT-017, el total y otros tamaños; sin botones
+- D-022 — Diseño de VS-002: imágenes opción B (boca que canta, rompecabezas, mano que cuenta, carita feliz) al lado del número, colores juego 1 que sirven también como letra (4,5:1), letra del iPhone
+- D-023 — Plan de VS-002 aprobado (7 pasos, 4 lotes): imagen con `::before` y máscara SVG en el CSS, prueba aproximada del teclado (≤ 417 px) y revisión de cierre en Alta
 
 ## Registro completo (memoria fría — consultar por demanda)
 
@@ -172,3 +175,24 @@
 - **Alternativas descartadas:** correr jscpd y knip con `npx` sin instalar (descarga en cada revisión y no queda en el archivo de versiones).
 - **Estado:** Vigente
 - **Relacionada con:** D-012, DT-005, `.claude/skills/review-checklist/SKILL.md`
+
+### D-021 — 2026-11-27 — Alcance de VS-002
+- **Decisión:** VS-002 = F-002 + F-003. Entra el borde "teclado abierto tapando los conteos": con el teclado abierto en el iPhone con Safari se ven completos los 4 grupos (imagen, número y nombre) y la línea donde se escribe, con el campo vacío o hasta 50 caracteres en hasta 2 líneas; si una frase de hasta 50 ocupa 3 líneas, mandan las 2 líneas (CA-20). Entran DT-008 y DT-009. Quedan fuera DT-004 (mantenimiento), DT-017, el total de caracteres, celular girado/pequeño/computador y la frase de 51 a 100 con el teclado (bordes que esperan, slice propuesta "Ver bien en otros tamaños"). Los nombres escritos se quedan junto a la imagen; no se crea ningún botón (la regla de tamaño queda en `design-system.md` para VS-005); se permiten figuras de un solo carácter como imagen. Se quita el paso 5 del esbozo (textos): quedan 7 pasos.
+- **Razón:** decisiones del usuario; la slice queda pequeña y resuelve lo que se nota a diario con los niños. Amplía D-015.
+- **Alternativas descartadas:** exigir el teclado hasta 100 caracteres (obligaba a romper D-010 o la letra grande); que manden los 50 caracteres (quitar el título o bajar la letra del campo); incluir DT-004 (subía el riesgo).
+- **Estado:** Vigente
+- **Relacionada con:** D-015, D-010, `_project/slices/VS-002.md`, F-002, F-003
+
+### D-022 — 2026-11-27 — Diseño de VS-002: imágenes, colores y letra
+- **Decisión:** imágenes de la opción B "Lo que hace cada grupo": vocales = boca abierta que canta, consonantes = ficha de rompecabezas, números = mano que cuenta, otros = carita feliz (catálogo GRP-001 a GRP-004). La imagen va al lado del número; el color del grupo va en la imagen, el número y el borde. Colores juego 1 "Salón clásico" (`--color-vowel`, `--color-consonant`, `--color-digit`, `--color-other`; claro/oscuro `#C62828`/`#FF7B72`, `#1565C0`/`#82B1FF`, `#A84B00`/`#FFB74D`, `#7B1FA2`/`#CE93D8`), que pasan 4,5:1 también como letra sobre `--color-input-bg` (pensando en VS-003). Letra del iPhone; Andika puede volver a proponerse en VS-003.
+- **Razón:** elección del usuario sobre 3 maquetas; cabe con el teclado abierto sin bajar letras ni cambiar D-010.
+- **Alternativas descartadas:** opciones A "Letras gorditas" y C "Juguetes del salón"; juego de colores 2 "Crayolas"; imagen encima del número (no cabía con el teclado); letra escolar Andika en VS-002.
+- **Estado:** Vigente
+- **Relacionada con:** D-010, D-021, `_project/design-system.md`, F-002 §5, F-003 §5
+
+### D-023 — 2026-11-27 — Plan de VS-002
+- **Decisión:** plan de 7 pasos en 4 lotes (`_project/slices/VS-002/plan.md`): lote 1 P-1 deuda + P-2 colores · lote 2 P-3 imágenes + P-4 tamaños · lote 3 P-5 teclado · lote 4 P-6 versión publicada + P-7 iPhone. La imagen se pinta con `.count dd::before` y una máscara SVG escrita en `src/styles.css` (`-webkit-mask` y `mask`), sin archivos ni dependencias. Se incluye una E2E aproximada del teclado (2.ª fila ≤ 417 px con el campo activo). Desde P-1, `published.spec.ts` guarda su evidencia en `_project/slices/VS-002/evidence/`. La revisión de cierre queda en **Alta** aunque `src/main.ts` solo cambie un comentario: el usuario no la baja.
+- **Razón:** ~65 líneas de app en total, sin dependencias; la prueba aproximada protege los espacios; el usuario prefiere todas las revisiones.
+- **Alternativas descartadas:** `<svg>` en el marcado (cambiaba `src/main.ts` y pruebas); solo la foto para el teclado; bajar la revisión a Normal.
+- **Estado:** Vigente
+- **Relacionada con:** D-021, D-022, `.claude/rules/risk-levels.md`
