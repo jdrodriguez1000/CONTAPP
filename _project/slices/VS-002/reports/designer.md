@@ -256,3 +256,60 @@ El número sigue arriba y el nombre abajo (D-010). **No hay bloqueantes.** Dejo 
 - **Lección propuesta (diseño para el celular):** al diseñar un ajuste por ancho, la cuenta de "cabe" se hace en el ancho **más angosto de cada tramo**: 320 y **360**, no solo 320 y 390. Por qué: el borde de una regla de "menos de 360 px" es justo 360, y ese fue el ancho que quedó sin calcular.
 
 STATUS: DONE
+
+# Lote 3 — revisión visual
+**Fecha:** 2026-11-27 · **Trabajo:** Revisión visual · **Commit revisado:** `e5c18bc` (código de `9c45554`, rama `feature/VS-002-imagenes-ninos`) · **Alcance:** solo lo cambiado desde el lote 2: P-5, la pantalla más compacta para ver los 4 grupos con el teclado abierto
+
+## Resumen
+Las 20 capturas muestran lo aprobado en F-003 §5.3. Se acortaron los 5 espacios y ninguna letra ni imagen cambió de tamaño. A 390 × 427, que es lo que deja ver el teclado (aproximado), se ven completos el título, la etiqueta, el campo y las 4 fichas, con imagen, número y nombre. Pasa en claro y en oscuro, con "pingüino" y con la frase de 50 en 2 líneas. Debajo de la segunda fila quedan ≈ 30 px libres, lo que coincide con mi cuenta de F-003 §5.2 (≈ 395 de 427). **No hay bloqueantes.**
+
+## Archivos creados o modificados
+- `_project/slices/VS-002/reports/designer.md` — esta sección (agregada al final).
+
+## Qué revisé
+- **Capturas** (`_project/slices/VS-002/evidence/capturas/lote-3/`, 20), en claro y en oscuro:
+  - los 8 estados de los lotes anteriores: 1 vacío a 390 × 844 y a 320 × 568, 2, 2b, 3, 4, 4b tope de 5 líneas y 5 con 100 "a" a 320 × 568;
+  - **nuevos:** estados 2 ("pingüino") y 2b (frase de 50) a **390 × 427**.
+
+  **Están todos los estados que pide el plan §4 para el lote 3.** Son capturas de Windows, sin teclado ni barras de Safari, y la letra no es SF Pro (L-010, L-015). Por eso los 427 px son una aproximación: lo definitivo es la foto del iPhone (P-7).
+- **Contra:** F-003 §5.1 a §5.3 y §5.7, la tabla "Medidas de la pantalla desde P-5" del plan §5.1, `mockup-b.html` (estados 2 y 2b) y `design-system.md` §4.
+- **Código, solo para la fila 5 (tokens):** en `src/styles.css`, los 5 espacios nuevos usan tokens. Son estos:
+  - `.app` con `padding: var(--space-2) …` (línea 67);
+  - el título con `margin: 0 0 var(--space-2)` (línea 72);
+  - el campo con `padding: var(--space-2) var(--space-3)` y su tope `calc(5 * 1.3em + 2 * var(--space-2) + 2 * var(--border-width-input))` (líneas 93 y 95);
+  - las fichas con `margin: var(--space-3) 0 0` (línea 119);
+  - cada ficha con `padding: var(--space-2)` (línea 129).
+
+  El ajuste de menos de 360 px (líneas 187-188) sigue al final del archivo, como se definió en P-4.
+
+## Revisión fila por fila (skill design-system §9)
+| # | Qué se compara | Resultado |
+|---|---|---|
+| 1 | Estructura y orden | ✓ Igual que en el lote 2: título, etiqueta, campo y cuadrícula 2 × 2 (Vocales, Consonantes / Números, Otros). En cada ficha van la imagen y el número en la misma fila y el nombre debajo (D-010). Solo cambiaron los espacios. |
+| 2 | Textos exactos | ✓ Sin cambios (F-003 §5.6). |
+| 3 | Estados | ✓ Están los 10 estados en los dos modos. El 2 y el 2b a 390 × 427 corresponden al estado 2 de F-003 §5.7 ("escribiendo, teclado abierto"). |
+| 4 | Valores del dominio | ✓ Los conteos son correctos: 0/0/0/0, 4/4/0/0, 17/20/0/1, 2/2/4/4, 35/40/3/3, 16/18/0/0 y 100/0/0/0. |
+| 5 | Tokens | ✓ Las medidas que se ven en las capturas coinciden con la tabla del plan: arriba ≈ 8 px; título → etiqueta ≈ 8; campo vacío de ≈ 82 px de alto (antes 90); campo → fichas ≈ 12; fichas de ≈ 104 px de alto, con 12 px entre ellas. El tope de 5 líneas mide ≈ 176 px y deja ver las 5 líneas completas (`estado-4-tope-5-lineas-*`). Colores e imágenes, sin cambio. |
+| 6 | Accesibilidad | ✓ El anillo de foco del campo (2 y 2b) se ve completo y no toca las fichas: cabe en los 12 px de separación, como prevé F-003 §5.3. Las letras no bajaron (CA-18) y el texto del campo sigue en 24 px. Nada depende solo del color. |
+| 7 | Anchos sin desbordes | ✓ A 390 px y a 320 px no hay desplazamiento horizontal. A 320 px, "100" con su imagen y "Consonantes" siguen dentro de su ficha, igual que en el lote 2 (P-5 no tocó los lados). **A 390 × 427**, el borde de abajo de "Números" y "Otros" queda en ≈ 395 px, con ≈ 30 px de margen. Si se suman los ≈ 10 px que agrega SF Pro, quedan ≈ 20 px de margen en el iPhone. |
+| 8 | Detalles finos | Sin hallazgos. Con menos relleno, la ficha se ve más llena, pero el número, la imagen y el nombre no se tocan entre sí ni tocan el borde punteado. |
+
+## Hallazgos
+| # | Pantalla / captura | Hallazgo | Severidad |
+|---|---|---|---|
+| 1 | `estado-2-teclado-390x427-*`, `estado-2b-teclado-390x427-*` | Las capturas cortan la página a 427 px, pero no tienen el teclado ni las barras de Safari. En Windows, la frase de 50 se parte como calculé en F-003 §5.5 ("…se va a" / "dormir en su camita."). Falta confirmar en el iPhone, con SF Pro y las barras reales, que los 4 grupos y la línea donde se escribe siguen a la vista. Eso lo dicen TC-061 y TC-062 con foto, en P-7. | No bloqueante — se confirma en P-7 (lote 4) |
+| 2 | Bordes que esperan (D-024 y D-025) | Este lote no cambia nada de lo que dicen D-024 (pantallas de 360 a 369 px) y D-025 (la letra real a 320 px). P-5 solo cambió el alto, no el ancho, así que esos bordes no empeoran ni mejoran. No hay capturas a esos anchos, y no las pido. | Sin acción (registrado en D-024 y D-025) |
+
+**Observación sin severidad:** sigue abierto mi hallazgo 2 del lote 2. A 32 px, la nota de la boca y el saliente del rompecabezas se ven pequeños. Si un niño los reconoce se confirma con TC-057 en P-7.
+
+## Cómo revisar
+- Abrir `estado-2b-teclado-390x427-claro.png` y `…-oscuro.png`. Es lo que se vería con el teclado abierto: las 4 fichas deben estar completas, con nombre, y debajo debe quedar una franja vacía.
+- Comparar `estado-2-escribiendo-390x844-claro.png` del lote 2 con el del lote 3. Se nota la pantalla más apretada arriba y entre el campo y las fichas, pero con la letra del mismo tamaño.
+
+## Preguntas para el usuario
+- Ninguna.
+
+## Decisiones o lecciones propuestas
+- Ninguna nueva.
+
+STATUS: DONE
