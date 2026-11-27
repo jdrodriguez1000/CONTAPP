@@ -11,6 +11,10 @@
   --color-input-bg: #ffffff;
   --color-input-border: #556655;
   --color-focus: #1f6b33;
+  --color-vowel: #c62828;
+  --color-consonant: #1565c0;
+  --color-digit: #a84b00;
+  --color-other: #7b1fa2;
   --font-family-base: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
   --font-size-title: 28px; --font-weight-title: 800;
   --font-size-label: 18px; --font-weight-label: 600;
@@ -35,6 +39,10 @@
     --color-input-bg: #1c2e20;
     --color-input-border: #88aa88;
     --color-focus: #ffdd55;
+    --color-vowel: #ff7b72;
+    --color-consonant: #82b1ff;
+    --color-digit: #ffb74d;
+    --color-other: #ce93d8;
   }
 }
 
@@ -119,9 +127,15 @@ body {
   min-height: 104px;
   padding: var(--space-3) var(--space-2);
   background: var(--color-surface);
-  border: var(--border-width-input) dashed var(--color-border);
+  border: var(--border-width-input) dashed var(--group-color);
   border-radius: var(--radius-card);
 }
+
+/* One variant per group: each card only picks which color token it uses. */
+.count--vowel { --group-color: var(--color-vowel); }
+.count--consonant { --group-color: var(--color-consonant); }
+.count--digit { --group-color: var(--color-digit); }
+.count--other { --group-color: var(--color-other); }
 
 .count dt {
   margin-top: 2px;
@@ -135,6 +149,6 @@ body {
   font-size: var(--font-size-count);
   font-weight: var(--font-weight-count);
   line-height: 1.1;
-  color: var(--color-primary);
+  color: var(--group-color);
   font-variant-numeric: tabular-nums;
 }
