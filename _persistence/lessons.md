@@ -1,6 +1,6 @@
 # Lecciones aprendidas
 **Última actualización:** 2026-11-27
-**Último ID usado:** L-047
+**Último ID usado:** L-053
 
 > **Reglas del archivo:**
 > - Dos capas: índice por categoría (una línea `L-XXX — lección` por vigente, máx. ~40 líneas) + registro completo (solo se agrega).
@@ -20,6 +20,7 @@
 - L-001 — Una regla dicha en negativo ("nada de X") se confirma: ¿X no se permite o solo no cuenta en su grupo?
 
 ### Producto y estructura
+- L-052 — Para llenar "2 líneas" en una prueba sin depender de la letra, agregar palabras hasta que aparezca la 3.ª línea y quitar la última → VEGU
 - L-047 — Un ajuste por ancho se calcula en el ancho más angosto de cada tramo (360, no solo 320 y 390) → VEGU
 - L-031 — Si la app reescribe un campo, el plan decide antes qué pasa con deshacer/rehacer y con la selección: una función sin la selección no distingue pegar sobre una selección de escribir
 - L-013 — En las maquetas toda medida va con token o con una medida fija aprobada (D-014), nunca un número suelto
@@ -27,6 +28,9 @@
 - L-020 — Para probar un tope de alto en una captura, medir el alto en el límite y pasado el límite, y comprobar que hay texto escondido → VEGU
 
 ### Herramienta
+- L-048 — La barra de Vercel de las previews guarda claves en `sessionStorage` y pide a `vercel.live`: la prueba de "nada se guarda" falla por ella; se apaga en las previews, la prueba no se relaja
+- L-049 — Un estilo calculado (`mask-image`) dice qué dibujo se pidió, no que se pinte: en la versión publicada se leen los píxeles → VEGU
+- L-051 — Varias `expect.soft` con `toHaveCSS` suman sus esperas y pueden agotar el tiempo de la prueba: los valores fijos de estilo se leen juntos y se comparan una vez → VEGU
 - L-029 — En `.gitignore`, una carpeta de la raíz va con barra inicial (`/reports/`); sin ella se ignoran todas las carpetas con ese nombre
 - L-002 — Ediciones masivas con tildes, emojis y comillas: escribir un script en el scratchpad, no un heredoc en Bash
 - L-004 — Las maquetas HTML se verifican con capturas de Edge sin ventana (`msedge --headless --screenshot`), porque el designer no puede abrir un navegador
@@ -49,6 +53,8 @@
 ### Datos y supuestos
 
 ### Proceso y memoria
+- L-050 — El rojo de una prueba publicada deja capturas de la versión vieja en la evidencia: solo se guardan las de un verde completo → VEGU
+- L-053 — La espera del Manager busca solo el prefijo del título de la sección ("# Lote 3"), no el título completo: una tilde de diferencia la deja esperando sin fin → VEGU
 - L-045 — El tester prueba sus pruebas antes del coder: inyecta y retira el CSS del plan (deben pasar) y lo daña a propósito (deben fallar por su razón) → VEGU
 - L-042 — Un texto esperado de toda la pantalla vive en una sola función compartida; un pseudo-elemento que es contrato de prueba lleva sus propiedades exactas en el plan → VEGU
 - L-035 — El rojo se comprueba leyendo la aserción exacta que falla, no el "fail 1": una prueba propia puede fallar por su propio error → VEGU
@@ -541,3 +547,63 @@
 - **Cómo aplicarla:** el designer lo incluye en la sección de diseño de cada feature con ajustes por ancho; el tester prueba ese borde.
 - **Estado:** Vigente
 - **Relacionada con:** L-041, `_project/slices/VS-002.md` §6 → VEGU
+
+### L-048 — 2026-11-27 — La barra de Vercel en las previews guarda datos
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** al correr `published.spec.ts` (lote 4 de VS-002) contra la preview del lote 1, TC-055 falló en `stored in the page`: `sessionStorage` tenía `vc-dt-src`, `vc-mfe-session-cleared` y `__vtkb-hide-key`, claves de la barra de herramientas de Vercel, no de la app. El plan lo preveía como R-4, pero solo por las peticiones a `vercel.live`.
+- **Lección:** la barra de Vercel de las previews ensucia tanto las peticiones como el almacenamiento del navegador; se apaga en las previews y la prueba de C-010 no se relaja.
+- **Por qué importa:** sin esto, la prueba de "no se guarda nada" falla por algo que el usuario nunca verá en producción, o alguien la afloja y deja de proteger C-010.
+- **Cómo aplicarla:** antes del verde publicado, comprobar que la barra está apagada (*Settings → Vercel Toolbar → Preview*); si TC-055 falla, leer primero qué claves o direcciones aparecen.
+- **Estado:** Vigente
+- **Relacionada con:** C-010, R-4 del plan de VS-002, L-006
+
+### L-049 — 2026-11-27 — Un estilo calculado no prueba que se pinte
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** el tester de VS-002 (lote 4) simuló una cabecera `img-src 'self'`: todo el estilo calculado (`mask-image`, tamaño, color) pasó y la imagen tenía 0 píxeles pintados. Agregó a TC-050, 051 y 053 publicadas una lectura de píxeles.
+- **Lección:** en la versión publicada, donde la plataforma pone sus cabeceras, se comprueba lo pintado (píxeles), no solo el estilo pedido.
+- **Por qué importa:** una cabecera de seguridad o un SVG dañado dejan la ficha sin dibujo aunque el CSS esté bien.
+- **Cómo aplicarla:** toda prueba publicada de una imagen o un dibujo lee sus píxeles (parte pintada y parte vacía).
+- **Estado:** Vigente
+- **Relacionada con:** L-021, TC-050 → VEGU
+
+### L-050 — 2026-11-27 — El rojo publicado deja capturas viejas
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el rojo de `published.spec.ts` contra la preview del lote 1 escribió `tc-001`, `tc-002` y `tc-024` en `evidence/published/` con la pantalla vieja. El Manager las borró antes de cualquier commit.
+- **Lección:** de una prueba publicada solo se guardan las capturas de un verde completo.
+- **Por qué importa:** una captura vieja en la evidencia muestra algo que no es lo aceptado.
+- **Cómo aplicarla:** después del rojo, borrar la carpeta de capturas y guardar solo la salida en texto; hacer commit de la carpeta solo tras el verde.
+- **Estado:** Vigente
+- **Relacionada con:** P-6 de VS-002 → VEGU
+
+### L-051 — 2026-11-27 — Comprobaciones suaves de estilo que suman tiempo
+- **Categoría:** Herramienta
+- **Etapa:** Construcción
+- **Qué pasó:** en el trabajo A del lote 3 de VS-002, varias `expect.soft(...).toHaveCSS(...)` que fallaban esperaron cada una su tiempo y agotaron el de la prueba.
+- **Lección:** para valores fijos de estilo, leerlos juntos (`getComputedStyle` en una sola evaluación) y compararlos una vez.
+- **Por qué importa:** un rojo que se corta por tiempo no dice cuál medida falló.
+- **Cómo aplicarla:** el tester lo usa en pruebas de medidas y colores con muchas propiedades.
+- **Estado:** Vigente
+- **Relacionada con:** L-035 → VEGU
+
+### L-052 — 2026-11-27 — Llenar "2 líneas" sin depender de la letra
+- **Categoría:** Producto y estructura
+- **Etapa:** Construcción
+- **Qué pasó:** TC-061 (lote 3 de VS-002) necesitaba el campo en 2 líneas; una frase fija ocupa 2 o 3 líneas según la letra de la máquina (L-010).
+- **Lección:** para llenar N líneas, agregar palabras hasta que aparezca la línea N+1 y quitar la última.
+- **Por qué importa:** la prueba mide lo que dice el criterio en cualquier máquina.
+- **Cómo aplicarla:** el tester lo usa en toda prueba que dependa del número de líneas.
+- **Estado:** Vigente
+- **Relacionada con:** L-044, D-024 → VEGU
+
+### L-053 — 2026-11-27 — La espera busca el prefijo del título
+- **Categoría:** Proceso y memoria
+- **Etapa:** Construcción
+- **Qué pasó:** el Manager lanzó la espera del designer buscando `# Lote 3 — revision visual` (sin tilde); el designer escribió `revisión`. La espera no lo habría visto nunca; se relanzó buscando solo `# Lote 3`.
+- **Lección:** la espera busca solo un prefijo corto y sin tildes (`# Lote N`) que no exista ya en el reporte.
+- **Por qué importa:** una espera que no reconoce el reporte deja al usuario sin noticias hasta el tiempo límite.
+- **Cómo aplicarla:** antes de lanzar la espera, `grep "^# "` del reporte para elegir un prefijo nuevo y corto.
+- **Estado:** Vigente
+- **Relacionada con:** playbook §3 → VEGU

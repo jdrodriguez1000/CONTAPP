@@ -13,7 +13,7 @@
 - **Lote 3 (P-5):** el coder recortó 5 espacios en `src/styles.css` (6 líneas, `feat(P-5)` `9c45554`). CI verde en `e5c18bc` (207 unitarias, 180 E2E, sin secretos). Designer C: sin bloqueantes; a 390 × 427 quedan ≈ 30 px libres bajo las fichas.
 - **Lote 4, trabajo A (P-6):** el tester amplió `published.spec.ts` de 4 a 8 pruebas (TC-050, 051, 053, 055) y movió ayudas a `tests/e2e/group-helpers.ts`; commit en rojo `f1ef9be`, CI verde (la CI no corre `published`).
 - **Rojo verificado por el Manager** contra la preview de `4e74b73` (lote 1; `b63efbc` no tiene preview): TC-050, 051 y 053 fallan en `image of vowel: exists` (`none`), lo esperado. **TC-055 también falla**: la barra de Vercel de las previews guarda 3 claves en `sessionStorage` (`vc-dt-src`, `vc-mfe-session-cleared`, `__vtkb-hide-key`). Es R-4 del plan: no es la app. Salida en `evidence/manager-published-rojo-lote-4.txt`.
-- **Cierre incompleto (límite de uso):** falta registrar en `lessons.md` las lecciones propuestas (barra de Vercel guarda claves en `sessionStorage`; leer píxeles en la publicada; borrar capturas del rojo publicado; `expect.soft` + `toHaveCSS` suman tiempo; llenar 2 líneas sin depender de la letra; la espera busca solo el prefijo `# Lote N`), actualizar la nota de T-003 en `tasks.md` y republicar `status.html` (lote 3 ✓, lote 4 ▸).
+- Lecciones L-048 a L-053. El índice de `lessons.md` pasa de ~40 líneas (52): resumirlo agrupando por tema en una próxima sesión.
 
 ## En curso
 - T-003 (VS-002): sin agentes abiertos (paneles cerrados).
