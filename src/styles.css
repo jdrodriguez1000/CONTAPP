@@ -47,9 +47,9 @@
   }
 }
 
-/* Narrow phones: so "Consonantes" fits in its card at 320 px. */
+/* Narrow phones: so "Consonantes" and "100" next to its image fit in their cards at 320 px. */
 @media (max-width: 359px) {
-  :root { --font-size-group: 18px; --font-size-count: 44px; }
+  :root { --font-size-group: 18px; --font-size-count: 44px; --size-group-image: 32px; }
 }
 
 * { box-sizing: border-box; }
@@ -180,4 +180,10 @@ body {
   background-color: currentColor;
   -webkit-mask: var(--group-image) center / contain no-repeat;
   mask: var(--group-image) center / contain no-repeat;
+}
+
+/* Narrow phones, card spacing. It stays at the end: with equal weight, the later rule wins. */
+@media (max-width: 359px) {
+  .count { padding-left: var(--space-1); padding-right: var(--space-1); }
+  .count dd { gap: var(--space-1); }
 }
