@@ -1,5 +1,5 @@
 # Sistema de diseño — Contapp
-**Estilo:** C2 "Pizarra con fichas" (D-010) · **Última actualización:** 2026-11-26
+**Estilo:** C2 "Pizarra con fichas" (D-010) · **Última actualización:** 2026-11-27 (ampliación de VS-002 con lo elegido por el usuario; la aprobación del diseño se registra en F-002 y F-003 §5)
 **Maqueta de origen:** `_project/design/propuestas/propuesta-c2.html` · **Primera pantalla:** `_project/design/F-001/mockup.html`
 
 > Reglas del archivo: aquí viven los **valores** (colores, letra, espacios, componentes). El **cómo** se usan está en `.claude/skills/design-system/SKILL.md`. Lo escribe el designer y lo aprueba el usuario. Se amplía solo cuando una slice lo necesita, y cada cambio queda en el Historial (sección 10).
@@ -23,19 +23,24 @@ La app sigue el modo **claro u oscuro del celular**, sin botón para cambiarlo (
 | `--color-surface` | Fondo de las fichas de conteo | `#EEF5EE` | `#1C2E20` | — (fondo; se distingue por su color y por `--color-border`) |
 | `--color-text` | Texto principal: nombres de los grupos y texto escrito | `#112211` | `#F5F5EE` | sobre bg 16,7:1 / 15,4:1 · sobre surface 15,0:1 / 13,1:1 · sobre input-bg 16,7:1 / 13,1:1 ✓ |
 | `--color-text-muted` | Etiqueta del campo | `#445544` | `#AABBAA` | sobre bg 8,0:1 / 8,3:1 ✓ |
-| `--color-primary` | Título de la app y número de cada ficha | `#1F6B33` | `#FFDD55` | sobre bg 6,5:1 / 12,6:1 · sobre surface 5,9:1 / 10,8:1 ✓ |
+| `--color-primary` | Título de la app (desde VS-002, el número de cada ficha va en el color de su grupo) | `#1F6B33` | `#FFDD55` | sobre bg 6,5:1 / 12,6:1 · sobre surface 5,9:1 / 10,8:1 ✓ |
 | `--color-on-primary` | Texto sobre un fondo de acento (reservado; no se usa en VS-001) | `#FFFFFF` | `#142017` | sobre primary 6,5:1 / 12,6:1 ✓ |
-| `--color-border` | Borde punteado "de tiza" de las fichas (decorativo) | `#BBCCBB` | `#3B5540` | Decorativo: no es un control y no tiene mínimo |
+| `--color-border` | Reservado: en VS-001 era el borde punteado de las fichas; desde VS-002 ese borde va en el color de su grupo | `#BBCCBB` | `#3B5540` | Decorativo: no es un control y no tiene mínimo |
 | `--color-input-bg` | Fondo del campo para escribir | `#FFFFFF` | `#1C2E20` | — |
 | `--color-input-border` | Borde del campo en reposo | `#556655` | `#88AA88` | sobre bg 6,1:1 / 6,5:1 · sobre input-bg 6,1:1 / 5,6:1 ✓ (mín. 3:1) |
 | `--color-focus` | Borde y anillo del campo activo | `#1F6B33` | `#FFDD55` | sobre bg 6,5:1 / 12,6:1 ✓ (mín. 3:1) |
+| `--color-vowel` (VS-002) | Grupo Vocales: imagen, número y borde de su ficha; en VS-003, letra en el campo | `#C62828` | `#FF7B72` | sobre input-bg 5,6:1 / 5,7:1 · sobre surface 5,1:1 / 5,7:1 ✓ |
+| `--color-consonant` (VS-002) | Grupo Consonantes (igual) | `#1565C0` | `#82B1FF` | sobre input-bg 5,8:1 / 6,6:1 · sobre surface 5,2:1 / 6,6:1 ✓ |
+| `--color-digit` (VS-002) | Grupo Números (igual) | `#A84B00` | `#FFB74D` | sobre input-bg 5,7:1 / 8,3:1 · sobre surface 5,2:1 / 8,3:1 ✓ |
+| `--color-other` (VS-002) | Grupo Otros (igual) | `#7B1FA2` | `#CE93D8` | sobre input-bg 8,2:1 / 6,0:1 · sobre surface 7,4:1 / 6,0:1 ✓ |
 
 - El contraste se calculó con la fórmula de WCAG 2.x. Conviene volver a medirlo con una herramienta al construir.
-- Los tokens de color por grupo (`--color-vowel`, `--color-consonant`, `--color-digit`, `--color-other`) **se agregan en VS-002** (F-002). Deberán verse bien sobre `--color-surface` en los dos modos, y el verde pizarra del modo oscuro limita las opciones.
+- **Colores por grupo (VS-002):** juego 1 "Salón clásico", elegido por el usuario el 2026-11-27. Las vocales van en rojo y las consonantes en azul, como en el cuaderno. El juego 2 "Crayolas" quedó descartado. Regla: cada color de grupo debe pasar **4,5:1 como letra sobre `--color-input-bg`** y sobre `--color-surface`, en los dos modos, porque en VS-003 se pinta con él cada letra del texto. En el modo oscuro, el campo y la ficha tienen el mismo fondo (`#1C2E20`).
+- **Variable local de la ficha (VS-002):** cada `CountCard` define `--group-color` (que apunta a uno de los 4 tokens) y `--group-image`. No son tokens nuevos: solo eligen cuál de los 4 usa la ficha.
 - Prohibido escribir colores a mano en los componentes: si falta un color, se pide un token nuevo.
 
 ## 3. Tipografía
-**Familia** `--font-family-base`: la letra del sistema del iPhone, SF Pro, en pesos gruesos. Pila de respaldo: `-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif`. No se descargan fuentes. (Propuesta para VS-002: evaluar una letra escolar con la "a" de un solo trazo.)
+**Familia** `--font-family-base`: la letra del sistema del iPhone, SF Pro, en pesos gruesos. Pila de respaldo: `-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif`. No se descargan fuentes. (Letra escolar Andika, con la "a" de un solo trazo: el usuario decidió que no entra en VS-002 [2026-11-27]; se puede volver a proponer en VS-003.)
 
 | Uso | Token de tamaño | Tamaño | Peso (token) | Alto de línea |
 |---|---|---|---|---|
@@ -52,17 +57,19 @@ La app sigue el modo **claro u oscuro del celular**, sin botón para cambiarlo (
 ## 4. Espacios y formas
 | Token | Valor | Uso |
 |---|---|---|
-| `--space-1` | 4 px | Mínimo (reservado; la separación número–nombre es una medida fija de 2 px, ver abajo) |
-| `--space-2` | 8 px | Etiqueta → campo; relleno lateral de la ficha |
-| `--space-3` | 12 px | Margen superior de la pantalla; relleno del campo y de la ficha; espacio entre fichas |
-| `--space-4` | 16 px | Márgenes laterales de la pantalla; título → etiqueta |
-| `--space-5` | 20 px | Campo → fichas |
+| `--space-1` | 4 px | Con menos de 360 px de ancho: separación imagen–número y relleno lateral de la ficha (VS-002). La separación número–nombre es una medida fija de 2 px, ver abajo |
+| `--space-2` | 8 px | Margen superior de la pantalla; título → etiqueta; etiqueta → campo; relleno de arriba y abajo del campo; relleno de la ficha; separación imagen–número (VS-002) |
+| `--space-3` | 12 px | Relleno lateral del campo; campo → fichas; espacio entre fichas (VS-002) |
+| `--space-4` | 16 px | Márgenes laterales de la pantalla |
+| `--space-5` | 20 px | Reservado (en VS-001 era campo → fichas) |
 | `--space-6` | 24 px | Reservado |
+| `--size-group-image` | 44 px (con menos de 360 px de ancho: 32 px) | Ancho y alto de la imagen de cada grupo (`GroupImage`, VS-002) |
 | `--radius-card` | 20 px | Esquinas de las fichas |
 | `--radius-input` | 14 px | Esquinas del campo |
 | `--radius-badge` | 12 px | Reservado (insignias; no se usan en VS-001) |
 | `--border-width-input` | 2 px | Borde del campo y borde punteado de las fichas |
 
+- **Por qué cambiaron los usos en VS-002:** para que los 4 grupos quepan con el teclado abierto en el iPhone (F-003 §5.3). Se ahorran ≈ 38 px sin bajar ninguna letra.
 - **Sombras:** ninguna.
 - **Anillo de foco:** contorno de 3 px en `--color-focus`, separado 2 px del campo.
 - **Ancho máximo del contenido:** 480 px, centrado. En celular ocupa todo el ancho; el diseño para computador y celular girado queda para VS-002.
@@ -85,10 +92,22 @@ La app sigue el modo **claro u oscuro del celular**, sin botón para cambiarlo (
 | `AppTitle` | `<h1 class="app-title">` en `index.html` · clase `.app-title` | — | Título "Contapp" arriba de la pantalla; es el encabezado principal (h1) |
 | `TextField` | `<label class="field-label" for="text-field">` + `<textarea class="field" rows="2">` con `autocomplete`, `autocorrect`, `autocapitalize` en `off` y `spellcheck="false"` · clases `.field-label`, `.field`, `.field:focus-visible` · el crecimiento de 2 a 5 líneas está en `src/main.ts` (`fitHeightToText`) | reposo · activo (`:focus-visible`) | Escribir o pegar el `text`. Etiqueta visible arriba. Empieza en **2 líneas** y crece con el texto **hasta 5**; si hay más líneas (saltos de línea), se desplaza por dentro. Corrector, sugerencias, autocompletar y mayúscula automática **apagados** |
 | `CountGrid` | `<dl class="counts">` · clase `.counts` | — | Agrupa las 4 fichas en **2 columnas × 2 filas**, en el orden fijo Vocales, Consonantes / Números, Otros. Es una lista de pares nombre–valor |
-| `CountCard` | `<div class="count"><dt>Nombre</dt><dd>número</dd></div>` · clases `.count`, `.count dt`, `.count dd` | — (en VS-002: una por `characterGroup`, con imagen y color) | Una ficha por grupo: número arriba (en `--color-primary`, 48 px) y nombre debajo (en `--color-text`, 20 px), centrados; fondo `--color-surface`, borde punteado de 2 px en `--color-border`, esquinas de 20 px, alto mínimo 104 px. No se toca |
+| `CountCard` | `<div class="count"><dt>Nombre</dt><dd>número</dd></div>` · clases `.count`, `.count dt`, `.count dd` | una por `characterGroup` (fila siguiente) | Una ficha por grupo: número arriba (48 px) y nombre debajo (en `--color-text`, 20 px), centrados; fondo `--color-surface`, borde punteado de 2 px, esquinas de 20 px, alto mínimo 104 px. No se toca. Desde VS-002, el número y el borde van en el color de su grupo (antes `--color-primary` y `--color-border`) |
+| `CountCard` — variante por grupo (VS-002) | Clase extra en cada ficha: `count--vowel`, `count--consonant`, `count--digit`, `count--other`. Cada una define `--group-color` y `--group-image` | vowel · consonant · digit · other | Imagen, número y borde punteado en `--group-color`; nombre en `--color-text`; relleno `--space-2` (con menos de 360 px: `--space-2 --space-1`); el número sigue arriba y el nombre abajo (D-010) |
+| `GroupImage` (VS-002) | `.count dd::before`: cuadro de `--size-group-image` con `background-color: currentColor` y la imagen SVG del grupo como máscara (`mask` y `-webkit-mask`, `center / contain no-repeat`), escrita en `src/styles.css` como `url("data:image/svg+xml,…")`. El `dd` pasa a `display: flex`, centrado, con separación `--space-2` (con menos de 360 px, `--space-1`) | una por grupo: boca que canta (`vowel`), ficha de rompecabezas (`consonant`), mano que cuenta (`digit`), carita feliz (`other`). Dibujo exacto en `_project/design/F-002/mockup-b.html` (`--img-*`); ver F-002 §5.1 | Imagen del grupo a la izquierda del número, en su misma fila. No agrega texto, no se toca y no pide nada a internet |
 
 - Un componente vive en un solo lugar del código y las pantallas lo reutilizan.
-- Componentes que llegan después, sin diseño todavía: imagen por grupo (VS-002), botón "borrar todo" (VS-005) y aviso para el niño (VS-004).
+- Componentes que llegan después, sin diseño todavía: botón "borrar todo" (VS-005) y aviso para el niño (VS-004).
+- **Regla para botones (VS-002; el primero llega en VS-005):**
+  - Zona táctil de **al menos 56 × 56 px**, más que el mínimo de 44 px, porque lo usan dedos de niño y un adulto apurado.
+  - Texto de 20 px y peso 700 (`--font-size-group`, `--font-weight-group`).
+  - Ícono más texto, nunca solo ícono.
+  - Fondo `--color-primary` y letra `--color-on-primary` (6,5:1 / 12,6:1).
+  - Esquinas `--radius-input`.
+  - Al menos `--space-3` (12 px) de separación de cualquier otro control.
+  - Que el teclado abierto no lo tape.
+  - Con su fondo de color se distingue de las fichas, que no se tocan y no tienen fondo de acento.
+  - El tamaño se vuelve token (`--size-touch-button`) cuando se construya el botón. El verbo se fija en §8.
 
 ## 6. Valores del dominio
 - **Conteo (`count`):** entero de 0 a 100. Se muestra con cifras simples, sin separadores, sin ceros a la izquierda ni unidad ("0", "4", "35", "100"). El **0 se muestra siempre como "0"**, nunca como un espacio vacío ni un guion.
@@ -112,7 +131,9 @@ La app sigue el modo **claro u oscuro del celular**, sin botón para cambiarlo (
 - **Contraste AA** en los dos modos (tabla de la sección 2): 4,5:1 para el texto normal; 3:1 para el texto grande y para el borde y el foco del campo.
 - **Zonas táctiles:** el campo mide al menos 44 px de alto (con 2 líneas, ≈ 90 px). No hay más controles.
 - **Etiqueta visible** del campo, unida a él (al tocar la etiqueta se activa el campo).
-- **Nunca solo color:** cada ficha lleva su nombre escrito.
+- **Nunca solo color:** cada ficha lleva su nombre escrito. Desde VS-002 lleva además su imagen, que se distingue por la forma y no solo por el color.
+- **Imagen del grupo (VS-002):** es decorativa y no tiene texto alternativo, porque el nombre ya está escrito. La ficha se sigue leyendo "Vocales, 4".
+- **Botones (VS-002):** zona táctil de al menos 56 × 56 px (regla de §5).
 - **Foco visible:** anillo de 3 px en `--color-focus` cuando el campo está activo.
 - **Lectores de pantalla:** cada ficha se lee como el par "Vocales, 4" (nombre y valor). En VS-001 los conteos no se anuncian solos con cada letra, porque leerlos en cada tecla sería ruidoso. Se revisará si alguien lo pide.
 - **Acercar la pantalla:** no se bloquea el zoom del navegador.
@@ -123,3 +144,5 @@ La app sigue el modo **claro u oscuro del celular**, sin botón para cambiarlo (
 |---|---|---|
 | 2026-11-26 | Creación a partir de la propuesta C2 "Pizarra con fichas": tokens claro/oscuro, letra, espacios, 4 componentes, textos y accesibilidad | Elección del usuario (D-010), entre las propuestas A, B, C y C2 |
 | 2026-11-26 | Nota del stack (D-011); columna "Base en el código" de los 4 componentes (§5); lista de medidas fijas aprobadas con su regla (§4); se corrige el "2 px" de la fila de `--space-1`. Maqueta F-001: relleno del campo de `14px` a `var(--space-3)` | D-011 y revisión visual del lote 2 de VS-001 (hallazgos 1 y 2, opción A aprobada por el usuario) |
+| 2026-11-27 | **[VS-002, pendiente de aprobación]** 4 tokens de color por grupo (juego 1) con su contraste (§2); token `--size-group-image` y nuevos usos de los espacios para que los 4 grupos quepan con el teclado abierto (§4); variante por grupo de `CountCard`, componente `GroupImage` y regla de botones para VS-005 (§5); accesibilidad de la imagen y de los botones (§9). Letra escolar como opción, no fijada (§3) | Diseño de F-002 y F-003 (VS-002). Lo aprueba el usuario junto con la imagen y el juego de colores que elija |
+| 2026-11-27 | Se deja solo lo elegido y se quitan las marcas "[VS-002, pendiente]": imágenes de la opción B (§5 `GroupImage`), colores del juego 1 (§2; el juego 2 queda descartado), imagen al lado del número, letra del iPhone (§3; Andika no entra en VS-002). Usos de los espacios pasan a la tabla de §4. `--color-primary` queda solo para el título y `--color-border` queda reservado, porque el número y el borde de la ficha van en el color de su grupo. Se une la tabla de §5, que estaba partida por una línea en blanco | Elección del usuario (2026-11-27). Falta la aprobación final del diseño en F-002 y F-003 §5 |

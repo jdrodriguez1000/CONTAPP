@@ -1,5 +1,5 @@
 # Catálogo del proyecto
-**Última actualización:** 2026-11-25
+**Última actualización:** 2026-11-27
 **Últimos IDs:** `GRP-004`
 
 > **Reglas del archivo:**
@@ -12,7 +12,7 @@
 ## Grupos de caracteres
 | ID | Nombre | En código | Qué incluye | Imagen | Estado |
 |---|---|---|---|---|---|
-| GRP-001 | Vocales | `vowel` | C-001 | Por definir en el diseño | Activo |
-| GRP-002 | Consonantes | `consonant` | C-002 a C-004 | Por definir en el diseño | Activo |
-| GRP-003 | Números | `digit` | C-006 | Por definir en el diseño | Activo |
-| GRP-004 | Otros | `other` | C-007 | Por definir en el diseño | Activo |
+| GRP-001 | Vocales | `vowel` | C-001 | Boca abierta que canta, con una nota musical (F-002 §5.1) | Activo |
+| GRP-002 | Consonantes | `consonant` | C-002 a C-004 | Ficha de rompecabezas (F-002 §5.1) | Activo |
+| GRP-003 | Números | `digit` | C-006 | Mano que cuenta, 3 dedos arriba (F-002 §5.1) | Activo |
+| GRP-004 | Otros | `other` | C-007 | Carita feliz (F-002 §5.1) | Activo |

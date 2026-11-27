@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta F-002 / F-003 — Opción B "Lo que hace cada grupo" — Contapp (VS-002)</title>
+<style>
+/* =========================================================
+   1) PÁGINA DE LA MAQUETA (encabezado, marcos, barras de Safari). NO es parte de la app.
+   ========================================================= */
+*{box-sizing:border-box}
+body{margin:0;padding:24px 16px 64px;background:#E6E6EC;color:#1C1C22;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.sheet{max-width:1080px;margin:0 auto 40px;background:#fff;border-radius:16px;padding:24px 32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.sheet .tag{display:inline-block;font-size:13px;font-weight:600;color:#4A4A55;background:#F0F0F5;border-radius:999px;padding:2px 10px;margin-bottom:8px}
+.sheet h1{margin:0 0 4px;font-size:30px}
+.sheet h2{margin:20px 0 6px;font-size:20px}
+.sheet p{margin:6px 0}
+.sheet ul{margin:4px 0;padding-left:20px}
+.sheet code{font-size:13px;background:#F3F3F7;border-radius:4px;padding:0 4px}
+.sheet table{border-collapse:collapse;font-size:14px;margin:8px 0}
+.sheet th,.sheet td{border:1px solid #D8D8E0;padding:4px 8px;text-align:left}
+.sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:4px;border:1px solid #888}
+.state{max-width:1080px;margin:0 auto 48px}
+.state>h2{font-size:22px;margin:0 0 4px}
+.state>p{margin:0 0 16px;color:#3A3A44}
+.pair{display:flex;flex-wrap:wrap;gap:40px;justify-content:center}
+figure{margin:0}
+figcaption{text-align:center;font-weight:600;margin-top:10px;max-width:410px}
+/* Marco de iPhone: el área interior mide exactamente 390 × 844 */
+.phone{box-sizing:content-box;width:390px;height:844px;border:10px solid #121214;border-radius:58px;overflow:hidden;position:relative}
+.phone.is-narrow{width:320px;height:568px;border-radius:36px}
+/* Barras de Safari + teclado, medidas en la foto del iPhone (lote 3 de VS-001): 22 + 46 + 302 = 370 px */
+.safari{position:absolute;left:0;right:0;bottom:0;height:370px;display:flex;flex-direction:column;font:500 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif}
+.safari .url{height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;border-top:1px solid}
+.safari .acc{height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:17px}
+.safari .acc b{color:#0A7AFF;text-decoration:underline}
+.safari .kb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:0 24px}
+.theme-light .safari .url{background:#FFFFFF;color:#333;border-color:#D0D0D5}
+.theme-light .safari .acc{background:#F4F4F6;color:#888}
+.theme-light .safari .kb{background:#D1D4DB;color:#2A2A30}
+.theme-dark .safari .url{background:#1C1C1E;color:#DDD;border-color:#38383A}
+.theme-dark .safari .acc{background:#2C2C2E;color:#AAA}
+.theme-dark .safari .kb{background:#3A3A3C;color:#E5E5EA}
+.safari small{font-size:12px;opacity:.85}
+.screen{position:relative;height:100%;overflow:hidden;background:var(--color-bg);color:var(--color-text);font-family:var(--font-family-base)}
+.status{height:47px;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 36px;font-weight:600;font-size:16px}
+.is-narrow .status{height:20px;padding:0 12px;font-size:12px}
+.home{position:absolute;bottom:8px;left:50%;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--color-text);opacity:.85}
+/* Solo maqueta: fija el número de líneas visibles del campo (en la app lo hace fitHeightToText) */
+.field{height:calc(var(--rows,2) * 1.3em + 2 * var(--space-2) + 2 * var(--border-width-input))}
+
+/* =========================================================
+   2) TOKENS — copia de _project/design-system.md (§2 a §4) con lo nuevo de VS-002.
+   En la app el modo se elige con @media (prefers-color-scheme: dark);
+   aquí se fuerza con .theme-light / .theme-dark para verlos lado a lado.
+   ========================================================= */
+:root{
+  --font-family-base:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,"Segoe UI",Roboto,sans-serif;
+  --font-size-title:28px;   --font-weight-title:800;
+  --font-size-label:18px;   --font-weight-label:600;
+  --font-size-input:24px;   --font-weight-input:600;
+  --font-size-group:20px;   --font-weight-group:700;
+  --font-size-count:48px;   --font-weight-count:800;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px; --space-6:24px;
+  --radius-card:20px; --radius-input:14px; --radius-badge:12px;
+  --border-width-input:2px;
+  --size-group-image:44px;                                   /* NUEVO VS-002 */
+  /* Imágenes de la opción B (dibujos propios, SVG dentro del CSS: no piden nada a internet) */
+  --img-vowel:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path fill-rule='evenodd' d='M5 31a14 12 0 1 0 28 0a14 12 0 1 0-28 0zM10.5 32a8.5 6.5 0 1 0 17 0a8.5 6.5 0 1 0-17 0zM14 35a5 2.8 0 1 0 10 0a5 2.8 0 1 0-10 0z'/><ellipse cx='37' cy='18' rx='4.6' ry='3.6' transform='rotate(-20 37 18)'/><path d='M39.6 17V4h2v13zM41.6 4l6 2.5v5l-6-2.5z'/></svg>");
+  --img-consonant:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path stroke='black' stroke-width='2' stroke-linejoin='round' d='M8 13h9a5 5 0 0 1 10 0h9v9a5 5 0 0 1 0 10v9H8z'/></svg>");
+  --img-digit:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect x='10' y='24' width='28' height='19' rx='8'/><path fill='none' stroke='black' stroke-width='5.5' stroke-linecap='round' d='M15 27V11M23.5 27V7M32 27V10M36.5 26v-5M11 33l-4-5'/></svg>");
+  --img-other:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path fill-rule='evenodd' d='M6 24a18 18 0 1 0 36 0a18 18 0 1 0-36 0zM14.5 19a3 3 0 1 0 6 0a3 3 0 1 0-6 0zM27.5 19a3 3 0 1 0 6 0a3 3 0 1 0-6 0zM15 27h18a9 9 0 0 1-18 0z'/></svg>");
+}
+/* Pantallas de menos de 360 px (en la app: @media (max-width: 359px)) */
+.is-narrow{ --font-size-group:18px; --font-size-count:44px; --size-group-image:32px; }
+.theme-light{
+  color-scheme:light;
+  --color-bg:#FFFFFF; --color-surface:#EEF5EE; --color-text:#112211; --color-text-muted:#445544;
+  --color-primary:#1F6B33; --color-on-primary:#FFFFFF; --color-border:#BBCCBB;
+  --color-input-bg:#FFFFFF; --color-input-border:#556655; --color-focus:#1F6B33;
+  /* NUEVO VS-002 — juego 1 "Salón clásico" (recomendado) */
+  --color-vowel:#C62828; --color-consonant:#1565C0; --color-digit:#A84B00; --color-other:#7B1FA2;
+}
+.theme-dark{
+  color-scheme:dark;
+  --color-bg:#142017; --color-surface:#1C2E20; --color-text:#F5F5EE; --color-text-muted:#AABBAA;
+  --color-primary:#FFDD55; --color-on-primary:#142017; --color-border:#3B5540;
+  --color-input-bg:#1C2E20; --color-input-border:#88AA88; --color-focus:#FFDD55;
+  --color-vowel:#FF7B72; --color-consonant:#82B1FF; --color-digit:#FFB74D; --color-other:#CE93D8;
+}
+/* Solo para comparar: juego 2 "Crayolas" (alternativa) */
+.theme-light.palette-2{ --color-vowel:#AD1457; --color-consonant:#3949AB; --color-digit:#00695C; --color-other:#6D4C41; }
+.theme-dark.palette-2{ --color-vowel:#F48FB1; --color-consonant:#9FA8DA; --color-digit:#4DB6AC; --color-other:#D7B19D; }
+
+/* =========================================================
+   3) PANTALLA (usa solo tokens)
+   Componentes: AppTitle · TextField · CountGrid · CountCard (con GroupImage)
+   ========================================================= */
+.app{max-width:480px;margin:0 auto;padding:var(--space-2) var(--space-4) 0}
+.app-title{margin:0 0 var(--space-2);font-size:var(--font-size-title);line-height:1.2;font-weight:var(--font-weight-title);color:var(--color-primary)}
+.field-label{display:block;margin:0 0 var(--space-2);font-size:var(--font-size-label);font-weight:var(--font-weight-label);line-height:1.3;color:var(--color-text-muted)}
+.field{display:block;width:100%;margin:0;resize:none;overflow:hidden;font-family:inherit;font-size:var(--font-size-input);font-weight:var(--font-weight-input);line-height:1.3;padding:var(--space-2) var(--space-3);color:var(--color-text);background:var(--color-input-bg);border:var(--border-width-input) solid var(--color-input-border);border-radius:var(--radius-input)}
+.field.is-focus{border-color:var(--color-focus);outline:3px solid var(--color-focus);outline-offset:2px}
+.counts{margin:var(--space-3) 0 0;display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+/* Color e imagen de cada grupo */
+.count--vowel,.tile--vowel{--group-color:var(--color-vowel);--group-image:var(--img-vowel)}
+.count--consonant,.tile--consonant{--group-color:var(--color-consonant);--group-image:var(--img-consonant)}
+.count--digit,.tile--digit{--group-color:var(--color-digit);--group-image:var(--img-digit)}
+.count--other,.tile--other{--group-color:var(--color-other);--group-image:var(--img-other)}
+/* CountCard: en el HTML va primero el nombre (se lee "Vocales, 4"); se ve el número arriba */
+.count{display:flex;flex-direction:column-reverse;align-items:center;justify-content:center;min-height:104px;padding:var(--space-2);background:var(--color-surface);border:var(--border-width-input) dashed var(--group-color);border-radius:var(--radius-card)}
+.is-narrow .count{padding:var(--space-2) var(--space-1)}
+.count dt{font-size:var(--font-size-group);font-weight:var(--font-weight-group);line-height:1.3;margin-top:2px}
+.count dd{margin:0;display:flex;align-items:center;justify-content:center;gap:var(--space-2);font-size:var(--font-size-count);font-weight:var(--font-weight-count);line-height:1.1;color:var(--group-color);font-variant-numeric:tabular-nums}
+.is-narrow .count dd{gap:var(--space-1)}
+/* GroupImage: la imagen se pinta antes del número, con el color del grupo, sin tocar el texto de la ficha */
+.count dd::before{content:"";flex:none;width:var(--size-group-image);height:var(--size-group-image);background-color:currentColor;-webkit-mask:var(--group-image) center/contain no-repeat;mask:var(--group-image) center/contain no-repeat}
+
+/* Galería de imágenes de cerca (solo maqueta) */
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px;border-radius:16px;background:var(--color-bg);color:var(--color-text);font-family:var(--font-family-base);margin:8px 0}
+.gallery .row-title{grid-column:1/-1;font-weight:600;font-size:14px;color:var(--color-text-muted)}
+.tile{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:var(--color-surface);border:var(--border-width-input) dashed var(--group-color);border-radius:var(--radius-card);color:var(--group-color)}
+.tile i{width:88px;height:88px;background-color:currentColor;-webkit-mask:var(--group-image) center/contain no-repeat;mask:var(--group-image) center/contain no-repeat}
+.tile b{font-size:var(--font-size-group);color:var(--color-text)}
+.is-covered .tile b{background:var(--color-text);color:transparent;border-radius:6px}
+.is-mono .tile{--group-color:var(--color-text)}
+</style>
+</head>
+<body>
+
+<header class="sheet">
+  <span class="tag">VS-002 · F-002 y F-003 · Opción B de 3 · Diseño: Pendiente de aprobación</span>
+  <h1>Opción B — "Lo que hace cada grupo" (mi recomendación)</h1>
+  <p>Cada imagen cuenta <strong>qué hace</strong> su grupo, con algo que un niño ya conoce:</p>
+  <ul>
+    <li><strong>Vocales → una boca abierta que canta</strong> (las vocales se cantan con la boca abierta: "aaa", "ooo").</li>
+    <li><strong>Consonantes → una ficha de rompecabezas</strong> (la consonante se "encaja" con una vocal para sonar: "ma", "pa").</li>
+    <li><strong>Números → una mano que cuenta</strong> (tres dedos arriba).</li>
+    <li><strong>Otros → una carita feliz</strong> (como los emojis y los signos que no son letras ni números).</li>
+  </ul>
+  <p><strong>A favor:</strong> cada imagen tiene un significado que el adulto puede explicar en una frase, y las 4 siluetas son muy distintas (redonda con nota, pieza con salientes, mano, círculo). <strong>En contra:</strong> la ficha de rompecabezas es la menos evidente (hay que contarle al niño la idea de "encajar"); la boca y la mano son los dibujos con más detalle y hay que confirmar en el iPhone que se leen bien a 44 px (TC-057).</p>
+  <p><strong>Se pueden mezclar:</strong> F-002 pide opciones <em>por grupo</em>. Puedes tomar, por ejemplo, la boca y la mano de esta opción y el "?" de la opción A.</p>
+  <h2>Cómo están hechas</h2>
+  <ul>
+    <li><strong>Dibujos propios</strong> del designer de Contapp (2026-11-27), sin personajes ni marcas. Licencia: la del proyecto (sin derechos de terceros).</li>
+    <li>Cada imagen es un dibujo de <strong>un solo color</strong> (el de su grupo) con "huecos" por donde se ve el fondo de la ficha. Por eso funciona igual en claro y en oscuro.</li>
+    <li>Viajan <strong>dentro del CSS</strong> de la app (como texto SVG): abrir la app no pide nada a otro sitio. La imagen se pinta antes del número sin cambiar el texto de la ficha: el lector de pantalla sigue leyendo "Vocales, 4".</li>
+  </ul>
+  <h2>Colores (iguales en las 3 opciones)</h2>
+  <table>
+    <tr><th>Token</th><th>Juego 1 "Salón clásico" (recomendado) claro / oscuro</th><th>Contraste como letra sobre el campo y sobre la ficha</th><th>Juego 2 "Crayolas" claro / oscuro</th></tr>
+    <tr><td><code>--color-vowel</code></td><td><span class="sw" style="background:#C62828"></span>#C62828 / <span class="sw" style="background:#FF7B72"></span>#FF7B72</td><td>claro 5,6:1 (campo) · 5,1:1 (ficha) · oscuro 5,7:1</td><td>#AD1457 / #F48FB1</td></tr>
+    <tr><td><code>--color-consonant</code></td><td><span class="sw" style="background:#1565C0"></span>#1565C0 / <span class="sw" style="background:#82B1FF"></span>#82B1FF</td><td>claro 5,8:1 · 5,2:1 · oscuro 6,6:1</td><td>#3949AB / #9FA8DA</td></tr>
+    <tr><td><code>--color-digit</code></td><td><span class="sw" style="background:#A84B00"></span>#A84B00 / <span class="sw" style="background:#FFB74D"></span>#FFB74D</td><td>claro 5,7:1 · 5,2:1 · oscuro 8,3:1</td><td>#00695C / #4DB6AC</td></tr>
+    <tr><td><code>--color-other</code></td><td><span class="sw" style="background:#7B1FA2"></span>#7B1FA2 / <span class="sw" style="background:#CE93D8"></span>#CE93D8</td><td>claro 8,2:1 · 7,4:1 · oscuro 6,0:1</td><td>#6D4C41 / #D7B19D</td></tr>
+  </table>
+  <p>Juego 1: <strong>vocales en rojo y consonantes en azul</strong>, como se suelen escribir en el cuaderno del salón. Todos pasan 4,5:1 en los dos modos (en oscuro el campo y la ficha tienen el mismo fondo). El color va en la <strong>imagen, el número y el borde punteado</strong>; el nombre sigue en el color de texto normal.</p>
+</header>
+
+<!-- ===================== IMÁGENES DE CERCA ===================== -->
+<section class="state">
+  <h2>0. Las 4 imágenes de cerca</h2>
+  <p>Así se comparan sin la pantalla alrededor. La fila "sin color" prueba que se distinguen <strong>solo por la forma</strong>; la fila "nombres tapados" es la prueba TC-057.</p>
+  <div class="gallery theme-light"><div class="row-title">Juego 1 · modo claro</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+  <div class="gallery theme-dark"><div class="row-title">Juego 1 · modo oscuro</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+  <div class="gallery theme-light palette-2"><div class="row-title">Juego 2 · modo claro (alternativa)</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+  <div class="gallery theme-dark palette-2"><div class="row-title">Juego 2 · modo oscuro (alternativa)</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+  <div class="gallery theme-light is-mono"><div class="row-title">Sin color (¿se distinguen solo por la forma?)</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+  <div class="gallery theme-light is-covered"><div class="row-title">Nombres tapados (TC-057)</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+</section>
+
+<!-- ===================== ESTADO 1: VACÍO ===================== -->
+<section class="state">
+  <h2>1. Vacío — al abrir, al recargar, al volver atrás o al borrar todo (C-012, D-017)</h2>
+  <p>Las 4 fichas con su imagen, su color y "0". La imagen y el color no dependen del conteo.</p>
+  <div class="pair">
+    <figure><div class="phone theme-light"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="l1">Escribe una palabra o frase</label>
+        <textarea class="field" id="l1" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>0</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>0</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main><div class="home" aria-hidden="true"></div></div></div>
+      <figcaption>Modo claro</figcaption></figure>
+    <figure><div class="phone theme-dark"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="d1">Escribe una palabra o frase</label>
+        <textarea class="field" id="d1" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>0</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>0</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main><div class="home" aria-hidden="true"></div></div></div>
+      <figcaption>Modo oscuro</figcaption></figure>
+  </div>
+</section>
+
+<!-- ===================== ESTADO 2: ESCRIBIENDO CON TECLADO ===================== -->
+<section class="state">
+  <h2>2. Escribiendo con el teclado abierto — "pingüino" (CA-20, 1 línea)</h2>
+  <p>El bloque de abajo copia la foto del iPhone: barra de la dirección (22 px) + barra "⌃ ⌄ Listo" (46 px) + teclado (302 px) = 370 px. Quedan <strong>427 px</strong> visibles bajo la barra de estado. La pantalla usa <strong>≈ 395 px</strong> (≈ 402 con la letra del iPhone): las 4 fichas quedan completas, con ≈ 25 px de margen.</p>
+  <div class="pair">
+    <figure><div class="phone theme-light"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="l2">Escribe una palabra o frase</label>
+        <textarea class="field is-focus" id="l2" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">pingüino</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>4</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>4</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main>
+      <div class="safari" aria-hidden="true"><div class="url">contapp-tawny.vercel.app</div><div class="acc"><span>⌃ ⌄</span><b>Listo</b></div><div class="kb">Teclado de letras del iPhone (302 px)<small>sin corrector, sugerencias ni mayúscula automática</small></div></div>
+    </div></div><figcaption>Modo claro</figcaption></figure>
+    <figure><div class="phone theme-dark"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="d2">Escribe una palabra o frase</label>
+        <textarea class="field is-focus" id="d2" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">pingüino</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>4</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>4</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main>
+      <div class="safari" aria-hidden="true"><div class="url">contapp-tawny.vercel.app</div><div class="acc"><span>⌃ ⌄</span><b>Listo</b></div><div class="kb">Teclado de letras del iPhone (302 px)<small>sin corrector, sugerencias ni mayúscula automática</small></div></div>
+    </div></div><figcaption>Modo oscuro</figcaption></figure>
+  </div>
+</section>
+
+<!-- ===================== ESTADO 2b: FRASE DE 50 EN 2 LÍNEAS ===================== -->
+<section class="state">
+  <h2>2b. Escribiendo con el teclado abierto — frase de 50 caracteres en 2 líneas (CA-20, TC-061)</h2>
+  <p>"el sol sale y la luna se va a dormir en su camita." = 50 caracteres con los espacios → Vocales 17 · Consonantes 20 · Números 0 · Otros 1 (38 sin los 12 espacios). Con la letra del iPhone calculo 2 líneas a 390 px ("…se va a" / "dormir en su camita."). <strong>Ojo:</strong> en un computador la letra es otra y puede partir distinto; el campo de la maqueta muestra 2 líneas fijas.</p>
+  <div class="pair">
+    <figure><div class="phone theme-light"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="l2b">Escribe una palabra o frase</label>
+        <textarea class="field is-focus" id="l2b" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">el sol sale y la luna se va a dormir en su camita.</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>17</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>20</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>1</dd></div></dl>
+      </main>
+      <div class="safari" aria-hidden="true"><div class="url">contapp-tawny.vercel.app</div><div class="acc"><span>⌃ ⌄</span><b>Listo</b></div><div class="kb">Teclado de letras del iPhone (302 px)</div></div>
+    </div></div><figcaption>Modo claro</figcaption></figure>
+    <figure><div class="phone theme-dark"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="d2b">Escribe una palabra o frase</label>
+        <textarea class="field is-focus" id="d2b" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">el sol sale y la luna se va a dormir en su camita.</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>17</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>20</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>1</dd></div></dl>
+      </main>
+      <div class="safari" aria-hidden="true"><div class="url">contapp-tawny.vercel.app</div><div class="acc"><span>⌃ ⌄</span><b>Listo</b></div><div class="kb">Teclado "123" del iPhone (mismo alto)</div></div>
+    </div></div><figcaption>Modo oscuro (TC-062)</figcaption></figure>
+  </div>
+</section>
+
+<!-- ===================== ESTADO 3: CON TEXTO ===================== -->
+<section class="state">
+  <h2>3. Con texto, teclado cerrado — "¡Hola, 2026! 😀" (2 / 2 / 4 / 4)</h2>
+  <p>Las 4 fichas con números distintos de 0: se ven los 4 colores a la vez.</p>
+  <div class="pair">
+    <figure><div class="phone theme-light"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="l3">Escribe una palabra o frase</label>
+        <textarea class="field" id="l3" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">¡Hola, 2026! 😀</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>2</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>2</dd></div><div class="count count--digit"><dt>Números</dt><dd>4</dd></div><div class="count count--other"><dt>Otros</dt><dd>4</dd></div></dl>
+      </main><div class="home" aria-hidden="true"></div></div></div>
+      <figcaption>Modo claro</figcaption></figure>
+    <figure><div class="phone theme-dark"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="d3">Escribe una palabra o frase</label>
+        <textarea class="field" id="d3" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">¡Hola, 2026! 😀</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>2</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>2</dd></div><div class="count count--digit"><dt>Números</dt><dd>4</dd></div><div class="count count--other"><dt>Otros</dt><dd>4</dd></div></dl>
+      </main><div class="home" aria-hidden="true"></div></div></div>
+      <figcaption>Modo oscuro</figcaption></figure>
+  </div>
+</section>
+
+<!-- ===================== ESTADO 4: LÍMITE DE 100 ===================== -->
+<section class="state">
+  <h2>4. En el límite de 100 (35 / 40 / 3 / 3) — sin aviso ni marca (D-007)</h2>
+  <p>"El niño Mateo tiene 7 años y lee cuentos largos con su abuela. ¡Hoy contó 25 ovejas antes de dormir!". El campo crece hasta 5 líneas como en VS-001. Con el teclado abierto y más de 2 líneas, CA-20 no se exige (borde que espera). Un rechazo (letra de otro idioma o carácter 101) se ve exactamente igual: nada cambia.</p>
+  <div class="pair">
+    <figure><div class="phone theme-light"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="l4">Escribe una palabra o frase</label>
+        <textarea class="field" id="l4" rows="4" style="--rows:4" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">El niño Mateo tiene 7 años y lee cuentos largos con su abuela. ¡Hoy contó 25 ovejas antes de dormir!</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>35</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>40</dd></div><div class="count count--digit"><dt>Números</dt><dd>3</dd></div><div class="count count--other"><dt>Otros</dt><dd>3</dd></div></dl>
+      </main><div class="home" aria-hidden="true"></div></div></div>
+      <figcaption>Modo claro</figcaption></figure>
+    <figure><div class="phone theme-dark"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="d4">Escribe una palabra o frase</label>
+        <textarea class="field" id="d4" rows="4" style="--rows:4" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">El niño Mateo tiene 7 años y lee cuentos largos con su abuela. ¡Hoy contó 25 ovejas antes de dormir!</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>35</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>40</dd></div><div class="count count--digit"><dt>Números</dt><dd>3</dd></div><div class="count count--other"><dt>Otros</dt><dd>3</dd></div></dl>
+      </main><div class="home" aria-hidden="true"></div></div></div>
+      <figcaption>Modo oscuro</figcaption></figure>
+  </div>
+</section>
+
+<!-- ===================== ESTADO 5: 320 px CON "100" ===================== -->
+<section class="state">
+  <h2>5. Ancho mínimo 320 × 568 — "100" en Vocales (CA-21, TC-064)</h2>
+  <p>Con menos de 360 px: imagen de 32 px, número de 44 px, nombre de 18 px, 4 px entre la imagen y el número y 4 px de relleno a los lados de la ficha. "100" y "Consonantes" caben completos. El campo tiene 100 "a" y se desplaza por dentro.</p>
+  <div class="pair">
+    <figure><div class="phone is-narrow theme-light"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="l5">Escribe una palabra o frase</label>
+        <textarea class="field" id="l5" rows="5" style="--rows:5" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>100</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>0</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main></div></div>
+      <figcaption>Modo claro · 320 px</figcaption></figure>
+    <figure><div class="phone is-narrow theme-dark"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="d5">Escribe una palabra o frase</label>
+        <textarea class="field" id="d5" rows="5" style="--rows:5" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>100</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>0</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main></div></div>
+      <figcaption>Modo oscuro · 320 px</figcaption></figure>
+  </div>
+</section>
+
+</body>
+</html>

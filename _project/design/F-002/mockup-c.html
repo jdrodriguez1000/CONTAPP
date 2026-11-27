@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta F-002 / F-003 — Opción C "Juguetes del salón" — Contapp (VS-002)</title>
+<style>
+/* =========================================================
+   1) PÁGINA DE LA MAQUETA (encabezado, marcos, barras de Safari). NO es parte de la app.
+   ========================================================= */
+*{box-sizing:border-box}
+body{margin:0;padding:24px 16px 64px;background:#E6E6EC;color:#1C1C22;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.sheet{max-width:1080px;margin:0 auto 40px;background:#fff;border-radius:16px;padding:24px 32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.sheet .tag{display:inline-block;font-size:13px;font-weight:600;color:#4A4A55;background:#F0F0F5;border-radius:999px;padding:2px 10px;margin-bottom:8px}
+.sheet h1{margin:0 0 4px;font-size:30px}
+.sheet h2{margin:20px 0 6px;font-size:20px}
+.sheet p{margin:6px 0}
+.sheet ul{margin:4px 0;padding-left:20px}
+.sheet code{font-size:13px;background:#F3F3F7;border-radius:4px;padding:0 4px}
+.state{max-width:1080px;margin:0 auto 48px}
+.state>h2{font-size:22px;margin:0 0 4px}
+.state>p{margin:0 0 16px;color:#3A3A44}
+.pair{display:flex;flex-wrap:wrap;gap:40px;justify-content:center}
+figure{margin:0}
+figcaption{text-align:center;font-weight:600;margin-top:10px;max-width:410px}
+.phone{box-sizing:content-box;width:390px;height:844px;border:10px solid #121214;border-radius:58px;overflow:hidden;position:relative}
+.phone.is-narrow{width:320px;height:568px;border-radius:36px}
+.safari{position:absolute;left:0;right:0;bottom:0;height:370px;display:flex;flex-direction:column;font:500 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif}
+.safari .url{height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;border-top:1px solid}
+.safari .acc{height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:17px}
+.safari .acc b{color:#0A7AFF;text-decoration:underline}
+.safari .kb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:0 24px}
+.theme-light .safari .url{background:#FFFFFF;color:#333;border-color:#D0D0D5}
+.theme-light .safari .acc{background:#F4F4F6;color:#888}
+.theme-light .safari .kb{background:#D1D4DB;color:#2A2A30}
+.theme-dark .safari .url{background:#1C1C1E;color:#DDD;border-color:#38383A}
+.theme-dark .safari .acc{background:#2C2C2E;color:#AAA}
+.theme-dark .safari .kb{background:#3A3A3C;color:#E5E5EA}
+.screen{position:relative;height:100%;overflow:hidden;background:var(--color-bg);color:var(--color-text);font-family:var(--font-family-base)}
+.status{height:47px;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 36px;font-weight:600;font-size:16px}
+.is-narrow .status{height:20px;padding:0 12px;font-size:12px}
+.home{position:absolute;bottom:8px;left:50%;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--color-text);opacity:.85}
+.field{height:calc(var(--rows,2) * 1.3em + 2 * var(--space-2) + 2 * var(--border-width-input))}
+
+/* =========================================================
+   2) TOKENS — iguales a la opción B; solo cambian las 4 imágenes.
+   ========================================================= */
+:root{
+  --font-family-base:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,"Segoe UI",Roboto,sans-serif;
+  --font-size-title:28px;   --font-weight-title:800;
+  --font-size-label:18px;   --font-weight-label:600;
+  --font-size-input:24px;   --font-weight-input:600;
+  --font-size-group:20px;   --font-weight-group:700;
+  --font-size-count:48px;   --font-weight-count:800;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px; --space-6:24px;
+  --radius-card:20px; --radius-input:14px; --radius-badge:12px;
+  --border-width-input:2px;
+  --size-group-image:44px;
+  /* Imágenes de la opción C: juguetes de siluetas muy distintas */
+  --img-vowel:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path fill-rule='evenodd' d='M11 19a13 15 0 1 0 26 0a13 15 0 1 0-26 0zM16 13a2.8 4.2 0 1 0 5.6 0a2.8 4.2 0 1 0-5.6 0z'/><path d='M21 33.5h6l-3 4z'/><path fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' d='M24 37.5c-3.5 2.5 3.5 4.5 0 8'/></svg>");
+  --img-consonant:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect x='7' y='17' width='24' height='24' rx='2'/><path fill='none' stroke='black' stroke-width='3' stroke-linejoin='round' d='M7 17l8-8h24l-8 8M39 9v24l-8 8'/></svg>");
+  --img-digit:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path fill-rule='evenodd' transform='rotate(45 24 24)' d='M17 11h14a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H17a6 6 0 0 1-6-6V17a6 6 0 0 1 6-6zM14 17a3 3 0 1 0 6 0a3 3 0 1 0-6 0zM21 24a3 3 0 1 0 6 0a3 3 0 1 0-6 0zM28 31a3 3 0 1 0 6 0a3 3 0 1 0-6 0z'/></svg>");
+  --img-other:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><polygon stroke='black' stroke-width='3' stroke-linejoin='round' points='24,5 29,18.1 43,18.8 32.1,27.6 35.8,41.2 24,33.5 12.2,41.2 15.9,27.6 5,18.8 19,18.1'/></svg>");
+}
+.is-narrow{ --font-size-group:18px; --font-size-count:44px; --size-group-image:32px; }
+.theme-light{
+  color-scheme:light;
+  --color-bg:#FFFFFF; --color-surface:#EEF5EE; --color-text:#112211; --color-text-muted:#445544;
+  --color-primary:#1F6B33; --color-on-primary:#FFFFFF; --color-border:#BBCCBB;
+  --color-input-bg:#FFFFFF; --color-input-border:#556655; --color-focus:#1F6B33;
+  --color-vowel:#C62828; --color-consonant:#1565C0; --color-digit:#A84B00; --color-other:#7B1FA2;
+}
+.theme-dark{
+  color-scheme:dark;
+  --color-bg:#142017; --color-surface:#1C2E20; --color-text:#F5F5EE; --color-text-muted:#AABBAA;
+  --color-primary:#FFDD55; --color-on-primary:#142017; --color-border:#3B5540;
+  --color-input-bg:#1C2E20; --color-input-border:#88AA88; --color-focus:#FFDD55;
+  --color-vowel:#FF7B72; --color-consonant:#82B1FF; --color-digit:#FFB74D; --color-other:#CE93D8;
+}
+.theme-light.palette-2{ --color-vowel:#AD1457; --color-consonant:#3949AB; --color-digit:#00695C; --color-other:#6D4C41; }
+.theme-dark.palette-2{ --color-vowel:#F48FB1; --color-consonant:#9FA8DA; --color-digit:#4DB6AC; --color-other:#D7B19D; }
+
+/* =========================================================
+   3) PANTALLA (usa solo tokens) — idéntica a la opción B
+   ========================================================= */
+.app{max-width:480px;margin:0 auto;padding:var(--space-2) var(--space-4) 0}
+.app-title{margin:0 0 var(--space-2);font-size:var(--font-size-title);line-height:1.2;font-weight:var(--font-weight-title);color:var(--color-primary)}
+.field-label{display:block;margin:0 0 var(--space-2);font-size:var(--font-size-label);font-weight:var(--font-weight-label);line-height:1.3;color:var(--color-text-muted)}
+.field{display:block;width:100%;margin:0;resize:none;overflow:hidden;font-family:inherit;font-size:var(--font-size-input);font-weight:var(--font-weight-input);line-height:1.3;padding:var(--space-2) var(--space-3);color:var(--color-text);background:var(--color-input-bg);border:var(--border-width-input) solid var(--color-input-border);border-radius:var(--radius-input)}
+.field.is-focus{border-color:var(--color-focus);outline:3px solid var(--color-focus);outline-offset:2px}
+.counts{margin:var(--space-3) 0 0;display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+.count--vowel,.tile--vowel{--group-color:var(--color-vowel);--group-image:var(--img-vowel)}
+.count--consonant,.tile--consonant{--group-color:var(--color-consonant);--group-image:var(--img-consonant)}
+.count--digit,.tile--digit{--group-color:var(--color-digit);--group-image:var(--img-digit)}
+.count--other,.tile--other{--group-color:var(--color-other);--group-image:var(--img-other)}
+.count{display:flex;flex-direction:column-reverse;align-items:center;justify-content:center;min-height:104px;padding:var(--space-2);background:var(--color-surface);border:var(--border-width-input) dashed var(--group-color);border-radius:var(--radius-card)}
+.is-narrow .count{padding:var(--space-2) var(--space-1)}
+.count dt{font-size:var(--font-size-group);font-weight:var(--font-weight-group);line-height:1.3;margin-top:2px}
+.count dd{margin:0;display:flex;align-items:center;justify-content:center;gap:var(--space-2);font-size:var(--font-size-count);font-weight:var(--font-weight-count);line-height:1.1;color:var(--group-color);font-variant-numeric:tabular-nums}
+.is-narrow .count dd{gap:var(--space-1)}
+.count dd::before{content:"";flex:none;width:var(--size-group-image);height:var(--size-group-image);background-color:currentColor;-webkit-mask:var(--group-image) center/contain no-repeat;mask:var(--group-image) center/contain no-repeat}
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px;border-radius:16px;background:var(--color-bg);color:var(--color-text);font-family:var(--font-family-base);margin:8px 0}
+.gallery .row-title{grid-column:1/-1;font-weight:600;font-size:14px;color:var(--color-text-muted)}
+.tile{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:var(--color-surface);border:var(--border-width-input) dashed var(--group-color);border-radius:var(--radius-card);color:var(--group-color)}
+.tile i{width:88px;height:88px;background-color:currentColor;-webkit-mask:var(--group-image) center/contain no-repeat;mask:var(--group-image) center/contain no-repeat}
+.tile b{font-size:var(--font-size-group);color:var(--color-text)}
+.is-covered .tile b{background:var(--color-text);color:transparent;border-radius:6px}
+.is-mono .tile{--group-color:var(--color-text)}
+</style>
+</head>
+<body>
+
+<header class="sheet">
+  <span class="tag">VS-002 · F-002 y F-003 · Opción C de 3 · Diseño: Pendiente de aprobación</span>
+  <h1>Opción C — "Juguetes del salón"</h1>
+  <p>Cada grupo es <strong>un juguete sencillo</strong>, de silueta muy distinta a los otros:</p>
+  <ul>
+    <li><strong>Vocales → un globo</strong> (redondo, como la boca al decir "o").</li>
+    <li><strong>Consonantes → un bloque de construir</strong> (cuadrado).</li>
+    <li><strong>Números → un dado</strong> (con tres puntos: se cuentan).</li>
+    <li><strong>Otros → una estrella</strong>.</li>
+  </ul>
+  <p><strong>A favor:</strong> son las siluetas más distintas entre sí y las más fáciles de nombrar para un niño ("el globo", "el bloque", "el dado", "la estrella"); se reconocen incluso a 32 px. El dado sí tiene que ver con contar. <strong>En contra:</strong> salvo el dado, la relación con el grupo es inventada: el adulto tiene que enseñarla ("las vocales son las del globo"). El globo y la estrella no dicen nada de letras ni de signos.</p>
+  <p><strong>Colores, medidas y pantalla:</strong> iguales a la opción B (ver la tabla de colores en <code>mockup-b.html</code>). Aquí solo cambian las 4 imágenes. Dibujos propios del designer (2026-11-27), licencia del proyecto.</p>
+  <p>Esta maqueta trae los estados 1, 2, 3 y 5. Los estados 2b (frase de 50) y 4 (límite de 100) son idénticos a los de la opción B salvo por la imagen.</p>
+</header>
+
+<section class="state">
+  <h2>0. Las 4 imágenes de cerca</h2>
+  <p>La fila "sin color" prueba que se distinguen solo por la forma; la fila "nombres tapados" es la prueba TC-057.</p>
+  <div class="gallery theme-light"><div class="row-title">Juego 1 · modo claro</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+  <div class="gallery theme-dark"><div class="row-title">Juego 1 · modo oscuro</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+  <div class="gallery theme-light palette-2"><div class="row-title">Juego 2 · modo claro (alternativa)</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+  <div class="gallery theme-dark palette-2"><div class="row-title">Juego 2 · modo oscuro (alternativa)</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+  <div class="gallery theme-light is-mono"><div class="row-title">Sin color (¿se distinguen solo por la forma?)</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+  <div class="gallery theme-light is-covered"><div class="row-title">Nombres tapados (TC-057)</div>
+    <div class="tile tile--vowel"><i></i><b>Vocales</b></div><div class="tile tile--consonant"><i></i><b>Consonantes</b></div><div class="tile tile--digit"><i></i><b>Números</b></div><div class="tile tile--other"><i></i><b>Otros</b></div></div>
+</section>
+
+<section class="state">
+  <h2>1. Vacío (C-012)</h2>
+  <p>Las 4 fichas con su imagen, su color y "0".</p>
+  <div class="pair">
+    <figure><div class="phone theme-light"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="l1">Escribe una palabra o frase</label>
+        <textarea class="field" id="l1" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>0</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>0</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main><div class="home" aria-hidden="true"></div></div></div>
+      <figcaption>Modo claro</figcaption></figure>
+    <figure><div class="phone theme-dark"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="d1">Escribe una palabra o frase</label>
+        <textarea class="field" id="d1" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>0</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>0</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main><div class="home" aria-hidden="true"></div></div></div>
+      <figcaption>Modo oscuro</figcaption></figure>
+  </div>
+</section>
+
+<section class="state">
+  <h2>2. Escribiendo con el teclado abierto — "pingüino" (CA-20)</h2>
+  <p>Barras de Safari y teclado medidos en la foto del iPhone (370 px). La pantalla usa ≈ 395 de 427 px visibles.</p>
+  <div class="pair">
+    <figure><div class="phone theme-light"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="l2">Escribe una palabra o frase</label>
+        <textarea class="field is-focus" id="l2" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">pingüino</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>4</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>4</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main>
+      <div class="safari" aria-hidden="true"><div class="url">contapp-tawny.vercel.app</div><div class="acc"><span>⌃ ⌄</span><b>Listo</b></div><div class="kb">Teclado de letras del iPhone (302 px)</div></div>
+    </div></div><figcaption>Modo claro</figcaption></figure>
+    <figure><div class="phone theme-dark"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="d2">Escribe una palabra o frase</label>
+        <textarea class="field is-focus" id="d2" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">pingüino</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>4</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>4</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main>
+      <div class="safari" aria-hidden="true"><div class="url">contapp-tawny.vercel.app</div><div class="acc"><span>⌃ ⌄</span><b>Listo</b></div><div class="kb">Teclado de letras del iPhone (302 px)</div></div>
+    </div></div><figcaption>Modo oscuro</figcaption></figure>
+  </div>
+</section>
+
+<section class="state">
+  <h2>3. Con texto, teclado cerrado — "¡Hola, 2026! 😀" (2 / 2 / 4 / 4)</h2>
+  <p>Las 4 fichas con números distintos de 0.</p>
+  <div class="pair">
+    <figure><div class="phone theme-light"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="l3">Escribe una palabra o frase</label>
+        <textarea class="field" id="l3" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">¡Hola, 2026! 😀</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>2</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>2</dd></div><div class="count count--digit"><dt>Números</dt><dd>4</dd></div><div class="count count--other"><dt>Otros</dt><dd>4</dd></div></dl>
+      </main><div class="home" aria-hidden="true"></div></div></div>
+      <figcaption>Modo claro</figcaption></figure>
+    <figure><div class="phone theme-dark"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>●●● 100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="d3">Escribe una palabra o frase</label>
+        <textarea class="field" id="d3" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">¡Hola, 2026! 😀</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>2</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>2</dd></div><div class="count count--digit"><dt>Números</dt><dd>4</dd></div><div class="count count--other"><dt>Otros</dt><dd>4</dd></div></dl>
+      </main><div class="home" aria-hidden="true"></div></div></div>
+      <figcaption>Modo oscuro</figcaption></figure>
+  </div>
+</section>
+
+<section class="state">
+  <h2>5. Ancho mínimo 320 × 568 — "100" en Vocales (CA-21)</h2>
+  <p>Imagen de 32 px, número de 44 px y nombre de 18 px.</p>
+  <div class="pair">
+    <figure><div class="phone is-narrow theme-light"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="l5">Escribe una palabra o frase</label>
+        <textarea class="field" id="l5" rows="5" style="--rows:5" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>100</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>0</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main></div></div>
+      <figcaption>Modo claro · 320 px</figcaption></figure>
+    <figure><div class="phone is-narrow theme-dark"><div class="screen">
+      <div class="status" aria-hidden="true"><span>9:41</span><span>100 %</span></div>
+      <main class="app"><h1 class="app-title">Contapp</h1>
+        <label class="field-label" for="d5">Escribe una palabra o frase</label>
+        <textarea class="field" id="d5" rows="5" style="--rows:5" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</textarea>
+        <dl class="counts"><div class="count count--vowel"><dt>Vocales</dt><dd>100</dd></div><div class="count count--consonant"><dt>Consonantes</dt><dd>0</dd></div><div class="count count--digit"><dt>Números</dt><dd>0</dd></div><div class="count count--other"><dt>Otros</dt><dd>0</dd></div></dl>
+      </main></div></div>
+      <figcaption>Modo oscuro · 320 px</figcaption></figure>
+  </div>
+</section>
+
+</body>
+</html>
