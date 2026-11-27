@@ -59,7 +59,8 @@ function filterChange() {
   const { text, cursor } = applyChange(textField.value, textField.selectionEnd);
   selected = { start: 0, end: 0 };
   // The field is rewritten only when the accepted text differs from it: something did not get in,
-  // or a letter that came in two pieces was joined into one (NFC). That is what makes undo stale (DT-003).
+  // or NFC turned what came in into its standard form (a letter in two pieces joined into one,
+  // a sign like Kelvin into its letter). That is what makes undo stale (DT-003).
   if (text !== textField.value) {
     textField.value = text;
     textField.setSelectionRange(cursor, cursor);
